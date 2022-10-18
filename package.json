@@ -17,7 +17,8 @@
         "commands": [
             {
                 "command": "extension.OpenPanel",
-                "title": "Open panel"
+                "title": "Open panel",
+                "icon": "$(open-preview)"
             }
         ],
         "menus": {
@@ -26,6 +27,13 @@
                     "command": "extension.OpenPanel",
                     "when": "resourceExtname == .xml",
                     "group": "navigation@6"
+                }
+            ],
+            "editor/title": [
+                {
+                  "command": "extension.OpenPanel",
+                  "group": "navigation",
+                  "when": "resourceExtname == .xml"
                 }
             ]
         },

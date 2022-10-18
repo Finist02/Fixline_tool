@@ -8,7 +8,9 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable1);
 }
 function OpenPanel(uri: vscode.Uri) {
-	let path = uri.fsPath;
+    let path = uri?.fsPath;
+    if(path == undefined) path = vscode.window.activeTextEditor?.document.uri.fsPath!;
+    if(path == undefined || path == '') return;
 	if(path.indexOf('\\panels\\') !== -1) {
 		path = path.slice(path.indexOf("panels") + 7);
 		const terminal = vscode.window.createTerminal('cmd', 'C:\\Windows\\system32\\cmd.exe');
