@@ -10,7 +10,8 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.OpenPanel"
+        "onCommand:extension.OpenPanel",
+        "onCommand:extension.CheckScript"
     ],
     "main": "./out/extension.js",
     "contributes": {
@@ -19,6 +20,11 @@
                 "command": "extension.OpenPanel",
                 "title": "Open panel",
                 "icon": "$(open-preview)"
+            },
+            {
+                "command": "extension.CheckScript",
+                "title": "Check Script",
+                "icon": "$(debug)"
             }
         ],
         "menus": {
@@ -27,6 +33,11 @@
                     "command": "extension.OpenPanel",
                     "when": "resourceExtname == .xml",
                     "group": "navigation@6"
+                },
+                {
+                    "command": "extension.CheckScript",
+                    "when": "resourceExtname == .ctl",
+                    "group": "navigation@6"
                 }
             ],
             "editor/title": [
@@ -34,7 +45,12 @@
                   "command": "extension.OpenPanel",
                   "group": "navigation",
                   "when": "resourceExtname == .xml"
-                }
+                },
+                {
+                    "command": "extension.CheckScript",
+                    "group": "navigation",
+                    "when": "resourceExtname == .ctl"
+                  }
             ]
         },
         "configuration": [
