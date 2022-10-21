@@ -11,7 +11,8 @@
     ],
     "activationEvents": [
         "onCommand:extension.OpenPanel",
-        "onCommand:extension.CheckScript"
+        "onCommand:extension.CheckScript",
+        "onCommand:extension.OpenLogs"
     ],
     "main": "./out/extension.js",
     "contributes": {
@@ -25,6 +26,11 @@
                 "command": "extension.CheckScript",
                 "title": "Check Script",
                 "icon": "$(debug)"
+            },
+            {
+                "command": "extension.OpenLogs",
+                "title": "Open Log",
+                "icon": "$(list-flat)"
             }
         ],
         "menus": {
