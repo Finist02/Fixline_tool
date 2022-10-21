@@ -1,7 +1,7 @@
 {
     "name": "winccext",
-    "displayName": "WinCCOA Open panel",
-    "description": "Open panel",
+    "displayName": "WinCCOA tool",
+    "description": "WinCCOA tool",
     "version": "0.0.1",
     "engines": {
         "vscode": "^1.71.0"
@@ -61,7 +61,7 @@
         },
         "configuration": [
             {
-                "title": "WinCCOA open panel",
+                "title": "WinCCOA tool",
                 "properties": {
                     "OpenPanel.commands": {
                         "type": "array",
@@ -70,14 +70,6 @@
                                 "object"
                             ],
                             "properties": {
-                                "projName": {
-                                    "type": "string",
-                                    "description": "Name of project."
-                                },
-                                "pathWinCC": {
-                                    "type": "string",
-                                    "description": "Path to install WinCCOA. Example C:/Siemens/Automation/WinCC_OA/3.18"
-                                },
                                 "user": {
                                     "user": "string",
                                     "description": "UserName"
@@ -90,8 +82,6 @@
                         },
                         "default": [
                             {
-                                "projName": "PimsVTZSM",
-                                "pathWinCC": "C:/Siemens/Automation/WinCC_OA/3.18",
                                 "user": "root",
                                 "pass": ""
                             }
