@@ -102,8 +102,22 @@ async function OpenLog() {
 								console.log(err);
 							}
 							if (bytes > 0) {
-								winccLog_channel.append(buffer.
-									slice(0, bytes).toString());
+								let logs = buffer.slice(0, bytes).toString();
+								if(element == 'PVSS_II.log')
+								{
+									let lines = logs.split('\n');
+									lines.forEach( (item, index) => {
+										if(!item.match(/.*,  INFO.*/i) && item != "")
+										{
+											console.log(item);
+											winccLog_channel.append(item + "\n");
+										}
+									});
+								}
+								else
+								{
+									winccLog_channel.append(logs);
+								}								
 							}
 							fs.close(fd, function (err) {
 								if (err) {
