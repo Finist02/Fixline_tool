@@ -30,13 +30,20 @@ function CheckScript(uri: vscode.Uri) {
 	let path = uri?.fsPath;
 	if(path == undefined) path = vscode.window.activeTextEditor?.document.uri.fsPath!;
 	if(path == undefined || path == '') return;
-	if(path.indexOf('\\scripts\\') !== -1) {
-		path = path.slice(path.indexOf("scripts") + 8);
-		let conf = getCommands(getConfiguration());
-		let command = getPathInConfigFile('pvss_path') +'/bin/\WCCOActrl.exe -syntax -proj ' + getPathInConfigFile('proj_name') + ' ' + path;
-		console.log(command);
-		const output = execShell(command);
-	}
+	let command;
+	if (path.indexOf('\\scripts\\') !== -1) {
+        path = path.slice(path.indexOf("scripts") + 8);
+        vscode.workspace.workspaceFolders?.find(wsFolder => {
+            if (fs.existsSync(wsFolder.uri.fsPath + '\\scripts\\tests\\' + path)) {
+                path = wsFolder.uri.fsPath + '\\scripts\\tests\\' + path;
+                command = getPathInConfigFile('pvss_path') + '/bin/WCCOActrl.exe -proj ' + getPathInConfigFile('proj_name') + ' ' + path;
+                execShell(command);
+                return;
+            }
+        });
+        command = getPathInConfigFile('pvss_path') + '/bin/WCCOActrl.exe -syntax -proj ' + getPathInConfigFile('proj_name') + ' ' + path;
+        const output = execShell(command);
+    }
 
 }
 const execShell = (cmd: string) =>
