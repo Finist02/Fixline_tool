@@ -3,6 +3,8 @@
 import * as vscode from 'vscode';
 import * as cp from "child_process";
 import * as fs from 'fs';
+import { XmlNode, parse } from 'fsp-xml-parser'
+
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -12,6 +14,36 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable1);
 	context.subscriptions.push(disposable2);
 	context.subscriptions.push(disposable3);
+	const myScheme = 'ctl';
+	const myProvider = new class implements vscode.TextDocumentContentProvider {
+		onDidChangeEmitter = new vscode.EventEmitter<vscode.Uri>();
+		onDidChange = this.onDidChangeEmitter.event;
+
+		provideTextDocumentContent(uri: vscode.Uri): string {
+			let text = vscode.window.activeTextEditor?.document.getText();
+			if(text == undefined) return '';
+			text = text.replace(/&quot;/g, '\"');
+			text = text.replace(/&lt;/g, '<');
+			text = text.replace(/&gt;/g, '>');
+			text = text.replace(/&amp;/g, '&');
+			text = text.replace(/&apos;/g, '\'');
+			text = text.replace(/<[\/]?prop(.*)\n/g, '');
+			text = text.replace(/<!\[CDATA\[/g, '\n');
+			text = text.replace(/]]><\/script>/g, '');
+			text = text.replace(/<\/.*>\n/g, '');
+			text = text.replace(/\n[\s\t]+(<.*)/g, '\n// ! -----$1');
+			return text;
+		}
+	};
+	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(myScheme, myProvider));
+
+	context.subscriptions.push(vscode.commands.registerCommand('extension.Panelpreview', async () => {
+		let fileName = vscode.window.activeTextEditor?.document.fileName;
+		if(fileName == undefined || fileName == '') return;
+		let uri = vscode.Uri.parse('ctl:' + fileName + Date.now().toString() +'.ctl');
+		const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
+		await vscode.window.showTextDocument(doc, { preview: true, viewColumn: vscode.ViewColumn.Beside });
+	}))
 }
 function OpenPanel(uri: vscode.Uri) {
 	let path = uri?.fsPath;
@@ -116,7 +148,6 @@ async function OpenLog() {
 									lines.forEach( (item, index) => {
 										if(!item.match(/.*,  INFO.*/i) && item != "")
 										{
-											console.log(item);
 											winccLog_channel.append(item + "\n");
 										}
 									});
