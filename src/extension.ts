@@ -3,7 +3,6 @@
 import * as vscode from 'vscode';
 import * as cp from "child_process";
 import * as fs from 'fs';
-import { XmlNode, parse } from 'fsp-xml-parser'
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -22,16 +21,31 @@ export function activate(context: vscode.ExtensionContext) {
 		provideTextDocumentContent(uri: vscode.Uri): string {
 			let text = vscode.window.activeTextEditor?.document.getText();
 			if(text == undefined) return '';
+			//spec symbols
 			text = text.replace(/&quot;/g, '\"');
 			text = text.replace(/&lt;/g, '<');
 			text = text.replace(/&gt;/g, '>');
 			text = text.replace(/&amp;/g, '&');
 			text = text.replace(/&apos;/g, '\'');
+			//all props
 			text = text.replace(/<[\/]?prop(.*)\n/g, '');
+			//cdata
 			text = text.replace(/<!\[CDATA\[/g, '\n');
 			text = text.replace(/]]><\/script>/g, '');
+			//other ***<
 			text = text.replace(/<\/.*>\n/g, '');
-			text = text.replace(/\n[\s\t]+(<.*)/g, '\n// ! -----$1');
+			text = text.replace(/\s*<extended>.*/g, '');
+			text = text.replace(/\s*<sizePolicy.*/g, '');
+			text = text.replace(/\s*<events>/g, '');
+			text = text.replace(/\s*<shapes>/g, '');
+			text = text.replace(/\s*<layout/g, '');
+			text = text.replace(/\s*<groups.*/g, '');
+			// text = text.replace(/\n[\s\t]+(<.*)/g, '\n// ! -----$1');
+
+			//
+			text = text.replace(/\s*<shape Name="(.*)"\sshapeType.*/g, '\n//******************************************************//\n//**[$1]****************************************//');
+			text = text.replace(/\s*<script name="(.*)"\sisEscaped.*/g, '\n//**[$1]****************************************//');
+			
 			return text;
 		}
 	};
@@ -64,18 +78,18 @@ function CheckScript(uri: vscode.Uri) {
 	if(path == undefined || path == '') return;
 	let command;
 	if (path.indexOf('\\scripts\\') !== -1) {
-        path = path.slice(path.indexOf("scripts") + 8);
-        vscode.workspace.workspaceFolders?.find(wsFolder => {
-            if (fs.existsSync(wsFolder.uri.fsPath + '\\scripts\\tests\\' + path)) {
-                path = wsFolder.uri.fsPath + '\\scripts\\tests\\' + path;
-                command = getPathInConfigFile('pvss_path') + '/bin/WCCOActrl.exe -proj ' + getPathInConfigFile('proj_name') + ' ' + path;
-                execShell(command);
-                return;
-            }
-        });
-        command = getPathInConfigFile('pvss_path') + '/bin/WCCOActrl.exe -syntax -proj ' + getPathInConfigFile('proj_name') + ' ' + path;
-        const output = execShell(command);
-    }
+		path = path.slice(path.indexOf("scripts") + 8);
+		vscode.workspace.workspaceFolders?.find(wsFolder => {
+			if (fs.existsSync(wsFolder.uri.fsPath + '\\scripts\\tests\\' + path)) {
+				path = wsFolder.uri.fsPath + '\\scripts\\tests\\' + path;
+				command = getPathInConfigFile('pvss_path') + '/bin/WCCOActrl.exe -proj ' + getPathInConfigFile('proj_name') + ' ' + path;
+				execShell(command);
+				return;
+			}
+		});
+		command = getPathInConfigFile('pvss_path') + '/bin/WCCOActrl.exe -syntax -proj ' + getPathInConfigFile('proj_name') + ' ' + path;
+		const output = execShell(command);
+	}
 
 }
 const execShell = (cmd: string) =>
@@ -208,5 +222,6 @@ function getPathInConfigFile(what: string): string {
 	});
 	return path;
 }
+
 // this method is called when your extension is deactivated
 export function deactivate() {}
