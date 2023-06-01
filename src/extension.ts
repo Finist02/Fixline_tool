@@ -3,6 +3,8 @@
 import * as vscode from 'vscode';
 import * as cp from "child_process";
 import * as fs from 'fs';
+import { QuickPickItem } from 'vscode';
+import { QuickPickItemKind} from 'vscode';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -10,6 +12,7 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable1 = vscode.commands.registerCommand('extension.OpenPanel', OpenPanel);
 	let disposable2 = vscode.commands.registerCommand('extension.CheckScript', CheckScript);
 	let disposable3 = vscode.commands.registerCommand('extension.OpenLogs', OpenLog);
+	context.subscriptions.push(vscode.commands.registerCommand('extension.OpenProjectPanel', showQuickPick));
 	context.subscriptions.push(disposable1);
 	context.subscriptions.push(disposable2);
 	context.subscriptions.push(disposable3);
@@ -62,15 +65,18 @@ export function activate(context: vscode.ExtensionContext) {
 function OpenPanel(uri: vscode.Uri) {
 	let path = uri?.fsPath;
 	if(path == undefined) path = vscode.window.activeTextEditor?.document.uri.fsPath!;
+	OpenPanelWithPath(path);
+	
+
+}
+function OpenPanelWithPath(path: string | undefined) {
 	if(path == undefined || path == '') return;
 	if(path.indexOf('\\panels\\') !== -1) {
 		path = path.slice(path.indexOf("panels") + 7);
 		let conf = getCommands(getConfiguration());
 		let command = getPathInConfigFile('pvss_path') +'/bin/WCCOAui.exe -p ' + path + ' -user ' + conf[0].user + ':' + conf[0].pass + ' -proj ' + getPathInConfigFile('proj_name');
 		const output = execShell(command);
-
 	}
-
 }
 function CheckScript(uri: vscode.Uri) {
 	let path = uri?.fsPath;
@@ -222,6 +228,50 @@ function getPathInConfigFile(what: string): string {
 	});
 	return path;
 }
+
+let prevSelectedItems: QuickPickItem[] = [{
+	label: 'recently opened',
+	kind: QuickPickItemKind.Separator
+},
+{
+	label: 'all panels',
+	kind: QuickPickItemKind.Separator
+}
+];
+function onlyUnique(value: QuickPickItem, index: number, array: QuickPickItem[]) {
+	return array.indexOf(value) === index;
+}
+export async function showQuickPick() {
+	const result = await vscode.window.showQuickPick(GetPathsFiles());
+	if(result != undefined) {
+		prevSelectedItems.splice(1, 0, result);
+		// if(prevSelectedItems.length > 1) {
+		// 	prevSelectedItems.pop();
+		// }
+		// prevSelectedItems.push(result);
+		// prevSelectedItems.push(quickPickSeparator);
+		let path = result.description;
+		OpenPanelWithPath(path);
+	}
+}
+async function GetPathsFiles() {
+	prevSelectedItems = prevSelectedItems.filter(onlyUnique);
+	const files = await vscode.workspace.findFiles('**/panels/**/*.xml');
+	const items: QuickPickItem[] = [];
+	prevSelectedItems.forEach(item =>{
+		items.push(item);
+	});
+	files.forEach(file => {
+		let path = file.fsPath;
+		let splittedPath  = path.split('panels\\');
+		items.push({
+			label: '$(notebook-open-as-text) ' + splittedPath[splittedPath.length-1],
+			description: path
+		});
+	})
+	return items;
+}
+
 
 // this method is called when your extension is deactivated
 export function deactivate() {}

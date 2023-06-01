@@ -19,6 +19,11 @@
                 "icon": "$(preview)"
             },
             {
+                "command": "extension.OpenProjectPanel",
+                "title": "Open project panel",
+                "icon": "$(preview)"
+            },
+            {
                 "command": "extension.CheckScript",
                 "title": "Check Script",
                 "icon": "$(debug)"
