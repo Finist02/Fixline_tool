@@ -13,6 +13,7 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable2 = vscode.commands.registerCommand('extension.CheckScript', CheckScript);
 	let disposable3 = vscode.commands.registerCommand('extension.OpenLogs', OpenLog);
 	context.subscriptions.push(vscode.commands.registerCommand('extension.OpenProjectPanel', showQuickPick));
+	context.subscriptions.push(vscode.commands.registerCommand('extension.RunScript', RunScript));
 	context.subscriptions.push(disposable1);
 	context.subscriptions.push(disposable2);
 	context.subscriptions.push(disposable3);
@@ -75,6 +76,18 @@ function OpenPanelWithPath(path: string | undefined) {
 		path = path.slice(path.indexOf("panels") + 7);
 		let conf = getCommands(getConfiguration());
 		let command = getPathInConfigFile('pvss_path') +'/bin/WCCOAui.exe -p ' + path + ' -user ' + conf[0].user + ':' + conf[0].pass + ' -proj ' + getPathInConfigFile('proj_name');
+		const output = execShell(command);
+	}
+}
+
+function RunScript(uri: vscode.Uri) {
+	let path = uri?.fsPath;
+	if(path == undefined) path = vscode.window.activeTextEditor?.document.uri.fsPath!;
+	if(path == undefined || path == '') return;
+	let command;
+	if (path.indexOf('\\scripts\\') !== -1) {
+		path = path.slice(path.indexOf("scripts") + 8);
+		command = getPathInConfigFile('pvss_path') + '/bin/WCCOActrl.exe -proj ' + getPathInConfigFile('proj_name') + ' ' + path;
 		const output = execShell(command);
 	}
 }

@@ -29,6 +29,11 @@
                 "icon": "$(debug)"
             },
             {
+                "command": "extension.RunScript",
+                "title": "Run script",
+                "icon": "$(run)"
+            },
+            {
                 "command": "extension.OpenLogs",
                 "title": "Open Log",
                 "icon": "$(list-flat)"
@@ -55,6 +60,11 @@
                     "command": "extension.CheckScript",
                     "when": "resourceExtname == .ctl",
                     "group": "navigation@6"
+                },
+                {
+                    "command": "extension.RunScript",
+                    "when": "resourceExtname == .ctl",
+                    "group": "navigation@6"
                 }
             ],
             "editor/title": [
@@ -71,6 +81,11 @@
                 {
                     "command": "extension.CheckScript",
                     "group": "navigation",
+                    "when": "resourceExtname == .ctl"
+                },
+                {
+                    "command": "extension.RunScript",
+                    "title": "navigation",
                     "when": "resourceExtname == .ctl"
                 }
             ]
