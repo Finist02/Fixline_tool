@@ -91,25 +91,29 @@ function RunScript(uri: vscode.Uri) {
 		const output = execShell(command);
 	}
 }
+/**
+ * @param uri uri акттвной влкадки
+ * @returns 
+ */
 function CheckScript(uri: vscode.Uri) {
 	let path = uri?.fsPath;
 	if(path == undefined) path = vscode.window.activeTextEditor?.document.uri.fsPath!;
 	if(path == undefined || path == '') return;
-	let command;
+	let command, syntax = '';
 	if (path.indexOf('\\scripts\\') !== -1) {
-		path = path.slice(path.indexOf("scripts") + 8);
-		vscode.workspace.workspaceFolders?.find(wsFolder => {
-			if (fs.existsSync(wsFolder.uri.fsPath + '\\scripts\\tests\\' + path)) {
-				path = wsFolder.uri.fsPath + '\\scripts\\tests\\' + path;
-				command = getPathInConfigFile('pvss_path') + '/bin/WCCOActrl.exe -proj ' + getPathInConfigFile('proj_name') + ' ' + path;
-				execShell(command);
-				return;
-			}
-		});
-		command = getPathInConfigFile('pvss_path') + '/bin/WCCOActrl.exe -syntax -proj ' + getPathInConfigFile('proj_name') + ' ' + path;
+		let pathTestScript = path.replace(/scripts/g, 'scripts\\tests');
+		let relPathScript = '';
+		if (fs.existsSync(pathTestScript)) {
+			relPathScript = pathTestScript.replace(/.*scripts\\/g, '');
+		}
+		else{
+			relPathScript = path.replace(/.*scripts\\/g, '');
+			syntax = '-syntax';
+		}
+		console.log(relPathScript);
+		command = getPathInConfigFile('pvss_path') + '/bin/WCCOActrl.exe ' + syntax + ' -proj ' + getPathInConfigFile('proj_name') + ' ' + relPathScript;
 		const output = execShell(command);
 	}
-
 }
 const execShell = (cmd: string) =>
 	new Promise<string>((resolve, reject) => {
