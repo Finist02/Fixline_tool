@@ -85,7 +85,7 @@
                 },
                 {
                     "command": "extension.RunScript",
-                    "title": "navigation",
+                    "group": "navigation",
                     "when": "resourceExtname == .ctl"
                 }
             ]
