@@ -113,32 +113,6 @@
                         "type": "string",
                         "default": "",
                         "description": "Password"
-                    },
-                    "OpenPanel.commands": {
-                        "type": "array",
-                        "items": {
-                            "type": [
-                                "object"
-                            ],
-                            "properties": {
-                                "user": {
-                                    "type": "string",
-                                    "description": "UserName",
-                                    "default": "root"
-                                },
-                                "pass": {
-                                    "type": "string",
-                                    "description": "Password",
-                                    "default": "root"
-                                }
-                            }
-                        },
-                        "default": [
-                            {
-                                "user": "root",
-                                "pass": ""
-                            }
-                        ]
                     }
                 }
             }
