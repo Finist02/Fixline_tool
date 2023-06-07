@@ -1,15 +1,24 @@
 {
-    "name": "winccext",
-    "displayName": "WinCCOA tool",
-    "description": "WinCCOA tool",
+    "name": "fixline-tool",
+    "displayName": "Fixline tool",
+    "description": "Fixline tool",
     "version": "0.0.1",
-    "icon": "images/logo.png",
+    "publisher": "Danil",
+    "icon": "images/fixline.png",
+    "repository": {
+        "url": "https://github.com/Finist02/Fixline_tool",
+        "type": "git"
+    },
     "engines": {
         "vscode": "^1.71.0"
     },
     "categories": [
         "Other"
     ],
+    "activationEvents": [
+		"onLanguage:ctrl",
+		"onLanguage:ctrlpp"
+	],
     "main": "./out/extension.js",
     "contributes": {
         "commands": [
