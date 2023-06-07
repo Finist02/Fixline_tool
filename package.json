@@ -16,9 +16,9 @@
         "Other"
     ],
     "activationEvents": [
-		"onLanguage:ctrl",
-		"onLanguage:ctrlpp"
-	],
+        "onLanguage:ctrl",
+        "onLanguage:ctrlpp"
+    ],
     "main": "./out/extension.js",
     "contributes": {
         "commands": [
@@ -101,8 +101,19 @@
         },
         "configuration": [
             {
-                "title": "WinCCOA tool",
+                "type": "object",
+                "title": "Fixline tool",
                 "properties": {
+                    "FixLineTool.OpenPanel.UserName": {
+                        "type": "string",
+                        "default": "root",
+                        "description": "User Name"
+                    },
+                    "FixLineTool.OpenPanel.Password": {
+                        "type": "string",
+                        "default": "",
+                        "description": "Password"
+                    },
                     "OpenPanel.commands": {
                         "type": "array",
                         "items": {
@@ -111,12 +122,14 @@
                             ],
                             "properties": {
                                 "user": {
-                                    "user": "string",
-                                    "description": "UserName"
+                                    "type": "string",
+                                    "description": "UserName",
+                                    "default": "root"
                                 },
                                 "pass": {
-                                    "user": "string",
-                                    "description": "Password"
+                                    "type": "string",
+                                    "description": "Password",
+                                    "default": "root"
                                 }
                             }
                         },

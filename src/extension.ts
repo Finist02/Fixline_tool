@@ -74,8 +74,9 @@ function OpenPanelWithPath(path: string | undefined) {
 	if(path == undefined || path == '') return;
 	if(path.indexOf('\\panels\\') !== -1) {
 		path = path.slice(path.indexOf("panels") + 7);
-		let conf = getCommands(getConfiguration());
-		let command = getPathInConfigFile('pvss_path') +'/bin/WCCOAui.exe -p ' + path + ' -user ' + conf[0].user + ':' + conf[0].pass + ' -proj ' + getPathInConfigFile('proj_name');
+		let user = vscode.workspace.getConfiguration("FixLineTool.OpenPanel").get("UserName");
+		let pass = vscode.workspace.getConfiguration("FixLineTool.OpenPanel").get("Password");
+		let command = getPathInConfigFile('pvss_path') +'/bin/WCCOAui.exe -p ' + path + ' -user ' + user + ':' + pass + ' -proj ' + getPathInConfigFile('proj_name');
 		const output = execShell(command);
 	}
 }
@@ -125,26 +126,7 @@ const execShell = (cmd: string) =>
 		return resolve(out.toString());
 	  });
 	});
-function getConfiguration() {
-	return vscode.workspace
-		.getConfiguration()
-		.get('OpenPanel.commands');
-}
-function getCommands(configuration: any) {
-	if (!Array.isArray(configuration)) {
-		return [];
-	}
-	return configuration
-		.map((c) => {
-		const maybeCommand = c;
-		return {
-			// projName: maybeCommand.projName,
-			// pathWinCC: maybeCommand.pathWinCC,
-			user: maybeCommand.user,
-			pass: maybeCommand.pass
-		};
-	});
-}
+
 let doLogs = true;
 async function OpenLog() {
 	let path = getPathInConfigFile('proj_path') + '/log/';
@@ -262,11 +244,6 @@ export async function showQuickPick() {
 	const result = await vscode.window.showQuickPick(GetPathsFiles());
 	if(result != undefined) {
 		prevSelectedItems.splice(1, 0, result);
-		// if(prevSelectedItems.length > 1) {
-		// 	prevSelectedItems.pop();
-		// }
-		// prevSelectedItems.push(result);
-		// prevSelectedItems.push(quickPickSeparator);
 		let path = result.description;
 		OpenPanelWithPath(path);
 	}
