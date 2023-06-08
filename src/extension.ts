@@ -212,9 +212,13 @@ function getPathInConfigFile(what: string): string {
 		regexp = /^proj_path = .*[\/ | \\](.*)"/;
 	}
 	else return '';
-	vscode.workspace.workspaceFolders?.find(wsFolder => {
-		if (fs.existsSync(wsFolder.uri.fsPath + '/config/config')) {
-			let fileData = fs.readFileSync(wsFolder.uri.fsPath + '/config/config', 'utf8');
+	let workspaceFolders = vscode.workspace.workspaceFolders;
+	if(workspaceFolders != undefined)
+	{
+		let fsPath = workspaceFolders[0].uri.fsPath;
+		console.log(fsPath);
+		if (fs.existsSync(fsPath + '/config/config')) {
+			let fileData = fs.readFileSync(fsPath + '/config/config', 'utf8');
 			let linesData = fileData.split('\n');
 			linesData.forEach(line =>{
 				const matches = line.match(regexp) || [];
@@ -224,7 +228,7 @@ function getPathInConfigFile(what: string): string {
 				}
 			});
 		}
-	});
+	}
 	return path;
 }
 
