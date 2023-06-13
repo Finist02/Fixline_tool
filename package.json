@@ -2,7 +2,7 @@
     "name": "fixline-tool",
     "displayName": "Fixline tool",
     "description": "Fixline tool",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "publisher": "Danil",
     "icon": "images/fixline.png",
     "repository": {
