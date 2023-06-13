@@ -5,55 +5,51 @@ import * as cp from "child_process";
 import * as fs from 'fs';
 import { QuickPickItem } from 'vscode';
 import { QuickPickItemKind} from 'vscode';
-
+import { CtrlSymbolsCreator } from './ctrlSymbolsCreator';
+import { panelPreviewProvider } from './panelPreviewProvider';
+import { ProvideCompletionItemsCtrl } from './ctrlProvideCompletionItems';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-	let disposable1 = vscode.commands.registerCommand('extension.OpenPanel', OpenPanel);
-	let disposable2 = vscode.commands.registerCommand('extension.CheckScript', CheckScript);
-	let disposable3 = vscode.commands.registerCommand('extension.OpenLogs', OpenLog);
 	context.subscriptions.push(vscode.commands.registerCommand('extension.OpenProjectPanel', showQuickPick));
 	context.subscriptions.push(vscode.commands.registerCommand('extension.RunScript', RunScript));
-	context.subscriptions.push(disposable1);
-	context.subscriptions.push(disposable2);
-	context.subscriptions.push(disposable3);
-	const myScheme = 'ctl';
-	const myProvider = new class implements vscode.TextDocumentContentProvider {
-		onDidChangeEmitter = new vscode.EventEmitter<vscode.Uri>();
-		onDidChange = this.onDidChangeEmitter.event;
-
-		provideTextDocumentContent(uri: vscode.Uri): string {
-			let text = vscode.window.activeTextEditor?.document.getText();
-			if(text == undefined) return '';
-			//spec symbols
-			text = text.replace(/&quot;/g, '\"');
-			text = text.replace(/&lt;/g, '<');
-			text = text.replace(/&gt;/g, '>');
-			text = text.replace(/&amp;/g, '&');
-			text = text.replace(/&apos;/g, '\'');
-			//all props
-			text = text.replace(/<[\/]?prop(.*)\n/g, '');
-			//cdata
-			text = text.replace(/<!\[CDATA\[/g, '\n');
-			text = text.replace(/]]><\/script>/g, '');
-			//other ***<
-			text = text.replace(/<\/.*>\n/g, '');
-			text = text.replace(/\s*<extended>.*/g, '');
-			text = text.replace(/\s*<sizePolicy.*/g, '');
-			text = text.replace(/\s*<events>/g, '');
-			text = text.replace(/\s*<shapes>/g, '');
-			text = text.replace(/\s*<layout/g, '');
-			text = text.replace(/\s*<groups.*/g, '');
-			// text = text.replace(/\n[\s\t]+(<.*)/g, '\n// ! -----$1');
-
-			//
-			text = text.replace(/\s*<shape Name="(.*)"\sshapeType.*/g, '\n//******************************************************//\n//**[$1]****************************************//');
-			text = text.replace(/\s*<script name="(.*)"\sisEscaped.*/g, '\n//**[$1]****************************************//');
-			
-			return text;
+	context.subscriptions.push(vscode.commands.registerCommand('extension.OpenPanel', OpenPanel));
+	context.subscriptions.push(vscode.commands.registerCommand('extension.CheckScript', CheckScript));
+	context.subscriptions.push(vscode.commands.registerCommand('extension.OpenLogs', OpenLog));
+	const provider1 = vscode.languages.registerCompletionItemProvider('ctrlpp', {
+		provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext) {
+			let provideCompletionItemsCtrl = new ProvideCompletionItemsCtrl();
+			provideCompletionItemsCtrl.SetCompletionClass(document, position);
+			return provideCompletionItemsCtrl.GetSymbols();
 		}
-	};
-	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(myScheme, myProvider));
+	});
+	const providerThis = vscode.languages.registerCompletionItemProvider(
+        'ctrlpp',
+        {
+			provideCompletionItems(document, position) {
+				const linePrefix = document.lineAt(position).text.substr(0, position.character);
+				let completions = new Array();
+				let ctrlSymbolsCreator = new CtrlSymbolsCreator(document);
+				let provideCompletionItemsCtrl = new ProvideCompletionItemsCtrl();
+				let symbols = ctrlSymbolsCreator.GetSymbols();
+				if (linePrefix.endsWith('this.')) {
+					for(let i = 0; i < symbols.length; i++) {
+						let symbol = symbols[i];
+						let isPositionInSymbol = symbol.range.contains(position);
+						if(isPositionInSymbol && symbol.kind == vscode.SymbolKind.Class)
+						{
+							for(let j = 0; j < symbol.children.length; j++) {
+								let childSymbol = symbol.children[j];
+								provideCompletionItemsCtrl.SetClassMembers(childSymbol);
+							}
+						}
+					}
+				}
+                return provideCompletionItemsCtrl.GetSymbols();
+			}
+		},
+		'.' // triggered whenever a '.' is being typed
+    );
 
 	context.subscriptions.push(vscode.commands.registerCommand('extension.Panelpreview', async () => {
 		let fileName = vscode.window.activeTextEditor?.document.fileName;
@@ -62,7 +58,15 @@ export function activate(context: vscode.ExtensionContext) {
 		const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
 		await vscode.window.showTextDocument(doc, { preview: true, viewColumn: vscode.ViewColumn.Beside });
 	}))
+
+	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider('ctl', panelPreviewProvider));
+	context.subscriptions.push(provider1, providerThis);
+	context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider({language: "ctrlpp"}, new CtrlDocumentSymbolProvider()));
+
 }
+
+
+
 function OpenPanel(uri: vscode.Uri) {
 	let path = uri?.fsPath;
 	if(path == undefined) path = vscode.window.activeTextEditor?.document.uri.fsPath!;
@@ -111,7 +115,6 @@ function CheckScript(uri: vscode.Uri) {
 			relPathScript = path.replace(/.*scripts\\/g, '');
 			syntax = '-syntax';
 		}
-		console.log(relPathScript);
 		command = getPathInConfigFile('pvss_path') + '/bin/WCCOActrl.exe ' + syntax + ' -proj ' + getPathInConfigFile('proj_name') + ' ' + relPathScript;
 		const output = execShell(command);
 	}
@@ -216,7 +219,6 @@ function getPathInConfigFile(what: string): string {
 	if(workspaceFolders != undefined)
 	{
 		let fsPath = workspaceFolders[0].uri.fsPath;
-		console.log(fsPath);
 		if (fs.existsSync(fsPath + '/config/config')) {
 			let fileData = fs.readFileSync(fsPath + '/config/config', 'utf8');
 			let linesData = fileData.split('\n');
@@ -270,6 +272,14 @@ async function GetPathsFiles() {
 	return items;
 }
 
+class CtrlDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
+	public provideDocumentSymbols(document: vscode.TextDocument,
+		token: vscode.CancellationToken): Thenable<vscode.DocumentSymbol[]> {
+	return new Promise((resolve, reject) => {
+		let symbols = new CtrlSymbolsCreator(document);
+		resolve(symbols.GetSymbols());
+	});}
+}
 
 // this method is called when your extension is deactivated
 export function deactivate() {}
