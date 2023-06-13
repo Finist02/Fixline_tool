@@ -2,7 +2,7 @@
     "name": "fixline-tool",
     "displayName": "Fixline tool",
     "description": "Fixline tool",
-    "version": "0.2.2",
+    "version": "0.3.0",
     "publisher": "Danil",
     "icon": "images/fixline.png",
     "repository": {
@@ -118,8 +118,8 @@
             }
         ]
     },
-    "capabilities" : {
-        "definitionProvider" : "true"
+    "capabilities": {
+        "definitionProvider": "true"
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
