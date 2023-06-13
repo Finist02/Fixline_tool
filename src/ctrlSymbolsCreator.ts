@@ -147,14 +147,21 @@ export class CtrlSymbolsCreator {
             let lineText = this.document.lineAt(i).text;
             textParams += lineText + '\n';
         }
-        let regexp = /\s*([a-zA-Z0-9_\<\>]+)\s+(\w+),?/gs;
+        let regexp = /\s*(?<const>const)?\s*(?<typeVar>[a-zA-Z0-9_\<\>]+)\s+(?<nameVar>&?\w+),?/gs;
         let result = regexp.exec(textParams); //пропускаем имя функции
-        while (result) {
+        while (result && result.groups) {
             result = regexp.exec(textParams);
-            if(result == undefined) break;
-            let detail = result[1];
-            let name = result[2];
-            let docSymbol = new vscode.DocumentSymbol(name, detail, vscode.SymbolKind.Variable, this.document.lineAt(start).range, this.document.lineAt(start).range);
+            if(!result || !result.groups) break;
+            let typeVar = result.groups['typeVar'];
+            let nameVar = result.groups['nameVar'].replace('&', '');
+            let docSymbol;
+            if(result.groups['const'] == undefined) {
+                docSymbol = new vscode.DocumentSymbol(nameVar, typeVar, vscode.SymbolKind.Variable, this.document.lineAt(start).range, this.document.lineAt(start).range);
+            }
+            else {
+                docSymbol = new vscode.DocumentSymbol(nameVar, typeVar, vscode.SymbolKind.Constant, this.document.lineAt(start).range, this.document.lineAt(start).range);
+
+            }
             this.nodes[this.nodes.length - 1].push(docSymbol);
         }
     }

@@ -8,6 +8,8 @@ import { QuickPickItemKind} from 'vscode';
 import { CtrlSymbolsCreator } from './ctrlSymbolsCreator';
 import { panelPreviewProvider } from './panelPreviewProvider';
 import { ProvideCompletionItemsCtrl } from './ctrlProvideCompletionItems';
+import { CtrlGoDefinitionProvider } from './CtrlGoDefinitionProvider';
+
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -62,7 +64,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider('ctl', panelPreviewProvider));
 	context.subscriptions.push(provider1, providerThis);
 	context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider({language: "ctrlpp"}, new CtrlDocumentSymbolProvider()));
-
+	context.subscriptions.push(vscode.languages.registerDefinitionProvider({language: "ctrlpp"}, new CtrlGoDefinitionProvider()));
 }
 
 
@@ -202,6 +204,7 @@ function getFileNames(path: string) : string[]{
 function delay(ms: number) {
 	return new Promise( resolve => setTimeout(resolve, ms) );
 }
+
 function getPathInConfigFile(what: string): string {
 	let path = '';
 	let regexp: RegExp;
