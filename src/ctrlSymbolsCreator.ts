@@ -1,12 +1,10 @@
 import * as vscode from 'vscode';
-
 export class CtrlSymbolsCreator {
     private symbols: vscode.DocumentSymbol[] = [];
     private nodes: Array<vscode.DocumentSymbol[]> = [this.symbols];
     private document: vscode.TextDocument;
     private comment: RegExp = /(\/\*.*\/)/;
     private parsedLines = new Array;
-
     constructor(document: vscode.TextDocument) {
         this.document = document;
     }
@@ -19,11 +17,44 @@ export class CtrlSymbolsCreator {
         for (let i = 0; i < this.document.lineCount; i++) {
             let lineText = this.document.lineAt(i).text;
             if(lineText.startsWith('//')) continue;
+            i = this.GetEnums(i);
+        }
+        for (let i = 0; i < this.document.lineCount; i++) {
+            let lineText = this.document.lineAt(i).text;
+            if(lineText.startsWith('//')) continue;
             i = this.GetFunctions(i);
         }
         return this.symbols;
     }
-    
+    private GetEnums(lineNum: number) {
+        for (let i = lineNum; i < this.document.lineCount; i++) {
+            let lineText = this.document.lineAt(i).text;
+            lineText = this.DeleteComments(lineText);
+            let classRegExp = this.RunRegExp(/enum\s*(\w+)/, lineText);
+			if(classRegExp) {
+                let linesClass = this.GetLinesNumContext(i, '{', '}');
+                let RangeClass = new vscode.Range(this.document.lineAt(i).range.start, this.document.lineAt(linesClass[1]).range.end);
+                let docSymbol = new vscode.DocumentSymbol(classRegExp[1], 'enum', vscode.SymbolKind.Enum, RangeClass, this.document.lineAt(i).range);
+                this.nodes[this.nodes.length - 1].push(docSymbol);
+		        this.nodes.push(docSymbol.children);
+                this.FindEnumMembers(linesClass[0], linesClass[1]);
+                this.nodes.pop();
+                this.SetParsedLines(i, linesClass[1]);
+                return  linesClass[1];                
+            }
+        }
+        return lineNum;
+    }
+    private FindEnumMembers(start: number, end: number) {
+        for (let i = start; i <= end; i++) {
+            let lineText = this.document.lineAt(i).text;
+            //поле
+            let funcRegExp = this.RunRegExp(/^\s*(\w+)/g, lineText);
+            if(funcRegExp) {
+                let docSymbol = new vscode.DocumentSymbol(funcRegExp[1], 'enumMember', vscode.SymbolKind.EnumMember, this.document.lineAt(i).range, this.document.lineAt(i).range);
+                this.nodes[this.nodes.length - 1].push(docSymbol);
+                continue;
+    }}}
     private GetClasses(lineNum: number) {
         for (let i = lineNum; i < this.document.lineCount; i++) {
             let lineText = this.document.lineAt(i).text;
@@ -69,7 +100,7 @@ export class CtrlSymbolsCreator {
                 let linesFunc = this.GetLinesNumContext(i, '{', '}');
                 let linesInnerParams = this.GetLinesNumContext(i, /\(/, /\)/);
                 let RangeFunc = new vscode.Range(this.document.lineAt(i).range.start, this.document.lineAt(linesFunc[1]).range.end);
-                let docSymbol = new vscode.DocumentSymbol(nameMethod, typeMethod, vscode.SymbolKind.Method, RangeFunc, this.document.lineAt(i).range);
+                let docSymbol = new vscode.DocumentSymbol(nameMethod, typeMethod, vscode.SymbolKind.Method, RangeFunc, RangeFunc);
                 this.nodes[this.nodes.length - 1].push(docSymbol);
 		        this.nodes.push(docSymbol.children);
                 this.GetParamsFunc(linesInnerParams[0], linesInnerParams[1]);
@@ -147,7 +178,7 @@ export class CtrlSymbolsCreator {
             let lineText = this.document.lineAt(i).text;
             textParams += lineText + '\n';
         }
-        let regexp = /\s*(?<const>const)?\s*(?<typeVar>[a-zA-Z0-9_\<\>]+)\s+(?<nameVar>&?\w+),?/gs;
+        let regexp = /\s*(?<const>const)?\s*(?<typeVar>[a-zA-Z0-9_\<\>]+)\s+(?<nameVar>&?[a-zA-z]\w*),?/gs;
         let result = regexp.exec(textParams); //пропускаем имя функции
         while (result && result.groups) {
             result = regexp.exec(textParams);
@@ -168,8 +199,9 @@ export class CtrlSymbolsCreator {
     private GetVariablesInFunc(start : number, end:number) {
         for (let i = start; i <= end; i++) {
             let lineText = this.document.lineAt(i).text;
-            let funcRegExp = this.RunRegExp(/\s*([a-zA-Z0-9_\<\>]+)\s+(\w+)/g, lineText);
-            if(funcRegExp && !funcRegExp[1].match('return')) {
+            if(lineText.match('Debug')) continue;
+            let funcRegExp = this.RunRegExp(/\s*([a-zA-Z0-9_\<\>]+)\s+([a-zA-z]\w*)/g, lineText);
+            if(funcRegExp && !funcRegExp[1].match('return') && !funcRegExp[1].match('case')) {
                 let detail = funcRegExp[1];
                 let name = funcRegExp[2];
                 let docSymbol = new vscode.DocumentSymbol(name, detail, vscode.SymbolKind.Variable, this.document.lineAt(i).range, this.document.lineAt(i).range);

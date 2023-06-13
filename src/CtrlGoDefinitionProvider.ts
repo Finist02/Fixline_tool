@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
+import { CtrlSymbolsCreator } from './ctrlSymbolsCreator';
+import { url } from 'inspector';
 
 export class CtrlGoDefinitionProvider implements vscode.DefinitionProvider {
 	private GetProjectsInConfigFile(): string[] {
@@ -18,6 +20,33 @@ export class CtrlGoDefinitionProvider implements vscode.DefinitionProvider {
 			}
 		}
 		return paths;
+	}
+	private async GetUsesProvider(document: vscode.TextDocument) {
+		for (let i = 0; i < document.lineCount; i++) {
+            let lineText = document.lineAt(i).text;
+            if(lineText.startsWith('//')) continue;
+			let regexp = /#uses\s+"(?<library>.*)"/;
+			let result = regexp.exec(document.lineAt(i).text);
+			let symbolsInUse;
+			if(result?.groups) {
+				let library = result.groups['library'];
+				let paths = this.GetProjectsInConfigFile();
+				paths.forEach(path => {
+					if(fs.existsSync(path+'/scripts/libs/'+library+'.ctl')) {
+						let pathScript = path+'/scripts/libs/'+library+'.ctl';
+						let uri = vscode.Uri.file(pathScript);
+						let fileData = fs.readFileSync(pathScript, 'utf8');
+						// vscode.workspace.openTextDocument({language: 'ctrlpp', content: fileData}).then(
+						// 	doc => {
+						// 		let ctrlSymbolsCreator = new CtrlSymbolsCreator(doc);
+						// 		let symbols = ctrlSymbolsCreator.GetSymbols();
+						// 		symbolsInUse.push(symbols);
+						// 	}
+						// );
+					}
+				})
+        	}
+		}
 	}
     public provideDefinition(
         document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken):
@@ -40,6 +69,39 @@ export class CtrlGoDefinitionProvider implements vscode.DefinitionProvider {
 					}
 				});
 			}
+			else {
+				let range = document.getWordRangeAtPosition(position);
+				let ctrlSymbolsCreator = new CtrlSymbolsCreator(document);
+				let textUnderCursor = document.getText(range);
+				let symbols = ctrlSymbolsCreator.GetSymbols();
+				//класс или функция
+				for(let i = 0; i < symbols.length; i++) {
+					let symbol = symbols[i];
+					if(symbol.name == textUnderCursor) {
+						location =  new vscode.Location(document.uri, symbol.range);
+						return location;
+					}
+					//метод или переменная в функции
+					for(let j = 0; j < symbol.children.length; j++) {
+						let childSymbol = symbol.children[j];
+						if(childSymbol.name == textUnderCursor) {
+							location =  new vscode.Location(document.uri, childSymbol.range);
+							return location;
+						}
+						//переменные в методе
+						if(childSymbol.range.contains(position)) {
+							for(let k = 0; k < childSymbol.children.length; k++) {
+								let varSymbol = childSymbol.children[k];
+								if(varSymbol.name == textUnderCursor) {
+									location =  new vscode.Location(document.uri, varSymbol.range);
+									return location;
+								}
+							}
+						}					
+					}
+				}
+			}
+			
 			return location;
     }
 }
