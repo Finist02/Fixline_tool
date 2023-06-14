@@ -25,7 +25,9 @@ export class CtrlSymbolsCreator {
     private nodes: Array<vscode.DocumentSymbol[]> = [this.symbols];
     private comment: RegExp = /(\/\*.*\/)/;
     private parsedLines = new Array;
-    constructor(document: vscode.TextDocument | string) {
+    private withBase: boolean = false;
+    constructor(document: vscode.TextDocument | string, withBase: boolean = false) {
+        this.withBase = withBase;
         if(typeof document === 'string') {
             this.textSplitter = new TextSplitter(document);
         }
@@ -84,14 +86,27 @@ export class CtrlSymbolsCreator {
         for (let i = lineNum; i < this.textSplitter.lineCount; i++) {
             let lineText = this.textSplitter.getTextLineAt(i);
             lineText = this.DeleteComments(lineText);
-            let classRegExp = this.RunRegExp(/\s*(?:class|struct)\s+([a-zA-Z0-9_]+)/, lineText);
+            let classRegExp = this.RunRegExp(/\s*(class|struct)\s+([a-zA-Z0-9_]+)(?:\s*:\s*)?([a-zA-Z0-9_]+)?/, lineText);
 			if(classRegExp) {
                 let linesClass = this.GetLinesNumContext(i, '{', '}');
+                let classType = 'class';
+                if(classRegExp[3]) {
+                    classType += ' : ' + classRegExp[3];
+                }
                 let RangeClass = new vscode.Range(this.textSplitter.getRangeLine(i).start, this.textSplitter.getRangeLine(linesClass[1]).end);
-                let docSymbol = new vscode.DocumentSymbol(classRegExp[1], 'class', vscode.SymbolKind.Class, RangeClass, this.textSplitter.getRangeLine(i));
-                this.nodes[this.nodes.length - 1].push(docSymbol);
-		        this.nodes.push(docSymbol.children);
-                this.FindMembersInClass(linesClass[0], linesClass[1]);
+                let docSymbol;
+                if(classRegExp[1] == 'class') {
+                    docSymbol = new vscode.DocumentSymbol(classRegExp[2], classType, vscode.SymbolKind.Class, RangeClass, this.textSplitter.getRangeLine(i));
+                    this.nodes[this.nodes.length - 1].push(docSymbol);
+                    this.nodes.push(docSymbol.children);
+                    this.FindMembersInClass(linesClass[0], linesClass[1]);
+                }
+                if(classRegExp[1] == 'struct') {
+                    docSymbol = new vscode.DocumentSymbol(classRegExp[2], classType, vscode.SymbolKind.Struct, RangeClass, this.textSplitter.getRangeLine(i));
+                    this.nodes[this.nodes.length - 1].push(docSymbol);
+                    this.nodes.push(docSymbol.children);
+                    this.GetFieldsInStruct(linesClass[0], linesClass[1]);
+                }
                 this.nodes.pop();
                 this.SetParsedLines(i, linesClass[1]);
                 return  linesClass[1];                
@@ -231,6 +246,26 @@ export class CtrlSymbolsCreator {
                 let name = funcRegExp[2];
                 let docSymbol = new vscode.DocumentSymbol(name, detail, vscode.SymbolKind.Variable, this.textSplitter.getRangeLine(i), this.textSplitter.getRangeLine(i));
                 this.nodes[this.nodes.length - 1].push(docSymbol);
+            }
+        }
+    }
+    private GetFieldsInStruct(start : number, end:number) {
+        for (let i = start; i <= end; i++) {
+            let lineText = this.textSplitter.getTextLineAt(i);
+            //поле
+            let funcRegExp = this.RunRegExp(/^\s*(?:private|public|protected)?\s+(?:static)?\s*(?<const>const)?\s*(?<typeVar>[a-zA-Z0-9_<>]+)\s+(?<nameVar>\w+)\s*(?:=.*|;)/g, lineText);
+            if(funcRegExp && funcRegExp.groups) {
+                let typeVar = funcRegExp.groups['typeVar'];
+                let nameVar = funcRegExp.groups['nameVar'];
+                let docSymbol;
+                if(funcRegExp.groups['const'] == undefined) {
+                    docSymbol = new vscode.DocumentSymbol(nameVar, typeVar, vscode.SymbolKind.Field, this.textSplitter.getRangeLine(i), this.textSplitter.getRangeLine(i));
+                }
+                else {
+                    docSymbol = new vscode.DocumentSymbol(nameVar, typeVar, vscode.SymbolKind.Constant, this.textSplitter.getRangeLine(i), this.textSplitter.getRangeLine(i));
+                }
+                this.nodes[this.nodes.length - 1].push(docSymbol);
+                continue;
             }
         }
     }
