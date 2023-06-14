@@ -21,7 +21,7 @@ export class CtrlGoDefinitionProvider implements vscode.DefinitionProvider {
 		}
 		return paths;
 	}
-	private GetUsesProvider(document: vscode.TextDocument, textUnderCursor: string): vscode.Location | undefined {
+	private GetUsesProvider(document: vscode.TextDocument, textUnderCursor: string, parentType: string): vscode.Location | undefined {
 		let location = undefined;
 		for (let i = 0; i < document.lineCount; i++) {
             let lineText = document.lineAt(i).text;
@@ -40,7 +40,15 @@ export class CtrlGoDefinitionProvider implements vscode.DefinitionProvider {
 						let symbols = ctrlSymbolsCreator.GetSymbols();
 						for(let i = 0; i < symbols.length; i++) {
 							let symbol = symbols[i];
-							if(symbol.name == textUnderCursor) {
+							if(parentType != '' && symbol.name == parentType) {
+								for(let j = 0; j < symbol.children.length; j++) {
+									if(symbol.children[j].name == textUnderCursor) {
+										location =  new vscode.Location(uri, symbol.children[j].range);
+										break;
+									}
+								}
+							}
+							else if(symbol.name == textUnderCursor) {
 								location =  new vscode.Location(uri, symbol.range);
 								break;
 							}
@@ -75,17 +83,23 @@ export class CtrlGoDefinitionProvider implements vscode.DefinitionProvider {
 			else {
 				let range = document.getWordRangeAtPosition(position);
 				let textUnderCursor = document.getText(range);
-				// if(range) {
-				// 	let range1 = new vscode.Range(new vscode.Position(range.start.line, range.start.character-1), new vscode.Position(range.start.line, range.start.character));
-				// 	let textUnderCursor1 = document.getText(range1);
-				// 	console.log(textUnderCursor1);
-				// }
+				let varBefore = '';
+				let typeVarBeforeDot = '';
+				if(range) {
+					let prevCursorCharRange = new vscode.Range(new vscode.Position(range.start.line, range.start.character-1), new vscode.Position(range.start.line, range.start.character));
+					let prevText = document.getText(prevCursorCharRange);
+					if(prevText == '.') {
+						let textLine = document.lineAt(range.start.line).text;
+						let regex = RegExp('(\\w+)\\.' + textUnderCursor);
+						let match = regex.exec(textLine);
+						if(match && match[1] != 'this') {
+							varBefore = match[1];
+						}
+
+					}
+				}
 				let ctrlSymbolsCreator = new CtrlSymbolsCreator(document);
 				let symbols = ctrlSymbolsCreator.GetSymbols();
-				let useLocation = this.GetUsesProvider(document, textUnderCursor);
-				if(useLocation) {
-					return useLocation;
-				}
 				//класс или функция
 				for(let i = 0; i < symbols.length; i++) {
 					let symbol = symbols[i];
@@ -101,6 +115,14 @@ export class CtrlGoDefinitionProvider implements vscode.DefinitionProvider {
 								location =  new vscode.Location(document.uri, childSymbol.range);
 								return location;
 							}
+							if(varBefore != '' && childSymbol.name == varBefore) {
+								typeVarBeforeDot = childSymbol.detail;
+								let regex = /shared_ptr\s*<\s*(\w+)\s*>/;
+								let match = regex.exec(typeVarBeforeDot);
+								if(match && match[1] != 'this') {
+									typeVarBeforeDot = match[1];
+								}
+							}
 							//переменные в методе
 							if(childSymbol.range.contains(position)) {
 								for(let k = 0; k < childSymbol.children.length; k++) {
@@ -113,6 +135,10 @@ export class CtrlGoDefinitionProvider implements vscode.DefinitionProvider {
 							}					
 						}
 					}
+				}
+				let useLocation = this.GetUsesProvider(document, textUnderCursor, typeVarBeforeDot);
+				if(useLocation) {
+					return useLocation;
 				}
 			}
 			return location;
