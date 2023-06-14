@@ -127,6 +127,14 @@ export class CtrlGoDefinitionProvider implements vscode.DefinitionProvider {
 							if(childSymbol.range.contains(position)) {
 								for(let k = 0; k < childSymbol.children.length; k++) {
 									let varSymbol = childSymbol.children[k];
+									if(varBefore != '' && varSymbol.name == varBefore) {
+										typeVarBeforeDot = varSymbol.detail;
+										let regex = /shared_ptr\s*<\s*(\w+)\s*>/;
+										let match = regex.exec(typeVarBeforeDot);
+										if(match && match[1] != 'this') {
+											typeVarBeforeDot = match[1];
+										}
+									}
 									if(varSymbol.name == textUnderCursor) {
 										location =  new vscode.Location(document.uri, varSymbol.range);
 										return location;
