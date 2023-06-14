@@ -225,7 +225,7 @@ export class CtrlSymbolsCreator {
         for (let i = start; i <= end; i++) {
             let lineText = this.textSplitter.getTextLineAt(i);
             if(lineText.match('Debug')) continue;
-            let funcRegExp = this.RunRegExp(/\s*([a-zA-Z0-9_\<\>]+)\s+([a-zA-z]\w*)/g, lineText);
+            let funcRegExp = this.RunRegExp(/\s*(?:const)?\s*([a-zA-Z0-9_\<\>]+)\s+([a-zA-z]\w*)/g, lineText);
             if(funcRegExp && !funcRegExp[1].match('return') && !funcRegExp[1].match('case')) {
                 let detail = funcRegExp[1];
                 let name = funcRegExp[2];
