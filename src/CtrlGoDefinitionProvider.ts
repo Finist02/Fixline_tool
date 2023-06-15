@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import { CtrlSymbolsCreator } from './ctrlSymbolsCreator';
-import { url } from 'inspector';
 
 export class CtrlGoDefinitionProvider implements vscode.DefinitionProvider {
 	private GetProjectsInConfigFile(): string[] {

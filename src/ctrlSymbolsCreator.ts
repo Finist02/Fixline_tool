@@ -177,7 +177,7 @@ export class CtrlSymbolsCreator {
             let lineText = this.textSplitter.getTextLineAt(i);
             if(lineText.startsWith('//')) continue;
             lineText = this.DeleteComments(lineText);
-            let funcRegExp = this.RunRegExp(/^\s*(?:global)?\s*(?:const)\s*([a-zA-Z0-9_\<\>]+)\s+([a-zA-z_]\w*)/, lineText);
+            let funcRegExp = this.RunRegExp(/^(?:global\s*)?(?:const)\s*([a-zA-Z0-9_\<\>]+)\s+([a-zA-z_]\w*)/, lineText);
             if(funcRegExp) {
                 let detail = funcRegExp[1];
                 let name = funcRegExp[2];

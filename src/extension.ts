@@ -5,7 +5,7 @@ import * as vscode from 'vscode';
 
 import { CtrlSymbolsCreator } from './ctrlSymbolsCreator';
 import { panelPreviewProvider } from './panelPreviewProvider';
-import { ProvideCompletionItemsCtrl } from './ctrlProvideCompletionItems';
+import { CtrlCompletionItemProvider} from './ctrlProvideCompletionItems';
 import { CtrlGoDefinitionProvider } from './CtrlGoDefinitionProvider';
 import * as cmdCtrl from './ctrlComands';
 
@@ -20,41 +20,9 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider('ctl', panelPreviewProvider));
 	context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider({language: "ctrlpp"}, new CtrlDocumentSymbolProvider()));
 	context.subscriptions.push(vscode.languages.registerDefinitionProvider({language: "ctrlpp"}, new CtrlGoDefinitionProvider()));
+	context.subscriptions.push(vscode.languages.registerCompletionItemProvider("ctrlpp", new CtrlCompletionItemProvider(), '.'));
+	
 
-	const providerCtrl = vscode.languages.registerCompletionItemProvider('ctrlpp', {
-		provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext) {
-			let provideCompletionItemsCtrl = new ProvideCompletionItemsCtrl();
-			provideCompletionItemsCtrl.SetCompletionClass(document, position);
-			return provideCompletionItemsCtrl.GetSymbols();
-		}
-	});
-	const providerThis = vscode.languages.registerCompletionItemProvider(
-        'ctrlpp',
-        {
-			provideCompletionItems(document, position) {
-				const linePrefix = document.lineAt(position).text.substr(0, position.character);
-				let completions = new Array();
-				let ctrlSymbolsCreator = new CtrlSymbolsCreator(document);
-				let provideCompletionItemsCtrl = new ProvideCompletionItemsCtrl();
-				let symbols = ctrlSymbolsCreator.GetSymbols();
-				if (linePrefix.endsWith('this.')) {
-					for(let i = 0; i < symbols.length; i++) {
-						let symbol = symbols[i];
-						let isPositionInSymbol = symbol.range.contains(position);
-						if(isPositionInSymbol && symbol.kind == vscode.SymbolKind.Class)
-						{
-							for(let j = 0; j < symbol.children.length; j++) {
-								let childSymbol = symbol.children[j];
-								provideCompletionItemsCtrl.SetClassMembers(childSymbol);
-							}
-						}
-					}
-				}
-                return provideCompletionItemsCtrl.GetSymbols();
-			}
-		},
-		'.' // triggered whenever a '.' is being typed
-    );
 
 	context.subscriptions.push(vscode.commands.registerCommand('extension.Panelpreview', async () => {
 		let fileName = vscode.window.activeTextEditor?.document.fileName;
@@ -63,7 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
 		const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
 		await vscode.window.showTextDocument(doc, { preview: true, viewColumn: vscode.ViewColumn.Beside });
 	}))
-	context.subscriptions.push(providerCtrl, providerThis);	
+	// context.subscriptions.push(providerCtrl, providerThis);	
 }
 class CtrlDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 	public provideDocumentSymbols(document: vscode.TextDocument,
