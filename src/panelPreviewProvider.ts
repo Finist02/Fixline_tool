@@ -29,7 +29,13 @@ export const panelPreviewProvider = new class implements vscode.TextDocumentCont
         let resultPanel = regexpPanel.exec(text);
         if(resultPanel) {
             resultText += this.GetTextScript('Panel', resultPanel[1]);
-        }			
+        }
+        let regexpRef = /<reference .*?Name="(\w+)"(.*?)<\/reference>/gs;
+        let resultRef = regexpRef.exec(text);
+        while (resultRef) {
+            resultText += this.GetTextScript('Panel Ref:' + resultRef[1], resultRef[2]);
+            resultRef = regexpRef.exec(text);
+        }
         let regexp = /<shape Name="(\w+)"(.*?)<\/shape>/gs;
         let result = regexp.exec(text);
         while (result) {
