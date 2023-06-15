@@ -141,6 +141,15 @@ export class CtrlGoDefinitionProvider implements vscode.DefinitionProvider {
 								}
 							}					
 						}
+						//поиск в классе родителе
+						let regex = /:\s*([a-zA-Z_]\w+)/;
+						let resRegex = regex.exec(symbol.detail);
+						if(resRegex) {
+							let useLocation = this.GetUsesProvider(document, textUnderCursor, resRegex[1]);
+							if(useLocation) {
+								return useLocation;
+							}
+						}
 					}
 				}
 				let useLocation = this.GetUsesProvider(document, textUnderCursor, typeVarBeforeDot);
