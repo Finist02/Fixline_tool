@@ -36,6 +36,7 @@ export class CtrlSymbolsCreator {
         }
     }
     public GetSymbols() {
+        this.GetVarInFile();
         for (let i = 0; i < this.textSplitter.lineCount; i++) {
             let lineText = this.textSplitter.getTextLineAt(i);
             if(lineText.startsWith('//')) continue;
@@ -112,7 +113,7 @@ export class CtrlSymbolsCreator {
                 return  linesClass[1];                
             }
         }
-        return lineNum;
+        return this.textSplitter.lineCount;
     }
     private FindMembersInClass(start: number, end: number) {
         for (let i = start; i <= end; i++) {
@@ -171,6 +172,20 @@ export class CtrlSymbolsCreator {
             this.parsedLines.push(i);
         }
     }
+    private GetVarInFile() {
+        for (let i = 0; i < this.textSplitter.lineCount; i++) {
+            let lineText = this.textSplitter.getTextLineAt(i);
+            if(lineText.startsWith('//')) continue;
+            lineText = this.DeleteComments(lineText);
+            let funcRegExp = this.RunRegExp(/^\s*(?:global)?\s*(?:const)\s*([a-zA-Z0-9_\<\>]+)\s+([a-zA-z_]\w*)/, lineText);
+            if(funcRegExp) {
+                let detail = funcRegExp[1];
+                let name = funcRegExp[2];
+                let docSymbol = new vscode.DocumentSymbol(name, detail, vscode.SymbolKind.Constant, this.textSplitter.getRangeLine(i), this.textSplitter.getRangeLine(i));
+                this.nodes[this.nodes.length - 1].push(docSymbol);;
+            }
+        }
+    }
     private GetFunctions(lineNum: number) {
         for (let i = lineNum; i < this.textSplitter.lineCount; i++) {
             if(this.parsedLines.indexOf(i) != -1) {continue;}
@@ -210,7 +225,7 @@ export class CtrlSymbolsCreator {
                 }
             }
         }
-        return lineNum;
+        return this.textSplitter.lineCount;
     }
     private GetParamsFunc(start: number, end: number) {
         let textParams = '';
