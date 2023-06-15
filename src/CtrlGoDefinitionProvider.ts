@@ -25,7 +25,7 @@ export class CtrlGoDefinitionProvider implements vscode.DefinitionProvider {
 		for (let i = 0; i < document.lineCount; i++) {
             let lineText = document.lineAt(i).text;
             if(lineText.startsWith('//')) continue;
-			let regexp = /#uses\s+"(?<library>.*)"/;
+			let regexp = /#uses\s+"(?<library>.*?)(?:\.ctl)?"/;
 			let result = regexp.exec(document.lineAt(i).text);
 			if(result?.groups) {
 				let library = result.groups['library'];
@@ -63,7 +63,7 @@ export class CtrlGoDefinitionProvider implements vscode.DefinitionProvider {
         undefined | vscode.Location | Thenable<vscode.Location> {
 			let textLine = document.lineAt(position.line).text;
 			let location = undefined;
-			let regexp = /#uses\s+"(?<library>.*)"/;
+			let regexp = /#uses\s+"(?<library>.*?)(?:\.ctl)?"/;
 			let result = regexp.exec(textLine);
 			if(result?.groups) {
 				let library = result.groups['library'];
