@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-import { CtrlSymbolsCreator } from './ctrlSymbolsCreator';
+import { CtrlSymbolsCreator, TypeQuery } from './ctrlSymbolsCreator';
 
 export class CtrlGoDefinitionProvider implements vscode.DefinitionProvider {
 	private GetProjectsInConfigFile(): string[] {
@@ -35,7 +35,7 @@ export class CtrlGoDefinitionProvider implements vscode.DefinitionProvider {
 						let pathScript = path+'/scripts/libs/'+library+'.ctl';
 						let uri = vscode.Uri.file(pathScript);
 						let fileData = fs.readFileSync(pathScript, 'utf8');
-						let ctrlSymbolsCreator = new CtrlSymbolsCreator(fileData);
+						let ctrlSymbolsCreator = new CtrlSymbolsCreator(fileData, TypeQuery.protectedSymbols);
 						let symbols = ctrlSymbolsCreator.GetSymbols();
 						for(let i = 0; i < symbols.length; i++) {
 							let symbol = symbols[i];
@@ -65,6 +65,7 @@ export class CtrlGoDefinitionProvider implements vscode.DefinitionProvider {
 			let location = undefined;
 			let regexp = /#uses\s+"(?<library>.*?)(?:\.ctl)?"/;
 			let result = regexp.exec(textLine);
+			//переход к библиотеке если выбрана строка #uses
 			if(result?.groups) {
 				let library = result.groups['library'];
 				let paths = this.GetProjectsInConfigFile();
@@ -79,6 +80,7 @@ export class CtrlGoDefinitionProvider implements vscode.DefinitionProvider {
 					}
 				});
 			}
+			//поиск в самом классе//функции
 			else {
 				let range = document.getWordRangeAtPosition(position);
 				let textUnderCursor = document.getText(range);

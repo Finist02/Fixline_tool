@@ -1,6 +1,11 @@
 import { start } from 'repl';
 import * as vscode from 'vscode';
 
+export enum TypeQuery {
+    publicSymbols,
+    protectedSymbols,
+    allSymbols
+}
 class TextSplitter {
     private lines: string[];
     public lineCount:number;
@@ -25,9 +30,9 @@ export class CtrlSymbolsCreator {
     private nodes: Array<vscode.DocumentSymbol[]> = [this.symbols];
     private comment: RegExp = /(\/\*.*\/)/;
     private parsedLines = new Array;
-    private onlyPublic: boolean = false;
-    constructor(document: vscode.TextDocument | string, onlyPublic: boolean = false) {
-        this.onlyPublic = onlyPublic;
+    private typeQuery: TypeQuery;
+    constructor(document: vscode.TextDocument | string, typeQuery: TypeQuery = TypeQuery.allSymbols) {
+        this.typeQuery = typeQuery;
         if(typeof document === 'string') {
             this.textSplitter = new TextSplitter(document);
         }
@@ -64,7 +69,7 @@ export class CtrlSymbolsCreator {
                 let RangeClass = new vscode.Range(this.textSplitter.getRangeLine(i).start, this.textSplitter.getRangeLine(linesClass[1]).end);
                 let docSymbol = new vscode.DocumentSymbol(classRegExp[1], 'enum', vscode.SymbolKind.Enum, RangeClass, this.textSplitter.getRangeLine(i));
                 this.nodes[this.nodes.length - 1].push(docSymbol);
-                if(!this.onlyPublic) {
+                if(this.typeQuery == TypeQuery.allSymbols) {
                     this.nodes.push(docSymbol.children);
                     this.FindEnumMembers(linesClass[0], linesClass[1]);
                     this.nodes.pop();
@@ -79,7 +84,7 @@ export class CtrlSymbolsCreator {
         for (let i = start; i <= end; i++) {
             let lineText = this.textSplitter.getTextLineAt(i);
             //поле
-            let funcRegExp = this.RunRegExp(/^\s*(\w+)/g, lineText);
+            let funcRegExp = this.RunRegExp(/^\s*,?(\w+)/g, lineText);
             if(funcRegExp) {
                 let docSymbol = new vscode.DocumentSymbol(funcRegExp[1], 'enumMember', vscode.SymbolKind.EnumMember, this.textSplitter.getRangeLine(i), this.textSplitter.getRangeLine(i));
                 this.nodes[this.nodes.length - 1].push(docSymbol);
@@ -121,9 +126,10 @@ export class CtrlSymbolsCreator {
         for (let i = start; i <= end; i++) {
             let lineText = this.textSplitter.getTextLineAt(i);
             //поле
-            let funcRegExp = this.RunRegExp(/^\s*(?:private|public|protected)\s+(?:static)?\s*(?<const>const)?\s*(?<typeVar>[a-zA-Z0-9_<>]+)\s+(?<nameVar>\w+)\s*(?:=.*|;)/g, lineText);
+            let funcRegExp = this.RunRegExp(/^\s*(?<scope>private|public|protected)\s+(?:static)?\s*(?<const>const)?\s*(?<typeVar>[a-zA-Z0-9_<>]+)\s+(?<nameVar>\w+)\s*(?:=.*|;)/g, lineText);
             if(funcRegExp && funcRegExp.groups) {
                 let typeVar = funcRegExp.groups['typeVar'];
+                let scope = funcRegExp.groups['scope'];
                 let nameVar = funcRegExp.groups['nameVar'];
                 let docSymbol;
                 if(funcRegExp.groups['const'] == undefined) {
@@ -132,24 +138,39 @@ export class CtrlSymbolsCreator {
                 else {
                     docSymbol = new vscode.DocumentSymbol(nameVar, typeVar, vscode.SymbolKind.Constant, this.textSplitter.getRangeLine(i), this.textSplitter.getRangeLine(i));
                 }
-                this.nodes[this.nodes.length - 1].push(docSymbol);
+                if(this.typeQuery == TypeQuery.allSymbols) {
+                    this.nodes[this.nodes.length - 1].push(docSymbol);
+                }
+                else if(this.typeQuery == TypeQuery.protectedSymbols && (scope == 'protected' || scope == 'public')) {
+                    this.nodes[this.nodes.length - 1].push(docSymbol);
+                }
+                else if(this.typeQuery == TypeQuery.publicSymbols && scope == 'public') {
+                    this.nodes[this.nodes.length - 1].push(docSymbol);
+                }
                 continue;
             }
             //метод
-            funcRegExp = this.RunRegExp(/\s*(?:private|public|protected)(?:\s+static)?\s+(?<typeMethod>[a-zA-Z0-9_<>]+)\s+(?<nameMethod>\w+)\s*\(/g, lineText);
+            funcRegExp = this.RunRegExp(/\s*(?<scope>private|public|protected)(?:\s+static)?\s+(?<typeMethod>[a-zA-Z0-9_<>]+)\s+(?<nameMethod>\w+)\s*\(/g, lineText);
             if(funcRegExp && funcRegExp.groups) {
                 let typeMethod = funcRegExp.groups['typeMethod'];
                 let nameMethod = funcRegExp.groups['nameMethod'];
+                let scope = funcRegExp.groups['scope'];
                 let linesFunc = this.GetLinesNumContext(i, '{', '}');
                 let linesInnerParams = this.GetLinesNumContext(i, /\(/, /\)/);
                 let RangeFunc = new vscode.Range(this.textSplitter.getRangeLine(i).start, this.textSplitter.getRangeLine(linesFunc[1]).end);
                 let docSymbol = new vscode.DocumentSymbol(nameMethod, typeMethod, vscode.SymbolKind.Method, RangeFunc, RangeFunc);
-                this.nodes[this.nodes.length - 1].push(docSymbol);
-                if(!this.onlyPublic) {
+                if(this.typeQuery == TypeQuery.allSymbols) {
+                    this.nodes[this.nodes.length - 1].push(docSymbol);
                     this.nodes.push(docSymbol.children);
                     this.GetParamsFunc(linesInnerParams[0], linesInnerParams[1]);
                     this.GetVariablesInFunc(linesFunc[0], linesFunc[1]);
                     this.nodes.pop();
+                }
+                else if(this.typeQuery == TypeQuery.protectedSymbols && (scope == 'protected' || scope == 'public')) {
+                    this.nodes[this.nodes.length - 1].push(docSymbol);
+                }
+                else if(this.typeQuery == TypeQuery.publicSymbols && scope == 'public') {
+                    this.nodes[this.nodes.length - 1].push(docSymbol);
                 }
                 continue;
             }
@@ -162,8 +183,8 @@ export class CtrlSymbolsCreator {
                 let linesFunc = this.GetLinesNumContext(i, '{', '}');
                 let RangeFunc = new vscode.Range(this.textSplitter.getRangeLine(i).start, this.textSplitter.getRangeLine(linesFunc[1]).end);
                 let docSymbol = new vscode.DocumentSymbol(name, detail, vscode.SymbolKind.Constructor, RangeFunc, this.textSplitter.getRangeLine(i));
-                this.nodes[this.nodes.length - 1].push(docSymbol);
-                if(!this.onlyPublic) {
+                if(this.typeQuery == TypeQuery.allSymbols) {
+                    this.nodes[this.nodes.length - 1].push(docSymbol);
                     this.nodes.push(docSymbol.children);
                     this.GetParamsFunc(linesInnerParams[0], linesInnerParams[1]);
                     this.GetVariablesInFunc(linesFunc[0], linesFunc[1]);
@@ -207,7 +228,7 @@ export class CtrlSymbolsCreator {
                 let RangeFunc = new vscode.Range(this.textSplitter.getRangeLine(i).start, this.textSplitter.getRangeLine(linesFunc[1]).end);
                 let docSymbol = new vscode.DocumentSymbol(name, detail, vscode.SymbolKind.Function, RangeFunc, this.textSplitter.getRangeLine(i));
                 this.nodes[this.nodes.length - 1].push(docSymbol);
-                if(!this.onlyPublic) {
+                if(this.typeQuery == TypeQuery.allSymbols) {
                     this.nodes.push(docSymbol.children);
                     this.GetParamsFunc(linesInnerParams[0], linesInnerParams[1]);
                     this.GetVariablesInFunc(linesFunc[0], linesFunc[1]);
@@ -224,7 +245,7 @@ export class CtrlSymbolsCreator {
                     let RangeFunc = new vscode.Range(this.textSplitter.getRangeLine(i).start, this.textSplitter.getRangeLine(linesFunc[1]).end);
                     let docSymbol = new vscode.DocumentSymbol('main', 'void', vscode.SymbolKind.Function, RangeFunc, this.textSplitter.getRangeLine(i));
                     this.nodes[this.nodes.length - 1].push(docSymbol);
-                    if(!this.onlyPublic) {
+                    if(this.typeQuery == TypeQuery.allSymbols) {
                         this.nodes.push(docSymbol.children);
                         this.GetParamsFunc(linesInnerParams[0], linesInnerParams[1]);
                         this.GetVariablesInFunc(linesFunc[0], linesFunc[1]);

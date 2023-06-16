@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { CtrlSymbolsCreator } from './ctrlSymbolsCreator';
+import { TypeQuery } from './ctrlSymbolsCreator';
 import * as fs from 'fs';
 
 
@@ -78,11 +79,11 @@ export class ProvideCompletionItemsCtrl {
 			}
 		}
 	}
-	public GetTypeVar(document: vscode.TextDocument, varName: string) {
-		let ctrlSymbolsCreator = new CtrlSymbolsCreator(document, true);
+	public GetTypeVar(document: vscode.TextDocument, varName: string, position: vscode.Position) {
+		let ctrlSymbolsCreator = new CtrlSymbolsCreator(document);
 		let symbols = ctrlSymbolsCreator.GetSymbols();
-		for(let i = 0; i <= symbols.length; i++) {
-			for(let j = 0; j <= symbols[i].children.length; j++) {				
+		for(let i = 0; i < symbols.length; i++) {
+			for(let j = 0; j < symbols[i].children.length; j++) {	
 				if(symbols[i].children[j].name == varName) {
 					let regex = /shared_ptr\s*<\s*(\w+)\s*>/;
 					let varType = symbols[i].children[j].detail;
@@ -91,6 +92,20 @@ export class ProvideCompletionItemsCtrl {
 						varType = match[1];
 					}
 					return varType;
+				}
+				else if(symbols[i].children[j].range.contains(position)) {
+					let symbolChild = symbols[i].children[j];
+					for(let k = 0; k < symbolChild.children.length; k++) {
+						if(symbolChild.children[k].name == varName) {
+							let regex = /shared_ptr\s*<\s*(\w+)\s*>/;
+							let varType = symbolChild.children[k].detail;
+							let match = regex.exec(varType);
+							if(match && match[1]) {
+								varType = match[1];
+							}
+							return varType;
+						}
+					}
 				}
 		}}
 		return '';
@@ -125,7 +140,7 @@ export class CtrlCompletionItemProvider implements vscode.CompletionItemProvider
 		}
 		return paths;
 	}
-	private GetUsesCompletionItems(document: vscode.TextDocument, baseClass: string = '', detail: string = '') {
+	private GetUsesCompletionItems(document: vscode.TextDocument, typeQuery: TypeQuery, baseClass: string = '', detail: string = '') {
 		for (let i = 0; i < document.lineCount; i++) {
 			let lineText = document.lineAt(i).text;
 			if(lineText.startsWith('//')) continue;
@@ -139,7 +154,7 @@ export class CtrlCompletionItemProvider implements vscode.CompletionItemProvider
 						let pathScript = path+'/scripts/libs/'+library+'.ctl';
 						let uri = vscode.Uri.file(pathScript);
 						let fileData = fs.readFileSync(pathScript, 'utf8');
-						let ctrlSymbolsCreator = new CtrlSymbolsCreator(fileData);
+						let ctrlSymbolsCreator = new CtrlSymbolsCreator(fileData, typeQuery);
 						let symbols = ctrlSymbolsCreator.GetSymbols();
 						for(let i = 0; i < symbols.length; i++) {
 							let symbol = symbols[i];
@@ -148,8 +163,8 @@ export class CtrlCompletionItemProvider implements vscode.CompletionItemProvider
 									let childSymbol = symbol.children[j];
 									let isItemExists = this.provideCompletionItemsCtrl.CheckExistingItem(childSymbol.name);
 									if(!isItemExists) {
-										detail = detail == '' ? '' : ' : ' + detail;
-										this.provideCompletionItemsCtrl.SetClassMembers(childSymbol, detail);
+										let detailView = detail == '' ? '' : ' : ' + detail;
+										this.provideCompletionItemsCtrl.SetClassMembers(childSymbol, detailView);
 									}
 								}
 							}
@@ -180,7 +195,7 @@ export class CtrlCompletionItemProvider implements vscode.CompletionItemProvider
 					let regex = /:\s*([a-zA-Z_]\w+)/;
 					let resRegex = regex.exec(symbol.detail);
 					if(resRegex) {
-						this.GetUsesCompletionItems(document, resRegex[1], resRegex[1]);
+						this.GetUsesCompletionItems(document, TypeQuery.protectedSymbols, resRegex[1], resRegex[1]);
 					}
 				}
 			}
@@ -188,17 +203,19 @@ export class CtrlCompletionItemProvider implements vscode.CompletionItemProvider
 		else if(linePrefix.endsWith('.')) {
 			let pos1 = new vscode.Position(position.line, position.character - 1);
 			let range = document.getWordRangeAtPosition(pos1);
-			let varBefore = document.getText(range);
-			if(varBefore) {				
-				let typeVar = this.provideCompletionItemsCtrl.GetTypeVar(document, varBefore);
-				if(typeVar != '') {
-					this.GetUsesCompletionItems(document, typeVar, '');
+			if(range != undefined) {
+				let varBefore = document.getText(range);
+				if(varBefore != '') {
+					let typeVar = this.provideCompletionItemsCtrl.GetTypeVar(document, varBefore, position);
+					if(typeVar != '') {
+						this.GetUsesCompletionItems(document, TypeQuery.publicSymbols, typeVar, '');
+					}
 				}
 			}
 		}
 		else {
 			this.provideCompletionItemsCtrl.SetCompletionClass(document, position);
-			this.GetUsesCompletionItems(document);
+			this.GetUsesCompletionItems(document, TypeQuery.publicSymbols);
 		}
 		return this.provideCompletionItemsCtrl.GetSymbols();
 	}
