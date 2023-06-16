@@ -2,13 +2,11 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 
-
 import { CtrlSymbolsCreator } from './ctrlSymbolsCreator';
 import { panelPreviewProvider } from './panelPreviewProvider';
 import { CtrlCompletionItemProvider} from './ctrlProvideCompletionItems';
 import { CtrlGoDefinitionProvider } from './CtrlGoDefinitionProvider';
 import * as cmdCtrl from './ctrlComands';
-
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -31,7 +29,21 @@ export function activate(context: vscode.ExtensionContext) {
 		const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
 		await vscode.window.showTextDocument(doc, { preview: true, viewColumn: vscode.ViewColumn.Beside });
 	}))
-	// context.subscriptions.push(providerCtrl, providerThis);	
+	context.subscriptions.push(
+		vscode.commands.registerCommand('extension.OpenHelpCtrl', () => {
+			const editor = vscode.window.activeTextEditor;
+			if(editor && editor.document.fileName.endsWith('.ctl')) {
+				let selection = editor.selection;
+				let pos =  new vscode.Position(selection.start.line, selection.start.character);
+				let range = editor.document.getWordRangeAtPosition(pos);
+				let word = editor.document.getText(range);
+				vscode.env.openExternal(vscode.Uri.parse('https://www.winccoa.com/documentation/WinCCOA/3.18/en_US/search.html?searchQuery=' + word));
+
+			}
+		}
+	  )
+	);
+
 }
 class CtrlDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 	public provideDocumentSymbols(document: vscode.TextDocument,
@@ -41,6 +53,5 @@ class CtrlDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 		resolve(symbols.GetSymbols());
 	});}
 }
-
 // this method is called when your extension is deactivated
 export function deactivate() {}

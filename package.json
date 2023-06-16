@@ -28,6 +28,11 @@
                 "icon": "$(preview)"
             },
             {
+                "command": "extension.OpenHelpCtrl",
+                "title": "Open ctrl Help",
+                "icon": "$(book)"
+            },
+            {
                 "command": "extension.OpenProjectPanel",
                 "title": "Open project panel",
                 "icon": "$(preview)"
@@ -143,6 +148,7 @@
         "typescript": "^4.7.4"
     },
     "dependencies": {
-        "fsp-xml-parser": "^1.0.0"
+        "fsp-xml-parser": "^1.0.0",
+        "node-fetch": "^3.3.1"
     }
 }
