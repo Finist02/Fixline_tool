@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as vscode from 'vscode';
 import { QuickPickItem } from 'vscode';
 import { QuickPickItemKind} from 'vscode';
+import * as path from 'path';
 
 export function OpenPanel(uri: vscode.Uri) {
 	let path = uri?.fsPath;
@@ -208,4 +209,36 @@ async function GetPathsFiles() {
 		});
 	})
 	return items;
+}
+
+export function ThroughDirectory(directory: string, allFiles: string[]) {
+	let files = fs.readdirSync(directory);
+	files.forEach(file => {
+		const pathFile = path.join(directory, file);
+		if (fs.statSync(pathFile).isDirectory() && file != '.git') {
+			let innerFiles = ThroughDirectory(pathFile, allFiles);
+		}
+		else {
+			allFiles.push(pathFile);
+		}
+	});
+}
+export function  GetProjectsInConfigFile(): string[] {
+	let paths = [];
+	let regexp =/proj_path = \"(.*?)\"/g;
+	let workspaceFolders = vscode.workspace.workspaceFolders;
+	if(workspaceFolders)
+	{
+		let fsPath = workspaceFolders[0].uri.fsPath;
+		if (fs.existsSync(fsPath + '/config/config')) {
+			let fileData = fs.readFileSync(fsPath + '/config/config', 'utf8');
+			let result;
+			while (result = regexp.exec(fileData)) {
+				if(result[1] && paths.indexOf(result[1]) != -1) {
+					paths.push(result[1])
+				}
+			}
+		}
+	}
+	return paths;
 }
