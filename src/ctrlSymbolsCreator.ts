@@ -273,6 +273,9 @@ export class CtrlSymbolsCreator {
         }
         let regexp = /\s*(?<const>const)?\s*(?<typeVar>[a-zA-Z0-9_\<\>]+)\s+(?<nameVar>&?[a-zA-z]\w*),?/gs;
         let result = regexp.exec(textParams); //пропускаем имя функции
+        if(result && result.groups && result[3] == 'static') {
+            let result = regexp.exec(textParams); //пропускаем статики
+        }
         while (result && result.groups) {
             result = regexp.exec(textParams);
             if(!result || !result.groups) break;
@@ -294,7 +297,7 @@ export class CtrlSymbolsCreator {
             let lineText = this.textSplitter.getTextLineAt(i);
             if(lineText.match('Debug')) continue;
             let funcRegExp = this.RunRegExp(/\s*(?:const)?\s*([a-zA-Z0-9_\<\>]+)\s+([a-zA-z]\w*)/g, lineText);
-            if(funcRegExp && !funcRegExp[1].match('return') && !funcRegExp[1].match('case')) {
+            if(funcRegExp && !funcRegExp[1].match('return|case|if|else|switch|break|continue')) {
                 let detail = funcRegExp[1];
                 let name = funcRegExp[2];
                 let docSymbol = new vscode.DocumentSymbol(name, detail, vscode.SymbolKind.Variable, this.textSplitter.getRangeLine(i), this.textSplitter.getRangeLine(i));
