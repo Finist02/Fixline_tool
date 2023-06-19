@@ -58,22 +58,25 @@ export function activate(context: vscode.ExtensionContext) {
 	const providerFiles = vscode.languages.registerCompletionItemProvider(
 		'ctrlpp',
 		{
-			provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
+			async provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
 				const linePrefix = document.lineAt(position).text.substr(0, position.character);
+				let complets = new Array;
 				if(linePrefix.startsWith('#uses')) {
-					let folder = cmdCtrl.GetProjectsInConfigFile()[0] + '/scripts/libs';
-					let files: string[] = new Array;
-					let complets = new Array;
-					cmdCtrl.ThroughDirectory(folder, files);
-					for (const file of files) {
-						let symbolName = file.slice(folder.length+1, -4);
-						symbolName = symbolName.replace(/\\/g, '/');
-						complets.push(new vscode.CompletionItem(symbolName, vscode.CompletionItemKind.File));
+					let folders = cmdCtrl.GetProjectsInConfigFile();
+					//!!заглушка для того чтобы смог отработать
+					let length = folders.length > 5 ? 5 : folders.length;
+					for(let i = 0; i < length; i++) {
+						let folderLib = folders[i] + '/scripts/libs';
+						let files: string[] = new Array;						
+						cmdCtrl.ThroughDirectory(folderLib, files);
+						for (const file of files) {
+							let symbolName = file.slice(folderLib.length+1, -4);
+							symbolName = symbolName.replace(/\\/g, '/');
+							complets.push(new vscode.CompletionItem(symbolName, vscode.CompletionItemKind.File));
+						}
 					}
-					return complets;
-
 				}
-				return undefined;
+				return complets;
 			}
 			
 		},

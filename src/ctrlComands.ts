@@ -234,7 +234,7 @@ export function  GetProjectsInConfigFile(): string[] {
 			let fileData = fs.readFileSync(fsPath + '/config/config', 'utf8');
 			let result;
 			while (result = regexp.exec(fileData)) {
-				if(result[1] && paths.indexOf(result[1]) != -1) {
+				if(result[1]) {
 					paths.push(result[1])
 				}
 			}
