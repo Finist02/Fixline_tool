@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { CtrlSymbolsCreator } from './ctrlSymbolsCreator';
 import { TypeQuery } from './ctrlSymbolsCreator';
 import * as fs from 'fs';
+import * as cmdCtrl from './ctrlComands';
 
 
 
@@ -39,7 +40,16 @@ export class ProvideCompletionItemsCtrl {
 			isFunction =false;
 		}
 		if(kind == vscode.SymbolKind.Constructor) {
-			complKind = vscode.CompletionItemKind.Constructor;
+			complKind = vscode.CompletionItemKind.Constant;
+
+		}
+		if(kind == vscode.SymbolKind.Class) {
+			complKind = vscode.CompletionItemKind.Class;
+			isFunction =false;
+		}
+		if(kind == vscode.SymbolKind.Struct) {
+			complKind = vscode.CompletionItemKind.Struct;
+			isFunction =false;
 		}
 		let regex = /shared_ptr\s*<\s*(\w+)\s*>/;
 		let detail = childSymbol.detail;
@@ -220,3 +230,125 @@ export class CtrlCompletionItemProvider implements vscode.CompletionItemProvider
 		return this.provideCompletionItemsCtrl.GetSymbols();
 	}
 }
+
+
+export class CtrlCompletionItemProviderStatic implements vscode.CompletionItemProvider {
+	private provideCompletionItemsCtrl: any;
+	private GetProjectsInConfigFile(): string[] {
+		let paths = [];
+		let regexp =/proj_path = \"(.*?)\"/g;
+		let workspaceFolders = vscode.workspace.workspaceFolders;
+		if(workspaceFolders)
+		{
+			let fsPath = workspaceFolders[0].uri.fsPath;
+			if (fs.existsSync(fsPath + '/config/config')) {
+				let fileData = fs.readFileSync(fsPath + '/config/config', 'utf8');
+				let result;
+				while (result = regexp.exec(fileData)) {
+					paths.push(result[1])
+				}
+			}
+		}
+		return paths;
+	}
+	private GetUsesCompletionItems(document: vscode.TextDocument, typeQuery: TypeQuery, baseClass: string = '', detail: string = '') {
+		for (let i = 0; i < document.lineCount; i++) {
+			let lineText = document.lineAt(i).text;
+			if(lineText.startsWith('//')) continue;
+			let regexp = /#uses\s+"(?<library>.*?)(?:\.ctl)?"/;
+			let result = regexp.exec(document.lineAt(i).text);
+			if(result?.groups) {
+				let library = result.groups['library'];
+				let paths = this.GetProjectsInConfigFile();
+				paths.forEach(path => {
+					if(fs.existsSync(path+'/scripts/libs/'+library+'.ctl')) {
+						let pathScript = path+'/scripts/libs/'+library+'.ctl';
+						let uri = vscode.Uri.file(pathScript);
+						let fileData = fs.readFileSync(pathScript, 'utf8');
+						let ctrlSymbolsCreator = new CtrlSymbolsCreator(fileData, typeQuery);
+						let symbols = ctrlSymbolsCreator.GetSymbols();
+						for(let i = 0; i < symbols.length; i++) {
+							let symbol = symbols[i];
+							if(baseClass != '' && symbol.name == baseClass) {
+								for(let j = 0; j < symbol.children.length; j++) {
+									let childSymbol = symbol.children[j];
+									let isItemExists = this.provideCompletionItemsCtrl.CheckExistingItem(childSymbol.name);
+									if(!isItemExists) {
+										let detailView = detail == '' ? '' : ' : ' + detail;
+										this.provideCompletionItemsCtrl.SetClassMembers(childSymbol, detailView);
+									}
+								}
+							}
+							else if(baseClass == '') {
+								this.provideCompletionItemsCtrl.SetClassMembers(symbol);
+							}
+						}
+					}
+				})
+			}
+		}
+	}
+	public provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
+		const linePrefix = document.lineAt(position).text.substr(0, position.character);
+		this.provideCompletionItemsCtrl = new ProvideCompletionItemsCtrl();
+		if(linePrefix.endsWith('::')) {
+			let pos1 = new vscode.Position(position.line, position.character - 2);
+			let range = document.getWordRangeAtPosition(pos1);
+			if(range != undefined) {
+				let typeVar = document.getText(range);
+				if(typeVar != '') {
+					this.GetUsesCompletionItems(document, TypeQuery.staticSymbols, typeVar, 'static');
+				}
+			}
+		}
+		return this.provideCompletionItemsCtrl.GetSymbols();
+	}
+}
+
+
+
+
+
+
+
+
+
+
+export const providerUses = vscode.languages.registerCompletionItemProvider(
+	'ctrlpp',
+	{
+		provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
+			const linePrefix = document.lineAt(position).text.substr(0, position.character);
+			const symbol = new vscode.CompletionItem('uses ', vscode.CompletionItemKind.Keyword);
+			return [symbol];
+		}
+	},
+	'#' // triggered whenever a '.' is being typed
+);
+export const providerFiles = vscode.languages.registerCompletionItemProvider(
+	'ctrlpp',
+	{
+		async provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
+			const linePrefix = document.lineAt(position).text.substr(0, position.character);
+			let complets = new Array;
+			if(linePrefix.startsWith('#uses')) {
+				let folders = cmdCtrl.GetProjectsInConfigFile();
+				//!!заглушка для того чтобы смог отработать
+				let length = folders.length > 5 ? 5 : folders.length;
+				for(let i = 0; i < length; i++) {
+					let folderLib = folders[i] + '/scripts/libs';
+					let files: string[] = new Array;						
+					cmdCtrl.ThroughDirectory(folderLib, files);
+					for (const file of files) {
+						let symbolName = file.slice(folderLib.length+1, -4);
+						symbolName = symbolName.replace(/\\/g, '/');
+						complets.push(new vscode.CompletionItem(symbolName, vscode.CompletionItemKind.File));
+					}
+				}
+			}
+			return complets;
+		}
+		
+	},
+	'"'
+);

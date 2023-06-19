@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 export enum TypeQuery {
     publicSymbols,
     protectedSymbols,
+    staticSymbols,
     allSymbols
 }
 class TextSplitter {
@@ -110,7 +111,7 @@ export class CtrlSymbolsCreator {
                     this.FindMembersInClass(linesClass[0], linesClass[1]);
                 }
                 if(classRegExp[1] == 'struct') {
-                    docSymbol = new vscode.DocumentSymbol(classRegExp[2], classType, vscode.SymbolKind.Struct, RangeClass, this.textSplitter.getRangeLine(i));
+                    docSymbol = new vscode.DocumentSymbol(classRegExp[2], 'struct', vscode.SymbolKind.Struct, RangeClass, this.textSplitter.getRangeLine(i));
                     this.nodes[this.nodes.length - 1].push(docSymbol);
                     this.nodes.push(docSymbol.children);
                     this.GetFieldsInStruct(linesClass[0], linesClass[1]);
@@ -126,7 +127,7 @@ export class CtrlSymbolsCreator {
         for (let i = start; i <= end; i++) {
             let lineText = this.textSplitter.getTextLineAt(i);
             //поле
-            let funcRegExp = this.RunRegExp(/^\s*(?<scope>private|public|protected)\s+(?:static)?\s*(?<const>const)?\s*(?<typeVar>[a-zA-Z0-9_<>]+)\s+(?<nameVar>\w+)\s*(?:=.*|;)/g, lineText);
+            let funcRegExp = this.RunRegExp(/^\s*(?<scope>private|public|protected)(?<static>\s+static)?\s+(?<const>const)?\s*(?<typeVar>[a-zA-Z0-9_<>]+)\s+(?<nameVar>\w+)\s*(?:=.*|;)/g, lineText);
             if(funcRegExp && funcRegExp.groups) {
                 let typeVar = funcRegExp.groups['typeVar'];
                 let scope = funcRegExp.groups['scope'];
@@ -147,10 +148,13 @@ export class CtrlSymbolsCreator {
                 else if(this.typeQuery == TypeQuery.publicSymbols && scope == 'public') {
                     this.nodes[this.nodes.length - 1].push(docSymbol);
                 }
+                else if(this.typeQuery == TypeQuery.staticSymbols && scope == 'public' && funcRegExp.groups['static']) {
+                    this.nodes[this.nodes.length - 1].push(docSymbol);
+                }
                 continue;
             }
             //метод
-            funcRegExp = this.RunRegExp(/\s*(?<scope>private|public|protected)(?:\s+static)?\s+(?<typeMethod>[a-zA-Z0-9_<>]+)\s+(?<nameMethod>\w+)\s*\(/g, lineText);
+            funcRegExp = this.RunRegExp(/\s*(?<scope>private|public|protected)(?<static>\s+static)?\s+(?<typeMethod>[a-zA-Z0-9_<>]+)\s+(?<nameMethod>\w+)\s*\(/g, lineText);
             if(funcRegExp && funcRegExp.groups) {
                 let typeMethod = funcRegExp.groups['typeMethod'];
                 let nameMethod = funcRegExp.groups['nameMethod'];
@@ -170,6 +174,9 @@ export class CtrlSymbolsCreator {
                     this.nodes[this.nodes.length - 1].push(docSymbol);
                 }
                 else if(this.typeQuery == TypeQuery.publicSymbols && scope == 'public') {
+                    this.nodes[this.nodes.length - 1].push(docSymbol);
+                }
+                else if(this.typeQuery == TypeQuery.staticSymbols && scope == 'public' && funcRegExp.groups['static']) {
                     this.nodes[this.nodes.length - 1].push(docSymbol);
                 }
                 continue;

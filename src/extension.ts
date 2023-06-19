@@ -3,7 +3,7 @@
 import * as vscode from 'vscode';
 import { CtrlSymbolsCreator } from './ctrlSymbolsCreator';
 import { panelPreviewProvider } from './panelPreviewProvider';
-import { CtrlCompletionItemProvider} from './ctrlProvideCompletionItems';
+import { CtrlCompletionItemProvider, CtrlCompletionItemProviderStatic, providerFiles, providerUses} from './ctrlProvideCompletionItems';
 import { CtrlGoDefinitionProvider } from './CtrlGoDefinitionProvider';
 import * as cmdCtrl from './ctrlComands';
 
@@ -19,6 +19,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider({language: "ctrlpp"}, new CtrlDocumentSymbolProvider()));
 	context.subscriptions.push(vscode.languages.registerDefinitionProvider({language: "ctrlpp"}, new CtrlGoDefinitionProvider()));
 	context.subscriptions.push(vscode.languages.registerCompletionItemProvider("ctrlpp", new CtrlCompletionItemProvider(), '.'));
+	context.subscriptions.push(vscode.languages.registerCompletionItemProvider("ctrlpp", new CtrlCompletionItemProviderStatic(), ':', ':'));
 	
 
 
@@ -43,47 +44,7 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	  )
 	);
-
-	const providerUses = vscode.languages.registerCompletionItemProvider(
-		'ctrlpp',
-		{
-			provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
-				const linePrefix = document.lineAt(position).text.substr(0, position.character);
-				const symbol = new vscode.CompletionItem('uses ', vscode.CompletionItemKind.Keyword);
-				return [symbol];
-			}
-		},
-		'#' // triggered whenever a '.' is being typed
-	);
-	const providerFiles = vscode.languages.registerCompletionItemProvider(
-		'ctrlpp',
-		{
-			async provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
-				const linePrefix = document.lineAt(position).text.substr(0, position.character);
-				let complets = new Array;
-				if(linePrefix.startsWith('#uses')) {
-					let folders = cmdCtrl.GetProjectsInConfigFile();
-					//!!заглушка для того чтобы смог отработать
-					let length = folders.length > 5 ? 5 : folders.length;
-					for(let i = 0; i < length; i++) {
-						let folderLib = folders[i] + '/scripts/libs';
-						let files: string[] = new Array;						
-						cmdCtrl.ThroughDirectory(folderLib, files);
-						for (const file of files) {
-							let symbolName = file.slice(folderLib.length+1, -4);
-							symbolName = symbolName.replace(/\\/g, '/');
-							complets.push(new vscode.CompletionItem(symbolName, vscode.CompletionItemKind.File));
-						}
-					}
-				}
-				return complets;
-			}
-			
-		},
-		'"'
-	);
 	context.subscriptions.push(providerUses, providerFiles);
-
 }
 class CtrlDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 	public provideDocumentSymbols(document: vscode.TextDocument,
