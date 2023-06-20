@@ -98,6 +98,15 @@ export class CtrlGoDefinitionProvider implements vscode.DefinitionProvider {
 						}
 
 					}
+					if(prevText == ':') {
+						let textLine = document.lineAt(range.start.line).text;
+						let regex = RegExp('(\\w+)\\::' + textUnderCursor);
+						let match = regex.exec(textLine);
+						if(match && match[1] != 'this') {
+							typeVarBeforeDot = match[1];
+						}
+
+					}
 				}
 				let ctrlSymbolsCreator = new CtrlSymbolsCreator(document);
 				let symbols = ctrlSymbolsCreator.GetSymbols();
