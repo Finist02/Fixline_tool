@@ -328,17 +328,17 @@ export const providerUses = vscode.languages.registerCompletionItemProvider(
 export const providerFiles = vscode.languages.registerCompletionItemProvider(
 	'ctrlpp',
 	{
-		async provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
+		provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
 			const linePrefix = document.lineAt(position).text.substr(0, position.character);
 			let complets = new Array;
 			if(linePrefix.startsWith('#uses')) {
 				let folders = cmdCtrl.GetProjectsInConfigFile();
 				//!!заглушка для того чтобы смог отработать
-				let length = folders.length > 5 ? 5 : folders.length;
+				// let length = folders.length;
+				let length = folders.length > 6 ? 6 : folders.length;
 				for(let i = 0; i < length; i++) {
 					let folderLib = folders[i] + '/scripts/libs';
-					let files: string[] = new Array;						
-					cmdCtrl.ThroughDirectory(folderLib, files);
+					let files: string[] = cmdCtrl.ThroughFiles(folderLib);
 					for (const file of files) {
 						let symbolName = file.slice(folderLib.length+1, -4);
 						symbolName = symbolName.replace(/\\/g, '/');

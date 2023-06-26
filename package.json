@@ -23,6 +23,11 @@
     "contributes": {
         "commands": [
             {
+                "command": "extension.OpenUnitTest",
+                "title": "Open UnitTest",
+                "icon": "$(preview)"
+            },
+            {
                 "command": "extension.OpenPanel",
                 "title": "Open panel",
                 "icon": "$(preview)"

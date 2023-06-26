@@ -9,9 +9,41 @@ export function OpenPanel(uri: vscode.Uri) {
 	let path = uri?.fsPath;
 	if(path == undefined) path = vscode.window.activeTextEditor?.document.uri.fsPath!;
 	OpenPanelWithPath(path);
-	
-
 }
+
+export function OpenUnitTest() {
+	let fsPath = vscode.window.activeTextEditor?.document.uri.fsPath;
+	if(fsPath == undefined) return;
+	let pathTestScript = fsPath.replace('scripts\\libs\\', 'scripts\\tests\\libs\\');
+	let uriToFileTests = vscode.Uri.parse("file:" + pathTestScript);
+	if (!fs.existsSync(pathTestScript)) {
+		let pathPvss = GetPvssPath() + '/data/hsp/templates/scriptEditor/newUnitTest.ctl';
+		if (fs.existsSync(pathPvss)) {
+			let fileData = fs.readFileSync(pathPvss, 'utf8');
+			let splittedPath = fsPath.split('\\');
+			let origLibName = splittedPath[splittedPath.length-1].slice(0, -4);
+			let resultReg = /scripts\\libs\\(.*)/.exec(fsPath);
+			if(resultReg && resultReg[1])
+			{
+				let origLibRelPathWithoutExtension = resultReg[1].replace(/\\/g, '/');
+				fileData = fileData.replace('$origLibRelPathWithoutExtension', origLibRelPathWithoutExtension);
+				fileData = fileData.replace(/\$origLibName/g, origLibName);
+				fileData = fileData.replace(/newTestTemplate/g, 'Test_' + origLibName.replace(/-/g, ''));
+
+			}
+			const writeBytes = Buffer.from(fileData);
+			vscode.workspace.fs.writeFile(uriToFileTests, writeBytes).then(() => {
+				OpenFileVscode(uriToFileTests);
+			});
+		}
+		
+	}
+	else {
+		OpenFileVscode(uriToFileTests);
+	}
+	
+}
+
 export function OpenPanelWithPath(path: string | undefined) {
 	if(path == undefined || path == '') return;
 	if(path.indexOf('\\panels\\') !== -1) {
@@ -211,18 +243,21 @@ async function GetPathsFiles() {
 	return items;
 }
 
-export function ThroughDirectory(directory: string, allFiles: string[]) {
-	let files = fs.readdirSync(directory);
+export const ThroughFiles = (directory: string) => {
+	let files: string[] = fs.readdirSync(directory);
+	let innerFiles: string[] = new Array();
 	files.forEach(file => {
 		const pathFile = path.join(directory, file);
 		if (fs.statSync(pathFile).isDirectory() && file != '.git') {
-			let innerFiles = ThroughDirectory(pathFile, allFiles);
+			innerFiles = innerFiles.concat(ThroughFiles(pathFile));
 		}
 		else {
-			allFiles.push(pathFile);
+			innerFiles.push(pathFile);
 		}
 	});
+	return innerFiles;
 }
+
 export function  GetProjectsInConfigFile(): string[] {
 	let paths = [];
 	let regexp =/proj_path = \"(.*?)\"/g;
@@ -240,5 +275,30 @@ export function  GetProjectsInConfigFile(): string[] {
 			}
 		}
 	}
+	paths = paths.reverse();
 	return paths;
+}
+
+
+export function  GetPvssPath(): string {
+	let paths: string = '';
+	let regexp =/pvss_path = \"(.*?)\"/g;
+	let workspaceFolders = vscode.workspace.workspaceFolders;
+	if(workspaceFolders)
+	{
+		let fsPath = workspaceFolders[0].uri.fsPath;
+		if (fs.existsSync(fsPath + '/config/config')) {
+			let fileData = fs.readFileSync(fsPath + '/config/config', 'utf8');
+			let result = regexp.exec(fileData);
+			if(result != undefined && result[1]) {
+				paths = result[1];
+			}
+		}
+	}
+	return paths;
+}
+const OpenFileVscode = (setting: vscode.Uri) => {
+	vscode.workspace.openTextDocument(setting).then((a: vscode.TextDocument) => {
+		vscode.window.showTextDocument(a, 1, false)
+	})
 }
