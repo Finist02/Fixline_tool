@@ -58,9 +58,10 @@ export class ProvideCompletionItemsCtrl {
 			detail = match[1];
 		}
 		let complet = new vscode.CompletionItem({label: childSymbol.name, detail: ' ' +detail + basName}, complKind);
-		if(isFunction) {
-			complet.insertText = new vscode.SnippetString(childSymbol.name + '($0);');
-		}
+		//отключен для нормального функциониорования CtrlSignatureHelpProvider
+		// if(isFunction) {
+		// 	complet.insertText = new vscode.SnippetString(childSymbol.name + '($0);');
+		// }
 		this.completions.push(complet);
 	}
 	public SetCompletionClass(document: vscode.TextDocument, position: vscode.Position) {

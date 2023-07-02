@@ -1,4 +1,3 @@
-import { start } from 'repl';
 import * as vscode from 'vscode';
 
 export enum TypeQuery {
@@ -7,7 +6,7 @@ export enum TypeQuery {
     staticSymbols,
     allSymbols
 }
-class TextSplitter {
+export class TextSplitter {
     private lines: string[];
     public lineCount:number;
     private text: string;
@@ -18,6 +17,13 @@ class TextSplitter {
     }
     public getTextLineAt(num: number) {
         return this.lines[num] + '\n';
+    }
+    public getText(range: vscode.Range) {
+        let text = '';
+        for(let i = range.start.line; i <= range.end.line; i++) {
+                text += this.lines[i] + '\n';
+        }
+        return text;
     }
     public getRangeLine(num: number) {
         let text = this.getTextLineAt(num);
@@ -162,7 +168,7 @@ export class CtrlSymbolsCreator {
                 let linesFunc = this.GetLinesNumContext(i, '{', '}');
                 let linesInnerParams = this.GetLinesNumContext(i, /\(/, /\)/);
                 let RangeFunc = new vscode.Range(this.textSplitter.getRangeLine(i).start, this.textSplitter.getRangeLine(linesFunc[1]).end);
-                let docSymbol = new vscode.DocumentSymbol(nameMethod, typeMethod, vscode.SymbolKind.Method, RangeFunc, RangeFunc);
+                let docSymbol = new vscode.DocumentSymbol(nameMethod, typeMethod, vscode.SymbolKind.Method, RangeFunc, RangeFunc);                
                 if(this.typeQuery == TypeQuery.allSymbols) {
                     this.nodes[this.nodes.length - 1].push(docSymbol);
                     this.nodes.push(docSymbol.children);

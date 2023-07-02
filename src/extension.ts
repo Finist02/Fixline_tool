@@ -4,8 +4,10 @@ import * as vscode from 'vscode';
 import { CtrlSymbolsCreator } from './ctrlSymbolsCreator';
 import { panelPreviewProvider } from './panelPreviewProvider';
 import { CtrlCompletionItemProvider, CtrlCompletionItemProviderStatic, providerFiles, providerUses} from './ctrlProvideCompletionItems';
-import { CtrlGoDefinitionProvider } from './CtrlGoDefinitionProvider';
+import { CtrlDefinitionProvider } from './CtrlDefinitionProvider';
 import * as cmdCtrl from './ctrlComands';
+import { CtrlHoverProvider } from './CtrlHoverProvider';
+import { CtrlSignatureHelpProvider } from './CtrlSignatureHelpProvider';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -18,11 +20,11 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('extension.OpenUnitTest', cmdCtrl.OpenUnitTest));
 	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider('ctl', panelPreviewProvider));
 	context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider({language: "ctrlpp"}, new CtrlDocumentSymbolProvider()));
-	context.subscriptions.push(vscode.languages.registerDefinitionProvider({language: "ctrlpp"}, new CtrlGoDefinitionProvider()));
+	context.subscriptions.push(vscode.languages.registerDefinitionProvider({language: "ctrlpp"}, new CtrlDefinitionProvider()));
 	context.subscriptions.push(vscode.languages.registerCompletionItemProvider("ctrlpp", new CtrlCompletionItemProvider(), '.'));
 	context.subscriptions.push(vscode.languages.registerCompletionItemProvider("ctrlpp", new CtrlCompletionItemProviderStatic(), ':', ':'));
-	
-
+	context.subscriptions.push(vscode.languages.registerHoverProvider("ctrlpp", new CtrlHoverProvider()));
+	context.subscriptions.push(vscode.languages.registerSignatureHelpProvider("ctrlpp", new CtrlSignatureHelpProvider(), '(', ','));
 
 	context.subscriptions.push(vscode.commands.registerCommand('extension.Panelpreview', async () => {
 		let fileName = vscode.window.activeTextEditor?.document.fileName;
