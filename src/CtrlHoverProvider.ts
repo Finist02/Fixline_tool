@@ -191,6 +191,7 @@ export class CtrlHoverProvider  implements vscode.HoverProvider {
 			let funcName = document.getText(funcRange);
 			comment[1] = funcName.trim().replace(/\n\s*/gs, '');
 			comment[0] = comment[0].replace(' * @brief ', '');
+			comment[0] = comment[0].replace(/\t+/g, '\t');
 		}
 		else {
 			comment[1] = '';
