@@ -174,10 +174,10 @@ export class CtrlHoverProvider  implements vscode.HoverProvider {
         }
 		let lineText = document.getTextLineAt(rangeVar.start.line-1);
 		let comment: string[] = new Array;
-		if(lineText.startsWith('*/')) {
+		if(lineText.match(/^\s*\*\//)) {
 			for(let i = 1; i < 20; i++) {
 				lineText = document.getTextLineAt(rangeVar.start.line-i);
-				if(lineText.startsWith('/*')) {
+				if(lineText.match(/^\s*\/\*/)) {
 					lineNumOpenComment = lineNumOpenComment - i+2;
 					const rangeComment = new vscode.Range(new vscode.Position(lineNumOpenComment, rangeVar.start.character), new vscode.Position(rangeVar.start.line-2, rangeVar.start.character));
 					comment[0] = document.getText(rangeComment);
@@ -186,10 +186,15 @@ export class CtrlHoverProvider  implements vscode.HoverProvider {
 			}
 		}
 		let linesInnerParams = this.GetLinesNumContext(document, rangeVar.start.line, /\(/, /\)/);
-		const funcRange = new vscode.Range(new vscode.Position(linesInnerParams[0], 0), new vscode.Position(linesInnerParams[1], document.getTextLineAt(linesInnerParams[1]).length-1));
-		let funcName = document.getText(funcRange);
-		comment[1] = funcName.trim().replace(/\n\s*/gs, '');
-		comment[0] = comment[0].replace(' * @brief ', '');
+		if(linesInnerParams[0] >= 0) {
+			const funcRange = new vscode.Range(new vscode.Position(linesInnerParams[0], 0), new vscode.Position(linesInnerParams[1], document.getTextLineAt(linesInnerParams[1]).length-1));
+			let funcName = document.getText(funcRange);
+			comment[1] = funcName.trim().replace(/\n\s*/gs, '');
+			comment[0] = comment[0].replace(' * @brief ', '');
+		}
+		else {
+			comment[1] = '';
+		}
 		return comment;
 	}
 	private GetLinesNumContext(textSplitter: TextSplitter, lineStart: number, symbolOpen: string|RegExp, symbolClose: string|RegExp) {
