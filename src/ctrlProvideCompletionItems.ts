@@ -51,6 +51,10 @@ export class ProvideCompletionItemsCtrl {
 			complKind = vscode.CompletionItemKind.Struct;
 			isFunction =false;
 		}
+		if(kind == vscode.SymbolKind.Enum) {
+			complKind = vscode.CompletionItemKind.Enum;
+			isFunction =false;
+		}
 		let regex = /shared_ptr\s*<\s*(\w+)\s*>/;
 		let detail = childSymbol.detail;
 		let match = regex.exec(detail);

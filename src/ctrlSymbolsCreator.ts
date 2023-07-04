@@ -21,6 +21,10 @@ export class TextSplitter {
     private text: string;
     constructor(text: string) {
         this.text = text;
+        this.lines = this.text.split('\n');
+        this.lineCount = this.lines.length;
+    }
+    public deleteComment() {
         let commentRegExp = /\/\*.*?\*\//gs.exec(this.text);
         while(commentRegExp) {
             const countNewLines = commentRegExp[0].split('\n');
@@ -71,6 +75,7 @@ export class CtrlSymbolsCreator {
         else {
             this.textSplitter = new TextSplitter(document.getText());
         }
+        this.textSplitter.deleteComment();
     }
     public GetSymbols() {
         this.GetVarInFile();

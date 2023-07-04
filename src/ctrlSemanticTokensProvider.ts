@@ -49,6 +49,7 @@ export class CtrlSemanticTokensProvider implements vscode.DocumentSemanticTokens
         document: vscode.TextDocument
 		): vscode.ProviderResult<vscode.SemanticTokens> {
 			let textSplitter = new TextSplitter(document.getText());
+			textSplitter.deleteComment();
 			const tokensBuilder = new vscode.SemanticTokensBuilder(legend);
 			let ctrlSymbolsCreator = new CtrlSymbolsCreator(document);
 			let symbols = ctrlSymbolsCreator.GetSymbols();
@@ -79,7 +80,7 @@ export class CtrlSemanticTokensProvider implements vscode.DocumentSemanticTokens
 				const regExp = new RegExp('\\b' + symbol.name + '\\b','g');
 				const result = regExp.exec(lineText);
 				if(result) {
-					let indexClassName = lineText.indexOf(symbol.name);
+					let indexClassName = lineText.indexOf(symbol.name, result.index);
 					if(indexClassName >= 0) {
 						if(symbol.kind == vscode.SymbolKind.Constant) {
 							tokensBuilder.push(
@@ -102,10 +103,31 @@ export class CtrlSemanticTokensProvider implements vscode.DocumentSemanticTokens
 				for(let i = 0; i < textSplitter.lineCount; i++) {
 					const lineText = textSplitter.getTextLineAt(i);
 					if(lineText.startsWith('#')) continue;
-					const regExp = new RegExp('\\b' + symbolChild.name + '\\b','g');
+					let regExp = new RegExp('\\.' + symbolChild.name + '\\b','g');
+					let regExpDefeinition = new RegExp(symbolChild.detail + '\\s+(' + symbolChild.name + ')\\b','g');
+					let inParentPosition = true;
+					//для энумов только после :: или в самом объявлении
+					if(symbolChild.kind == vscode.SymbolKind.EnumMember) {
+						regExp = new RegExp('\\::' + symbolChild.name + '\\b','g');
+						regExpDefeinition = new RegExp('\\s*(' + symbolChild.name + ')\\b','g');
+						if(!symbol.range.contains(new vscode.Position(i, 0))) {
+							inParentPosition = false;
+						}
+					}
 					const result = regExp.exec(lineText);
+					const result1 = regExpDefeinition.exec(lineText);
 					if(result) {
-						let indexClassName = lineText.indexOf(symbolChild.name);
+						let indexClassName = lineText.indexOf(symbolChild.name, result.index);
+						if(indexClassName >= 0) {
+							tokensBuilder.push(
+								new vscode.Range(new vscode.Position(i, indexClassName), new vscode.Position(i, indexClassName + symbolChild.name.length)),
+								'enumMember',
+								['declaration']
+							)
+						}
+					}
+					else if(result1 && inParentPosition) {
+						let indexClassName = lineText.indexOf(symbolChild.name, result1.index);
 						if(indexClassName >= 0) {
 							tokensBuilder.push(
 								new vscode.Range(new vscode.Position(i, indexClassName), new vscode.Position(i, indexClassName + symbolChild.name.length)),
