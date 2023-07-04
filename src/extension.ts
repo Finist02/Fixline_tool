@@ -1,13 +1,15 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { CtrlSymbolsCreator } from './ctrlSymbolsCreator';
+import { CtrlDocumentSymbolProvider, CtrlSymbolsCreator } from './ctrlSymbolsCreator';
 import { panelPreviewProvider } from './panelPreviewProvider';
 import { CtrlCompletionItemProvider, CtrlCompletionItemProviderStatic, providerFiles, providerUses} from './ctrlProvideCompletionItems';
 import { CtrlDefinitionProvider } from './CtrlDefinitionProvider';
 import * as cmdCtrl from './ctrlComands';
 import { CtrlHoverProvider } from './CtrlHoverProvider';
 import { CtrlSignatureHelpProvider } from './CtrlSignatureHelpProvider';
+import { CtrlSemanticTokensProvider, legend } from './ctrlSemanticTokensProvider';
+
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -25,6 +27,11 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.languages.registerCompletionItemProvider("ctrlpp", new CtrlCompletionItemProviderStatic(), ':', ':'));
 	context.subscriptions.push(vscode.languages.registerHoverProvider("ctrlpp", new CtrlHoverProvider()));
 	context.subscriptions.push(vscode.languages.registerSignatureHelpProvider("ctrlpp", new CtrlSignatureHelpProvider(), '(', ','));
+	context.subscriptions.push(vscode.languages.registerDocumentSemanticTokensProvider("ctrlpp", new CtrlSemanticTokensProvider(), legend));
+
+
+
+
 
 	context.subscriptions.push(vscode.commands.registerCommand('extension.Panelpreview', async () => {
 		let fileName = vscode.window.activeTextEditor?.document.fileName;
@@ -48,14 +55,6 @@ export function activate(context: vscode.ExtensionContext) {
 	  )
 	);
 	context.subscriptions.push(providerUses, providerFiles);
-}
-class CtrlDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
-	public provideDocumentSymbols(document: vscode.TextDocument,
-		token: vscode.CancellationToken): Thenable<vscode.DocumentSymbol[]> {
-	return new Promise((resolve, reject) => {
-		let symbols = new CtrlSymbolsCreator(document);
-		resolve(symbols.GetSymbols());
-	});}
 }
 // this method is called when your extension is deactivated
 export function deactivate() {}

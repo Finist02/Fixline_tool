@@ -41,13 +41,13 @@ export class CtrlHoverProvider  implements vscode.HoverProvider {
 							if(parentType != '' && symbol.name == parentType) {
 								for(let j = 0; j < symbol.children.length; j++) {
 									if(symbol.children[j].name == textUnderCursor) {
-										comment = this.GetTextComment(fileData, symbol.children[j].range);
+										comment = this.GetTextComment(fileData, symbol.children[j]);
 										break;
 									}
 								}
 							}
 							else if(symbol.name == textUnderCursor) {
-								comment = this.GetTextComment(fileData, symbol.range);
+								comment = this.GetTextComment(fileData, symbol);
 								break;
 							}
 						}
@@ -115,14 +115,14 @@ export class CtrlHoverProvider  implements vscode.HoverProvider {
 			for(let i = 0; i < symbols.length; i++) {
 				let symbol = symbols[i];
 				if(symbol.name == textUnderCursor) {
-					return this.GetTextComment(document, symbol.range);
+					return this.GetTextComment(document, symbol);
 				}
 				if(symbol.range.contains(position)) {
 					//метод или переменная в функции
 					for(let j = 0; j < symbol.children.length; j++) {
 						let childSymbol = symbol.children[j];
 						if(childSymbol.name == textUnderCursor) {
-							return this.GetTextComment(document, childSymbol.range);
+							return this.GetTextComment(document, childSymbol);
 						}
 						if(varBefore != '' && childSymbol.name == varBefore) {
 							typeVarBeforeDot = childSymbol.detail;
@@ -162,18 +162,25 @@ export class CtrlHoverProvider  implements vscode.HoverProvider {
 			}
 			return this.GetUsesProvider(document, textUnderCursor, typeVarBeforeDot);
     }
-	private GetTextComment(textInScript: vscode.TextDocument | string, rangeVar: vscode.Range) {
+	private GetTextComment(textInScript: vscode.TextDocument | string, symbol: vscode.DocumentSymbol) {
+		let comment: string[] = new Array;
+		let rangeVar = symbol.range;
 		let document: TextSplitter;
 		let lineCloseComment = rangeVar.start.line-1;
 		let lineNumOpenComment = lineCloseComment;
 		if(typeof textInScript === 'string') {
-            document = new TextSplitter(textInScript);
+			document = new TextSplitter(textInScript);
         }
         else {
-            document = new TextSplitter(textInScript.getText());
+			document = new TextSplitter(textInScript.getText());
         }
+		if(symbol.kind == vscode.SymbolKind.Field) {
+			comment[0] = '';
+			comment[1] = document.getText(rangeVar);
+			comment[1] = comment[1].replace(/\t/g, '');
+			return comment;
+		}
 		let lineText = document.getTextLineAt(rangeVar.start.line-1);
-		let comment: string[] = new Array;
 		if(lineText.match(/^\s*\*\//)) {
 			for(let i = 1; i < 20; i++) {
 				lineText = document.getTextLineAt(rangeVar.start.line-i);
@@ -189,9 +196,13 @@ export class CtrlHoverProvider  implements vscode.HoverProvider {
 		if(linesInnerParams[0] >= 0) {
 			const funcRange = new vscode.Range(new vscode.Position(linesInnerParams[0], 0), new vscode.Position(linesInnerParams[1], document.getTextLineAt(linesInnerParams[1]).length-1));
 			let funcName = document.getText(funcRange);
-			comment[1] = funcName.trim().replace(/\n\s*/gs, '');
-			comment[0] = comment[0].replace(' * @brief ', '');
-			comment[0] = comment[0].replace(/\t+/g, '\t');
+			if(funcName) {
+				comment[1] = funcName.trim().replace(/\n\s*/gs, '');
+			}
+			if(comment[0]) {
+				comment[0] = comment[0].replace(' * @brief ', '');
+				comment[0] = comment[0].replace(/\t+/g, '\t');
+			}
 		}
 		else {
 			comment[1] = '';
@@ -202,6 +213,9 @@ export class CtrlHoverProvider  implements vscode.HoverProvider {
         let isInsideContext = false;
         let countBrace = 0;
         let startLineBody = 0;
+		if(!textSplitter.getTextLineAt(lineStart).match(symbolOpen)) {
+			return [-1, -1];
+		}
         for (let i = lineStart; i < textSplitter.lineCount; i++) {
             let lineText = textSplitter.getTextLineAt(i);
             if(lineText.match(symbolOpen)) {

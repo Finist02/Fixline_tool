@@ -42,13 +42,13 @@ export class CtrlDefinitionProvider implements vscode.DefinitionProvider {
 							if(parentType != '' && symbol.name == parentType) {
 								for(let j = 0; j < symbol.children.length; j++) {
 									if(symbol.children[j].name == textUnderCursor) {
-										location =  new vscode.Location(uri, symbol.children[j].range);
+										location =  new vscode.Location(uri, symbol.children[j].selectionRange);
 										break;
 									}
 								}
 							}
 							else if(symbol.name == textUnderCursor) {
-								location =  new vscode.Location(uri, symbol.range);
+								location =  new vscode.Location(uri, symbol.selectionRange);
 								break;
 							}
 						}
@@ -113,7 +113,7 @@ export class CtrlDefinitionProvider implements vscode.DefinitionProvider {
 				for(let i = 0; i < symbols.length; i++) {
 					let symbol = symbols[i];
 					if(symbol.name == textUnderCursor) {
-						location =  new vscode.Location(document.uri, symbol.range);
+						location =  new vscode.Location(document.uri, symbol.selectionRange);
 						return location;
 					}
 					if(symbol.range.contains(position)) {
@@ -121,7 +121,7 @@ export class CtrlDefinitionProvider implements vscode.DefinitionProvider {
 						for(let j = 0; j < symbol.children.length; j++) {
 							let childSymbol = symbol.children[j];
 							if(childSymbol.name == textUnderCursor) {
-								location =  new vscode.Location(document.uri, childSymbol.range);
+								location =  new vscode.Location(document.uri, childSymbol.selectionRange);
 								return location;
 							}
 							if(varBefore != '' && childSymbol.name == varBefore) {
@@ -145,7 +145,7 @@ export class CtrlDefinitionProvider implements vscode.DefinitionProvider {
 										}
 									}
 									if(varSymbol.name == textUnderCursor) {
-										location =  new vscode.Location(document.uri, varSymbol.range);
+										location =  new vscode.Location(document.uri, varSymbol.selectionRange);
 										return location;
 									}
 								}
