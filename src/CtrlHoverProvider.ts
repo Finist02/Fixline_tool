@@ -152,6 +152,19 @@ export class CtrlHoverProvider  implements vscode.HoverProvider {
 							}
 						}		
 					}
+					//поиск в самом файле в другом классе или структуре если вызван член класса
+					if(typeVarBeforeDot != '') {
+						for(let i = 0; i < symbols.length; i++) {
+							let symbol = symbols[i];
+							if(symbol.name == typeVarBeforeDot) {
+								for(let j = 0; j < symbol.children.length; j++) {
+									if(symbol.children[j].name == textUnderCursor) {
+										return this.GetTextComment(document, symbol.children[j]);
+									}
+								}
+							}
+						}
+					}
 					//поиск в классе родителе
 					let regex = /:\s*([a-zA-Z_]\w+)/;
 					let resRegex = regex.exec(symbol.detail);

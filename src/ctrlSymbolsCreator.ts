@@ -338,7 +338,7 @@ export class CtrlSymbolsCreator {
             let lineText = this.textSplitter.getTextLineAt(i);
             if(lineText.match('Debug')) continue;
             let funcRegExp = this.RunRegExp(/\s*(?:const)?\s*([a-zA-Z0-9_\<\>]+)\s+([a-zA-z]\w*)/g, lineText);
-            if(funcRegExp && !funcRegExp[1].match('return|case|if|else|switch|break|continue')) {
+            if(funcRegExp && !funcRegExp[1].match('return|case|if|else|switch|break|continue|new')) {
                 let detail = funcRegExp[1];
                 let name = funcRegExp[2];
                 let docSymbol = new vscode.DocumentSymbol(name, detail, vscode.SymbolKind.Variable, this.textSplitter.getRangeLine(i), this.textSplitter.getRangeLine(i));

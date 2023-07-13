@@ -222,7 +222,22 @@ export class CtrlCompletionItemProvider implements vscode.CompletionItemProvider
 				let varBefore = document.getText(range);
 				if(varBefore != '') {
 					let typeVar = this.provideCompletionItemsCtrl.GetTypeVar(document, varBefore, position);
+					//поиск в самом файле в другом классе или структуре если вызван член класса
 					if(typeVar != '') {
+						let ctrlSymbolsCreator = new CtrlSymbolsCreator(document, TypeQuery.publicSymbols);
+						let symbols = ctrlSymbolsCreator.GetSymbols();
+						for(let i = 0; i < symbols.length; i++) {
+							let symbol = symbols[i];
+							if(symbol.name == typeVar) {
+								for(let j = 0; j < symbol.children.length; j++) {
+									let childSymbol = symbol.children[j];
+									this.provideCompletionItemsCtrl.SetClassMembers(childSymbol);
+								}
+							}
+						}
+					}
+					if(typeVar != '') {
+
 						this.GetUsesCompletionItems(document, TypeQuery.publicSymbols, typeVar, '');
 					}
 				}

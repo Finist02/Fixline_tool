@@ -162,6 +162,21 @@ export class CtrlDefinitionProvider implements vscode.DefinitionProvider {
 						}
 					}
 				}
+				//поиск в самом файле в другом классе или структуре если вызван член класса
+				if(typeVarBeforeDot != '') {
+					for(let i = 0; i < symbols.length; i++) {
+						let symbol = symbols[i];
+						if(symbol.name == typeVarBeforeDot) {
+							for(let j = 0; j < symbol.children.length; j++) {
+								if(symbol.children[j].name == textUnderCursor) {
+									location =  new vscode.Location(document.uri, symbol.children[j].selectionRange);
+									return location;
+								}
+							}
+						}
+					}
+				}
+				//поиск в uses
 				let useLocation = this.GetUsesProvider(document, textUnderCursor, typeVarBeforeDot);
 				if(useLocation) {
 					return useLocation;
