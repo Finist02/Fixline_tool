@@ -213,8 +213,15 @@ export class CtrlHoverProvider  implements vscode.HoverProvider {
 				comment[1] = funcName.trim().replace(/\n\s*/gs, '');
 			}
 			if(comment[0]) {
-				comment[0] = comment[0].replace(' * @brief ', '');
+				let regexp = /\s*\*\s*@brief\s*(.*)/;
+				let resultRegex = regexp.exec(comment[0]);
+				if(resultRegex) {
+					comment[0] = comment[0].replace(resultRegex[0], '**' + resultRegex[1] + '**');
+				}
 				comment[0] = comment[0].replace(/\t+/g, '\t');
+			}
+			else {
+				comment[0] = 'нет комментария';
 			}
 		}
 		else {

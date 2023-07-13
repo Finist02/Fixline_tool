@@ -12,7 +12,7 @@ export class CtrlSignatureHelpProvider implements vscode.SignatureHelpProvider {
 			return hoverProvider.GetSignatureHover(document, posVar, token).then((comment) => {
 				if(comment) {
 					const countVarsInFuns = comment[1].slice(comment[1].indexOf('(')+1, comment[1].length-1).split(',');
-					let signatureInformation = new vscode.SignatureInformation(comment[1], comment[0].replace(/\t+/g, ' '));
+					let signatureInformation = new vscode.SignatureInformation(comment[1], new vscode.MarkdownString(comment[0]));
 					signatureInformation.parameters = [new vscode.ParameterInformation(countVarsInFuns[countInputVars.length-1])];
 					signature.signatures = [signatureInformation];
 				}
