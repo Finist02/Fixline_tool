@@ -3,6 +3,7 @@ import { CtrlSymbolsCreator } from './ctrlSymbolsCreator';
 import { TypeQuery } from './ctrlSymbolsCreator';
 import * as fs from 'fs';
 import * as cmdCtrl from './ctrlComands';
+import { GetProjectsInConfigFile } from './ctrlComands';
 
 
 
@@ -138,23 +139,6 @@ export class ProvideCompletionItemsCtrl {
 
 export class CtrlCompletionItemProvider implements vscode.CompletionItemProvider {
 	private provideCompletionItemsCtrl: any;
-	private GetProjectsInConfigFile(): string[] {
-		let paths = [];
-		let regexp =/proj_path = \"(.*?)\"/g;
-		let workspaceFolders = vscode.workspace.workspaceFolders;
-		if(workspaceFolders)
-		{
-			let fsPath = workspaceFolders[0].uri.fsPath;
-			if (fs.existsSync(fsPath + '/config/config')) {
-				let fileData = fs.readFileSync(fsPath + '/config/config', 'utf8');
-				let result;
-				while (result = regexp.exec(fileData)) {
-					paths.push(result[1])
-				}
-			}
-		}
-		return paths;
-	}
 	private GetUsesCompletionItems(document: vscode.TextDocument, typeQuery: TypeQuery, baseClass: string = '', detail: string = '') {
 		for (let i = 0; i < document.lineCount; i++) {
 			let lineText = document.lineAt(i).text;
@@ -163,7 +147,7 @@ export class CtrlCompletionItemProvider implements vscode.CompletionItemProvider
 			let result = regexp.exec(document.lineAt(i).text);
 			if(result?.groups) {
 				let library = result.groups['library'];
-				let paths = this.GetProjectsInConfigFile();
+				let paths = GetProjectsInConfigFile();
 				paths.forEach(path => {
 					if(fs.existsSync(path+'/scripts/libs/'+library+'.ctl')) {
 						let pathScript = path+'/scripts/libs/'+library+'.ctl';
@@ -254,23 +238,6 @@ export class CtrlCompletionItemProvider implements vscode.CompletionItemProvider
 
 export class CtrlCompletionItemProviderStatic implements vscode.CompletionItemProvider {
 	private provideCompletionItemsCtrl: any;
-	private GetProjectsInConfigFile(): string[] {
-		let paths = [];
-		let regexp =/proj_path = \"(.*?)\"/g;
-		let workspaceFolders = vscode.workspace.workspaceFolders;
-		if(workspaceFolders)
-		{
-			let fsPath = workspaceFolders[0].uri.fsPath;
-			if (fs.existsSync(fsPath + '/config/config')) {
-				let fileData = fs.readFileSync(fsPath + '/config/config', 'utf8');
-				let result;
-				while (result = regexp.exec(fileData)) {
-					paths.push(result[1])
-				}
-			}
-		}
-		return paths;
-	}
 	private GetUsesCompletionItems(document: vscode.TextDocument, typeQuery: TypeQuery, baseClass: string = '', detail: string = '') {
 		for (let i = 0; i < document.lineCount; i++) {
 			let lineText = document.lineAt(i).text;
@@ -279,7 +246,7 @@ export class CtrlCompletionItemProviderStatic implements vscode.CompletionItemPr
 			let result = regexp.exec(document.lineAt(i).text);
 			if(result?.groups) {
 				let library = result.groups['library'];
-				let paths = this.GetProjectsInConfigFile();
+				let paths = GetProjectsInConfigFile();
 				paths.forEach(path => {
 					if(fs.existsSync(path+'/scripts/libs/'+library+'.ctl')) {
 						let pathScript = path+'/scripts/libs/'+library+'.ctl';
@@ -352,7 +319,7 @@ export const providerFiles = vscode.languages.registerCompletionItemProvider(
 			const linePrefix = document.lineAt(position).text.substr(0, position.character);
 			let complets = new Array;
 			if(linePrefix.startsWith('#uses')) {
-				let folders = cmdCtrl.GetProjectsInConfigFile();
+				let folders = GetProjectsInConfigFile();
 				//!!заглушка для того чтобы смог отработать
 				// let length = folders.length;
 				let length = folders.length > 6 ? 6 : folders.length;

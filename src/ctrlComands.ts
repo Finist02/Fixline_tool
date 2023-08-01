@@ -270,8 +270,12 @@ export function  GetProjectsInConfigFile(): string[] {
 			let result;
 			while (result = regexp.exec(fileData)) {
 				if(result[1]) {
-					paths.push(result[1])
+					paths.push(result[1]);
 				}
+			}
+			result = /pvss_path = \"(.*?)\"/g.exec(fileData);
+			if(result) {
+				paths.push(result[1]);
 			}
 		}
 	}

@@ -1,27 +1,11 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import { CtrlSymbolsCreator, TextSplitter, TypeQuery } from './ctrlSymbolsCreator';
+import { GetProjectsInConfigFile } from './ctrlComands';
 export const tokenTypes = ['class', 'interface', 'enum', 'function', 'variable', "enumMember"];
 export const tokenModifiers = ['declaration', 'documentation'];
 export const legend = new vscode.SemanticTokensLegend(tokenTypes, tokenModifiers);
 export class CtrlSemanticTokensProvider implements vscode.DocumentSemanticTokensProvider {
-	private GetProjectsInConfigFile(): string[] {
-		let paths = [];
-		let regexp =/proj_path = \"(.*?)\"/g;
-		let workspaceFolders = vscode.workspace.workspaceFolders;
-		if(workspaceFolders)
-		{
-			let fsPath = workspaceFolders[0].uri.fsPath;
-			if (fs.existsSync(fsPath + '/config/config')) {
-				let fileData = fs.readFileSync(fsPath + '/config/config', 'utf8');
-				let result;
-				while (result = regexp.exec(fileData)) {
-					paths.push(result[1])
-				}
-			}
-		}
-		return paths;
-	}
 	private GetUsesTokens(document: vscode.TextDocument): Array<vscode.DocumentSymbol[]> | undefined {
 		let tokensSymbol = new Array;
 		for (let i = 0; i < document.lineCount; i++) {
@@ -31,7 +15,7 @@ export class CtrlSemanticTokensProvider implements vscode.DocumentSemanticTokens
 			let result = regexp.exec(document.lineAt(i).text);
 			if(result?.groups) {
 				let library = result.groups['library'];
-				let paths = this.GetProjectsInConfigFile();
+				let paths = GetProjectsInConfigFile();
 				paths.forEach(path => {
 					if(fs.existsSync(path+'/scripts/libs/'+library+'.ctl')) {
 						let pathScript = path+'/scripts/libs/'+library+'.ctl';
