@@ -292,15 +292,6 @@ export class CtrlCompletionItemProviderStatic implements vscode.CompletionItemPr
 	}
 }
 
-
-
-
-
-
-
-
-
-
 export const providerUses = vscode.languages.registerCompletionItemProvider(
 	'ctrlpp',
 	{
@@ -312,6 +303,7 @@ export const providerUses = vscode.languages.registerCompletionItemProvider(
 	},
 	'#' // triggered whenever a '.' is being typed
 );
+
 export const providerFiles = vscode.languages.registerCompletionItemProvider(
 	'ctrlpp',
 	{
@@ -319,7 +311,7 @@ export const providerFiles = vscode.languages.registerCompletionItemProvider(
 			const linePrefix = document.lineAt(position).text.substr(0, position.character);
 			let complets = new Array;
 			if(linePrefix.startsWith('#uses')) {
-				let folders = GetProjectsInConfigFile();
+				let folders = GetProjectsInConfigFile(false);
 				//!!заглушка для того чтобы смог отработать
 				// let length = folders.length;
 				let length = folders.length > 6 ? 6 : folders.length;

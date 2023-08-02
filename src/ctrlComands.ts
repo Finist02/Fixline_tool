@@ -258,7 +258,7 @@ export const ThroughFiles = (directory: string) => {
 	return innerFiles;
 }
 
-export function  GetProjectsInConfigFile(): string[] {
+export function  GetProjectsInConfigFile(withPvss = true): string[] {
 	let paths = [];
 	let regexp =/proj_path = \"(.*?)\"/g;
 	let workspaceFolders = vscode.workspace.workspaceFolders;
@@ -273,9 +273,11 @@ export function  GetProjectsInConfigFile(): string[] {
 					paths.push(result[1]);
 				}
 			}
-			result = /pvss_path = \"(.*?)\"/g.exec(fileData);
-			if(result) {
-				paths.push(result[1]);
+			if(withPvss) {
+				result = /pvss_path = \"(.*?)\"/g.exec(fileData);
+				if(result) {
+					paths.push(result[1]);
+				}
 			}
 		}
 	}
