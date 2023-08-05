@@ -81,6 +81,9 @@ class CtrlRenameProvider implements vscode.RenameProvider {
 					else {
 						reject();
 					}
+				}, function(reason){
+					vscode.window.showErrorMessage('На данные момент не раелизовано изменение имени объекта не объявленного в самом файле');
+					reject();
 				})}
 			);
 		};

@@ -55,7 +55,7 @@ export class CtrlReferenceProvider implements vscode.ReferenceProvider {
 					})
 				}
 				else {
-					reject();
+					resolve(refernceLocations);
 				}
 			});
     }
