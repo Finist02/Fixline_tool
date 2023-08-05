@@ -16,12 +16,10 @@ export class CtrlReferenceProvider implements vscode.ReferenceProvider {
 				let isSymbol = false;
 				symbols.forEach(symbol => {
 					if(symbol.name == textUnderCursor) {
-						refernceLocations.push(new vscode.Location(document.uri, symbol.selectionRange));
 						isSymbol = true;
 					}
 					symbol.children.forEach(childSymbol => {
 						if(childSymbol.name == textUnderCursor) {
-							refernceLocations.push(new vscode.Location(document.uri, childSymbol.selectionRange));
 							isSymbol = true
 						}
 					})

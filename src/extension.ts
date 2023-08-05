@@ -10,6 +10,7 @@ import { CtrlHoverProvider } from './CtrlHoverProvider';
 import { CtrlSignatureHelpProvider } from './CtrlSignatureHelpProvider';
 import { CtrlSemanticTokensProvider, legend } from './ctrlSemanticTokensProvider';
 import { CtrlReferenceProvider } from './CtrlReferenceProvider';
+import { rejects } from 'assert';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -29,6 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.languages.registerSignatureHelpProvider("ctrlpp", new CtrlSignatureHelpProvider(), '(', ','));
 	context.subscriptions.push(vscode.languages.registerDocumentSemanticTokensProvider("ctrlpp", new CtrlSemanticTokensProvider(), legend));
 	context.subscriptions.push(vscode.languages.registerReferenceProvider("ctrlpp", new CtrlReferenceProvider()));
+	context.subscriptions.push(vscode.languages.registerRenameProvider("ctrlpp", new CtrlRenameProvider()));
 
 
 
@@ -59,3 +61,27 @@ export function activate(context: vscode.ExtensionContext) {
 }
 // this method is called when your extension is deactivated
 export function deactivate() {}
+
+class CtrlRenameProvider implements vscode.RenameProvider {
+    public provideRenameEdits(
+        document: vscode.TextDocument, position: vscode.Position,
+        newName: string, token: vscode.CancellationToken):
+        Thenable<vscode.WorkspaceEdit> {
+			return new Promise((resolve, reject) => {
+				let referProvider = new CtrlReferenceProvider();
+				referProvider.provideReferences(document, position, {includeDeclaration: false}, token).then( locations => {
+					let edit = new vscode.WorkspaceEdit();
+					if(locations.length > 0)
+					{
+						locations.forEach(location => {
+							edit.replace(location.uri, location.range, newName);
+						})
+						resolve(edit);
+					}
+					else {
+						reject();
+					}
+				})}
+			);
+		};
+}
