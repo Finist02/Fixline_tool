@@ -9,7 +9,7 @@ import * as cmdCtrl from './ctrlComands';
 import { CtrlHoverProvider } from './CtrlHoverProvider';
 import { CtrlSignatureHelpProvider } from './CtrlSignatureHelpProvider';
 import { CtrlSemanticTokensProvider, legend } from './ctrlSemanticTokensProvider';
-
+import { CtrlReferenceProvider } from './CtrlReferenceProvider';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -28,6 +28,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.languages.registerHoverProvider("ctrlpp", new CtrlHoverProvider()));
 	context.subscriptions.push(vscode.languages.registerSignatureHelpProvider("ctrlpp", new CtrlSignatureHelpProvider(), '(', ','));
 	context.subscriptions.push(vscode.languages.registerDocumentSemanticTokensProvider("ctrlpp", new CtrlSemanticTokensProvider(), legend));
+	context.subscriptions.push(vscode.languages.registerReferenceProvider("ctrlpp", new CtrlReferenceProvider()));
 
 
 
