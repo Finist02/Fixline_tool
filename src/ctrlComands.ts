@@ -3,7 +3,10 @@ import * as fs from 'fs';
 import * as vscode from 'vscode';
 import { QuickPickItem } from 'vscode';
 import { QuickPickItemKind} from 'vscode';
+import axios from 'axios';
 import * as path from 'path';
+import { json } from "stream/consumers";
+import { rejects } from "assert";
 
 export function OpenPanel(uri: vscode.Uri) {
 	let path = uri?.fsPath;
@@ -11,6 +14,79 @@ export function OpenPanel(uri: vscode.Uri) {
 	OpenPanelWithPath(path);
 }
 
+export async function CreateChangelog() {
+	const GITLAB_TOKEN = 'j1myDhvBSExsMYE8KFbA';
+	const GITLAB_USERNAME = 'Danil';
+	let projectsFolders = GetProjectsInConfigFile(false);
+	let items: QuickPickItem[] = [];
+	projectsFolders.forEach(path => {
+		let splittedPath  = path.split('/');
+		items.push({
+			label: splittedPath[splittedPath.length-1],
+			description: path
+		});
+	})
+	const pathCreateChangelog = await vscode.window.showQuickPick(items);
+	if(pathCreateChangelog) {
+		const currentBracnh  = await execShell('cd /D'+pathCreateChangelog.description+' && git branch');
+		const lastCommit  = await execShell('cd /D'+pathCreateChangelog.description+' && git log --pretty=format:"%h" -1');
+		const firstCommit  = await execShell('cd /D'+pathCreateChangelog.description+' && git log --max-parents=0 HEAD --pretty=format:"%h"');
+		const pathChangelog = pathCreateChangelog.label + '/CHANGELOG.md';
+		let uriToFChangelog = vscode.Uri.parse("file:" + pathCreateChangelog);
+		axios.get('http://10.0.16.2/api/v4/projects?search='+pathCreateChangelog.label, {
+			headers: {
+				'PRIVATE-TOKEN': GITLAB_TOKEN
+			}
+		}).then(response  => {
+			const projectsProp = response.data;
+			if(projectsProp[0]['name'] ==  pathCreateChangelog.label) {
+				const idProject = projectsProp[0]['id'];
+				console.log(currentBracnh);
+				
+
+
+				axios.get('http://10.0.16.2/api/v4/projects/'+idProject+'/repository/changelog?'
+					+'version=0.1.1'
+					+'&from='+firstCommit
+					+'&to='+lastCommit
+					+'&branch=develop',
+					{
+						headers: {
+							'PRIVATE-TOKEN': GITLAB_TOKEN
+					}
+				}).then(response => {
+					console.log(response.data['notes']);
+				}
+				).catch(err => {
+					// console.log(err);
+				})
+			}
+		})
+		// const response = await fetch('http://10.0.16.2/api/v4/projects', {
+		// 	method: 'GET',
+		// 	headers: {
+		// 		"PRIVATE-TOKEN": GITLAB_TOKEN,
+		// 	}
+		// });
+		// console.log(response);
+		// if (!fs.existsSync(pathChangelog))
+		// {
+		// 	const writeBytes = Buffer.from('- [ ] Переработать панель для более интуитивного понимания интерфейса @Diana');
+		// 	vscode.workspace.fs.writeFile(uriToFChangelog, writeBytes).then(() => {
+		// 		OpenFileVscode(uriToFChangelog);
+		// 	});
+		// }
+		// else {
+		// 	let fileData = fs.readFileSync(uriToFChangelog.fsPath, 'utf8');
+		// 	let resultReg = /(?<=@)[\da-f]{8}/.exec(fileData);
+		// 	if(resultReg)
+		// 	{
+		// 		console.log(resultReg[0]);
+		// 	}
+		// 	OpenFileVscode(uriToFChangelog);		
+		// }
+	}
+}
 export function OpenUnitTest() {
 	let fsPath = vscode.window.activeTextEditor?.document.uri.fsPath;
 	if(fsPath == undefined) return;
@@ -93,7 +169,7 @@ const execShell = (cmd: string) =>
 	new Promise<string>((resolve, reject) => {
 	  cp.exec(cmd, (err, out) => {
 		if (err) {
-		  return resolve('error!');
+		  return resolve(err.message);
 		  //or,  reject(err);
 		}
 		return resolve(out.toString());
