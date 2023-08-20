@@ -15,7 +15,6 @@ export function OpenPanel(uri: vscode.Uri) {
 }
 
 export async function CreateChangelog() {
-	const GITLAB_TOKEN = 'j1myDhvBSExsMYE8KFbA';
 	const GITLAB_USERNAME = 'Danil';
 	let projectsFolders = GetProjectsInConfigFile(false);
 	let items: QuickPickItem[] = [];
