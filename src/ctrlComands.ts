@@ -57,6 +57,11 @@ export async function CreateChangelog() {
 						firstCommit = resultReg[0];
 					}
 				}
+				console.log(GITLAB_URL+'/api/v4/projects/'+idProject+'/repository/changelog?'
+				+'version='+versionRelease
+				+'&from='+firstCommit
+				+'&to='+lastCommit
+				+'&branch='+currentBranch);
 				axios.get(GITLAB_URL+'/api/v4/projects/'+idProject+'/repository/changelog?'
 					+'version='+versionRelease
 					+'&from='+firstCommit
@@ -81,9 +86,11 @@ export async function CreateChangelog() {
 }
 
 function GetBranchToCreateChangelog(gitBracnhes: string) {
-	gitBracnhes = gitBracnhes.replace('* ', '');
-	const gitBranchList = gitBracnhes.split('\n');
-	return gitBranchList[0];
+	let regexpResult = /\*\s(\w*)/.exec(gitBracnhes);
+	if(regexpResult && regexpResult[1]) {
+		return regexpResult[1];
+	}
+	return '';
 }
 export function OpenUnitTest() {
 	let fsPath = vscode.window.activeTextEditor?.document.uri.fsPath;
