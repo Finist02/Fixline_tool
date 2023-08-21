@@ -5,8 +5,6 @@ import { QuickPickItem } from 'vscode';
 import { QuickPickItemKind} from 'vscode';
 import axios from 'axios';
 import * as path from 'path';
-import { json } from "stream/consumers";
-import { rejects } from "assert";
 
 export function OpenPanel(uri: vscode.Uri) {
 	let path = uri?.fsPath;
@@ -15,7 +13,11 @@ export function OpenPanel(uri: vscode.Uri) {
 }
 
 export async function CreateChangelog() {
-	const GITLAB_USERNAME = 'Danil';
+	const GITLAB_TOKEN = vscode.workspace.getConfiguration("FixLineTool.OpenPanel").get("GitlabToken");
+	const GITLAB_URL = vscode.workspace.getConfiguration("FixLineTool.OpenPanel").get("GitlabUrl");
+	if( typeof(GITLAB_TOKEN) !== 'string' ||  typeof(GITLAB_URL) !== 'string') {
+		return;
+	}
 	let projectsFolders = GetProjectsInConfigFile(false);
 	let items: QuickPickItem[] = [];
 	projectsFolders.forEach(path => {
@@ -26,13 +28,20 @@ export async function CreateChangelog() {
 		});
 	})
 	const pathCreateChangelog = await vscode.window.showQuickPick(items);
+	const versionRelease = await vscode.window.showInputBox({
+		placeHolder: 'Укажите версию релиза',
+		prompt: 'Укажите версию релиза',
+		value: '0.1.1'
+	});
 	if(pathCreateChangelog) {
-		const currentBracnh  = await execShell('cd /D'+pathCreateChangelog.description+' && git branch');
+		let changelogData = '';
+		const gitBracnhes  = await execShell('cd /D'+pathCreateChangelog.description+' && git branch');
+		const currentBranch = GetBranchToCreateChangelog(gitBracnhes);
 		const lastCommit  = await execShell('cd /D'+pathCreateChangelog.description+' && git log --pretty=format:"%h" -1');
-		const firstCommit  = await execShell('cd /D'+pathCreateChangelog.description+' && git log --max-parents=0 HEAD --pretty=format:"%h"');
-		const pathChangelog = pathCreateChangelog.label + '/CHANGELOG.md';
-		let uriToFChangelog = vscode.Uri.parse("file:" + pathCreateChangelog);
-		axios.get('http://10.0.16.2/api/v4/projects?search='+pathCreateChangelog.label, {
+		let firstCommit  = await execShell('cd /D'+pathCreateChangelog.description+' && git log --max-parents=0 HEAD --pretty=format:"%h"');
+		const pathChangelog = pathCreateChangelog.description + '/CHANGELOG.md';
+		let uriToFChangelog = vscode.Uri.parse("file:" + pathChangelog);
+		axios.get(GITLAB_URL+'/api/v4/projects?search='+pathCreateChangelog.label, {
 			headers: {
 				'PRIVATE-TOKEN': GITLAB_TOKEN
 			}
@@ -40,51 +49,41 @@ export async function CreateChangelog() {
 			const projectsProp = response.data;
 			if(projectsProp[0]['name'] ==  pathCreateChangelog.label) {
 				const idProject = projectsProp[0]['id'];
-				console.log(currentBracnh);
-				
-
-
-				axios.get('http://10.0.16.2/api/v4/projects/'+idProject+'/repository/changelog?'
-					+'version=0.1.1'
+				if (fs.existsSync(pathChangelog)) {
+					changelogData = fs.readFileSync(pathChangelog, 'utf8');
+					let resultReg = /(?<=@)[\da-f]{8}/.exec(changelogData);
+					if(resultReg)
+					{
+						firstCommit = resultReg[0];
+					}
+				}
+				axios.get(GITLAB_URL+'/api/v4/projects/'+idProject+'/repository/changelog?'
+					+'version='+versionRelease
 					+'&from='+firstCommit
 					+'&to='+lastCommit
-					+'&branch=develop',
+					+'&branch='+currentBranch,
 					{
 						headers: {
 							'PRIVATE-TOKEN': GITLAB_TOKEN
 					}
 				}).then(response => {
-					console.log(response.data['notes']);
+					const writeBytes = Buffer.from(response.data['notes'] + '\n' + changelogData);
+					vscode.workspace.fs.writeFile(uriToFChangelog, writeBytes).then(() => {
+						OpenFileVscode(uriToFChangelog);
+					});	
 				}
 				).catch(err => {
-					// console.log(err);
+					console.log(err);
 				})
 			}
-		})
-		// const response = await fetch('http://10.0.16.2/api/v4/projects', {
-		// 	method: 'GET',
-		// 	headers: {
-		// 		"PRIVATE-TOKEN": GITLAB_TOKEN,
-		// 	}
-		// });
-		// console.log(response);
-		// if (!fs.existsSync(pathChangelog))
-		// {
-		// 	const writeBytes = Buffer.from('- [ ] Переработать панель для более интуитивного понимания интерфейса @Diana');
-		// 	vscode.workspace.fs.writeFile(uriToFChangelog, writeBytes).then(() => {
-		// 		OpenFileVscode(uriToFChangelog);
-		// 	});
-		// }
-		// else {
-		// 	let fileData = fs.readFileSync(uriToFChangelog.fsPath, 'utf8');
-		// 	let resultReg = /(?<=@)[\da-f]{8}/.exec(fileData);
-		// 	if(resultReg)
-		// 	{
-		// 		console.log(resultReg[0]);
-		// 	}
-		// 	OpenFileVscode(uriToFChangelog);		
-		// }
+		})		
 	}
+}
+
+function GetBranchToCreateChangelog(gitBracnhes: string) {
+	gitBracnhes = gitBracnhes.replace('* ', '');
+	const gitBranchList = gitBracnhes.split('\n');
+	return gitBranchList[0];
 }
 export function OpenUnitTest() {
 	let fsPath = vscode.window.activeTextEditor?.document.uri.fsPath;

@@ -128,6 +128,16 @@
                         "type": "string",
                         "default": "",
                         "description": "Password"
+                    },
+                    "FixLineTool.OpenPanel.GitlabToken": {
+                        "type": "string",
+                        "default": "",
+                        "description": "Token"
+                    },
+                    "FixLineTool.OpenPanel.GitlabUrl": {
+                        "type": "string",
+                        "default": "http://10.0.16.2",
+                        "description": "GitlabUrl"
                     }
                 }
             }
