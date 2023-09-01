@@ -53,6 +53,11 @@
                 "icon": "$(debug)"
             },
             {
+                "command": "extension.GetHelpChatGpt",
+                "title": "Get help Ctrlpp",
+                "icon": "$(debug)"
+            },
+            {
                 "command": "extension.RunScript",
                 "title": "Run script",
                 "icon": "$(run)"

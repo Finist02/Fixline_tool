@@ -12,6 +12,54 @@ export function OpenPanel(uri: vscode.Uri) {
 	OpenPanelWithPath(path);
 }
 
+export async function GetHelpChatGpt()
+{
+	const editor = vscode.window.activeTextEditor;
+	let word = 'dpGet';
+	if(editor && editor.document.fileName.endsWith('.ctl')) {
+		let selection = editor.selection;
+		let pos =  new vscode.Position(selection.start.line, selection.start.character);
+		let range = editor.document.getWordRangeAtPosition(pos);
+		word = editor.document.getText(range);
+	}
+	const question = await vscode.window.showInputBox({
+		placeHolder: 'Введите вопрос',
+		prompt: 'Введите вопрос',
+		value: 'Get examples of function '+word
+	});
+	axios({
+		timeout: 3000,
+		method: 'post',
+        url: 'https://www.chatbase.co/api/fe/chat',
+        headers: {
+			'Content-Type': 'application/json',
+			'Accept': 'application/json',
+			'Access-Control-Allow-Headers': 'Content-Type',
+			'Access-Control-Allow-Origin': "*",
+          "mode": 'cors'
+        }, 
+        data: {
+          "chatId": "FSC9Kt9Dyz9kfmgiwBX0q",
+          "captchaCode": "hadsa",
+          "messages": [
+			  {
+				  "content": question,
+				  "role": "user"
+          }
+        ]
+	}}).then(answer => {
+		const panel = vscode.window.createWebviewPanel(
+			'markdown.preview', // Identifies the type of the webview. Used internally
+			'answerChatGPT', // Title of the panel displayed to the user
+			vscode.ViewColumn.Two, // Editor column to show the new webview panel in.
+			{} // Webview options. More on these later.
+		);
+		let data = '<pre>' + answer.data + '</pre>';
+		data = data.replace('```cpp', '<code>');
+		data = data.replace('```', '</code>');
+		panel.webview.html = data;
+	});
+}
 export async function CreateChangelog() {
 	const GITLAB_TOKEN = vscode.workspace.getConfiguration("FixLineTool.OpenPanel").get("GitlabToken");
 	const GITLAB_URL = vscode.workspace.getConfiguration("FixLineTool.OpenPanel").get("GitlabUrl");
