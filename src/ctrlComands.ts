@@ -5,6 +5,9 @@ import { QuickPickItem } from 'vscode';
 import { QuickPickItemKind} from 'vscode';
 import axios from 'axios';
 import * as path from 'path';
+import hljs from 'highlight.js';
+hljs.registerLanguage('xml', require('highlight.js/lib/languages/xml'));
+
 
 export function OpenPanel(uri: vscode.Uri) {
 	let path = uri?.fsPath;
@@ -27,6 +30,12 @@ export async function GetHelpChatGpt()
 		prompt: 'Введите вопрос',
 		value: 'Get examples of function '+word
 	});
+	const panel = vscode.window.createWebviewPanel(
+		'catCoding', // Identifies the type of the webview. Used internally
+		'answerChatGPT', // Title of the panel displayed to the user
+		vscode.ViewColumn.Two, // Editor column to show the new webview panel in.
+		{} // Webview options. More on these later.
+	);
 	axios({
 		timeout: 3000,
 		method: 'post',
@@ -49,15 +58,50 @@ export async function GetHelpChatGpt()
         ]
 	}}).then(answer => {
 		const panel = vscode.window.createWebviewPanel(
-			'markdown.preview', // Identifies the type of the webview. Used internally
+			'answerChatGPT', // Identifies the type of the webview. Used internally
 			'answerChatGPT', // Title of the panel displayed to the user
 			vscode.ViewColumn.Two, // Editor column to show the new webview panel in.
 			{} // Webview options. More on these later.
 		);
-		let data = '<pre>' + answer.data + '</pre>';
-		data = data.replace('```cpp', '<code>');
-		data = data.replace('```', '</code>');
-		panel.webview.html = data;
+		let data = answer.data;
+		const regexp =/(.*?)(```)(.*?)(```\n)/gs;
+		let regexpResult = regexp.exec(data);
+		let dataInView = '';
+		if(regexpResult) {
+			while(regexpResult) {
+				dataInView = dataInView + regexpResult[1].replace(/\n/gs, '<br>');
+				dataInView = dataInView + '<pre><code>'+hljs.highlight(regexpResult[3], { language: 'cpp' }).value+'</code></pre>';
+				regexpResult = regexp.exec(data);
+				regexpResult?.index
+			}
+			let regExLastText = /(```\n)(?!.*```)(.*)$/gs.exec(data);
+			if(regExLastText)
+			{
+				dataInView = dataInView + regExLastText[2].replace(/\n/gs, '<br>');
+			}
+
+		}
+		else {
+			dataInView = answer.data.replace(/\n/gs, '<br>');
+		}
+		panel.webview.html = `<!DOCTYPE html>
+		<html lang="en">
+		<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="https://unpkg.com/@highlightjs/cdn-assets@11.3.1/styles/github-dark.min.css" />
+		<script src="https://unpkg.com/@highlightjs/cdn-assets@11.3.1/highlight.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Cat Coding</title>
+		</head>
+		<body>
+		<div >`+dataInView+`</div>
+		<div ><br></div>
+		<div ><br></div>
+		<div ><br></div>
+		<div >`+data+`</div>
+		</body>
+		</html>`;
 	});
 }
 export async function CreateChangelog() {
@@ -105,11 +149,6 @@ export async function CreateChangelog() {
 						firstCommit = resultReg[0];
 					}
 				}
-				console.log(GITLAB_URL+'/api/v4/projects/'+idProject+'/repository/changelog?'
-				+'version='+versionRelease
-				+'&from='+firstCommit
-				+'&to='+lastCommit
-				+'&branch='+currentBranch);
 				axios.get(GITLAB_URL+'/api/v4/projects/'+idProject+'/repository/changelog?'
 					+'version='+versionRelease
 					+'&from='+firstCommit
