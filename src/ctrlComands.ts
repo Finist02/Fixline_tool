@@ -6,15 +6,22 @@ import { QuickPickItemKind} from 'vscode';
 import axios from 'axios';
 import * as path from 'path';
 import hljs from 'highlight.js';
-hljs.registerLanguage('xml', require('highlight.js/lib/languages/xml'));
-
+const md = require('markdown-it')({
+	highlight: function (str:string, lang: string ) {
+		if (lang && hljs.getLanguage(lang)) {
+			try {
+				return hljs.highlight(str, { language: lang }).value;
+			} catch (__) {}
+		}
+		return ''; // use external default escaping
+	}
+});
 
 export function OpenPanel(uri: vscode.Uri) {
 	let path = uri?.fsPath;
 	if(path == undefined) path = vscode.window.activeTextEditor?.document.uri.fsPath!;
 	OpenPanelWithPath(path);
 }
-
 export async function GetHelpChatGpt()
 {
 	const editor = vscode.window.activeTextEditor;
@@ -30,12 +37,6 @@ export async function GetHelpChatGpt()
 		prompt: 'Введите вопрос',
 		value: 'Get examples of function '+word
 	});
-	const panel = vscode.window.createWebviewPanel(
-		'catCoding', // Identifies the type of the webview. Used internally
-		'answerChatGPT', // Title of the panel displayed to the user
-		vscode.ViewColumn.Two, // Editor column to show the new webview panel in.
-		{} // Webview options. More on these later.
-	);
 	axios({
 		timeout: 3000,
 		method: 'post',
@@ -60,48 +61,24 @@ export async function GetHelpChatGpt()
 		const panel = vscode.window.createWebviewPanel(
 			'answerChatGPT', // Identifies the type of the webview. Used internally
 			'answerChatGPT', // Title of the panel displayed to the user
-			vscode.ViewColumn.Two, // Editor column to show the new webview panel in.
+			vscode.ViewColumn.Beside, // Editor column to show the new webview panel in.
 			{} // Webview options. More on these later.
 		);
-		let data = answer.data;
-		const regexp =/(.*?)(```)(.*?)(```\n)/gs;
-		let regexpResult = regexp.exec(data);
-		let dataInView = '';
-		if(regexpResult) {
-			while(regexpResult) {
-				dataInView = dataInView + regexpResult[1].replace(/\n/gs, '<br>');
-				dataInView = dataInView + '<pre><code>'+hljs.highlight(regexpResult[3], { language: 'cpp' }).value+'</code></pre>';
-				regexpResult = regexp.exec(data);
-				regexpResult?.index
-			}
-			let regExLastText = /(```\n)(?!.*```)(.*)$/gs.exec(data);
-			if(regExLastText)
-			{
-				dataInView = dataInView + regExLastText[2].replace(/\n/gs, '<br>');
-			}
-
-		}
-		else {
-			dataInView = answer.data.replace(/\n/gs, '<br>');
-		}
+		let result = md.render(answer.data);
 		panel.webview.html = `<!DOCTYPE html>
-		<html lang="en">
-		<head>
-		<meta charset="UTF-8">
-		<link rel="stylesheet" href="https://unpkg.com/@highlightjs/cdn-assets@11.3.1/styles/github-dark.min.css" />
-		<script src="https://unpkg.com/@highlightjs/cdn-assets@11.3.1/highlight.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Cat Coding</title>
-		</head>
-		<body>
-		<div >`+dataInView+`</div>
-		<div ><br></div>
-		<div ><br></div>
-		<div ><br></div>
-		<div >`+data+`</div>
-		</body>
-		</html>`;
+			<html lang="en">
+			<head>
+			<meta charset="UTF-8">
+			<link rel="stylesheet" href="https://unpkg.com/@highlightjs/cdn-assets@11.3.1/styles/github-dark.min.css" />
+			<script src="https://unpkg.com/@highlightjs/cdn-assets@11.3.1/highlight.min.js"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<title>Cat Coding</title>
+			</head>
+			<body>
+			<div >`+result+`</div>
+			</body>
+			</html>`;
 	});
 }
 export async function CreateChangelog() {
