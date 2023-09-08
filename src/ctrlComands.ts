@@ -17,6 +17,8 @@ const md = require('markdown-it')({
 	}
 });
 
+let winccLog_channel: vscode.OutputChannel;
+
 export function OpenPanel(uri: vscode.Uri) {
 	let path = uri?.fsPath;
 	if(path == undefined) path = vscode.window.activeTextEditor?.document.uri.fsPath!;
@@ -247,12 +249,16 @@ const execShell = (cmd: string) =>
 
 let doLogs = true;
 export async function OpenLog() {
+	if(winccLog_channel) {
+		winccLog_channel.show(true);
+		return;
+	}
 	let path = getPathInConfigFile('proj_path') + '/log/';
 	if(path == '/log/' || !fs.existsSync(path)) {
 		vscode.window.showErrorMessage('Не найден файл конфигурации');
 		return;
 	} 
-	let winccLog_channel = vscode.window.createOutputChannel("WinccLogs");
+	winccLog_channel = vscode.window.createOutputChannel("WinccLogs");
 	winccLog_channel.show(true);
 	let fileNames = getFileNames(path);
 	interface MyType {
@@ -265,41 +271,20 @@ export async function OpenLog() {
 	while(doLogs) {
 		fileNames.forEach(element => {
 			let newSizeFile = fs.statSync(path + element).size;
-			if(newSizeFile > fileSizes[element])
-			{
+			if(newSizeFile > fileSizes[element]) {
 				let buffer = Buffer.alloc(newSizeFile - fileSizes[element]);
 				fs.open(path + element, 'r+', function (err, fd) {
 					if (err) {
-						return console.error(err);
+						vscode.window.showErrorMessage(err.message);
+						return;
 					}
-					fs.read(fd, buffer, 0, buffer.length,
-						fileSizes[element], function (err, bytes) {
-							if (err) {
-								console.log(err);
-							}
-							if (bytes > 0) {
-								let logs = buffer.slice(0, bytes).toString();
-								if(element == 'PVSS_II.log')
-								{
-									let lines = logs.split('\n');
-									lines.forEach( (item, index) => {
-										if(!item.match(/.*,  INFO.*/i) && item != "")
-										{
-											winccLog_channel.append(item + "\n");
-										}
-									});
-								}
-								else
-								{
-									winccLog_channel.append(logs);
-								}								
-							}
-							fs.close(fd, function (err) {
-								if (err) {
-									console.log(err);
-								}
-							});
-						});
+					fs.read(fd, buffer, 0, buffer.length, fileSizes[element], function (err, bytes) {
+						if (bytes > 0) {
+							let logs = buffer.slice(0, bytes).toString();
+							addLogsToChanel(winccLog_channel, logs, element);
+						}
+						fs.close(fd);
+					});
 					fileSizes[element] = newSizeFile;
 				});
 			}
@@ -308,6 +293,16 @@ export async function OpenLog() {
 	}
 }
 
+function addLogsToChanel(chanel: vscode.OutputChannel, text: string, fileName: string) {
+	if(fileName == 'PVSS_II.log') {
+		let lines = text.split('\n');
+		lines.forEach( (item, index) => {
+			if(!item.match(/.*,  INFO.*/i) && item != "") {
+				chanel.append(item + "\n");
+		}});
+	}
+	else chanel.append(text);
+}
 function getFileNames(path: string) : string[]{
 	let fileNames = fs.readdirSync(path).filter(element => {
 		return element.indexOf('.log') > 0;
