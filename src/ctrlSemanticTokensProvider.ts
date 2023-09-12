@@ -62,8 +62,8 @@ export class CtrlSemanticTokensProvider implements vscode.DocumentSemanticTokens
 				const lineText = textSplitter.getTextLineAt(i);
 				if(lineText.startsWith('#')) continue;
 				const regExp = new RegExp('\\b' + symbol.name + '\\b','g');
-				const result = regExp.exec(lineText);
-				if(result) {
+				let result = regExp.exec(lineText);
+				while(result) {
 					let indexClassName = lineText.indexOf(symbol.name, result.index);
 					if(indexClassName >= 0) {
 						if(symbol.kind == vscode.SymbolKind.Constant) {
@@ -71,17 +71,20 @@ export class CtrlSemanticTokensProvider implements vscode.DocumentSemanticTokens
 								new vscode.Range(new vscode.Position(i, indexClassName), new vscode.Position(i, indexClassName + symbol.name.length)),
 								'enumMember',
 								['declaration']
-							)
-						}
-						else {
-							tokensBuilder.push(
-								new vscode.Range(new vscode.Position(i, indexClassName), new vscode.Position(i, indexClassName + symbol.name.length)),
-								'class',
-								['declaration']
-							);
-						}
-						
-		}}}}
+								)
+							}
+							else {
+								tokensBuilder.push(
+									new vscode.Range(new vscode.Position(i, indexClassName), new vscode.Position(i, indexClassName + symbol.name.length)),
+									'class',
+									['declaration']
+								);
+						}						
+					}
+					result = regExp.exec(lineText);
+				}
+			}
+		}
 		symbol.children.forEach(symbolChild =>{
 			if(symbolChild.kind == vscode.SymbolKind.Constant || symbolChild.kind == vscode.SymbolKind.EnumMember) {
 				for(let i = 0; i < textSplitter.lineCount; i++) {

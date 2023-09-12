@@ -106,7 +106,10 @@ export class CtrlSymbolsCreator {
                 let RangeClass = new vscode.Range(this.textSplitter.getRangeLine(i).start, this.textSplitter.getRangeLine(linesClass[1]).end);
                 let docSymbol = new vscode.DocumentSymbol(classRegExp[1], 'enum', vscode.SymbolKind.Enum, RangeClass, this.textSplitter.getRangeLine(i));
                 this.nodes[this.nodes.length - 1].push(docSymbol);
-                if(this.typeQuery == TypeQuery.allSymbols) {
+                if(this.typeQuery == TypeQuery.allSymbols
+                    || this.typeQuery == TypeQuery.publicSymbols
+                    || this.typeQuery == TypeQuery.protectedSymbols
+                    || this.typeQuery == TypeQuery.staticSymbols) {
                     this.nodes.push(docSymbol.children);
                     this.FindEnumMembers(linesClass[0], linesClass[1]);
                     this.nodes.pop();
@@ -164,7 +167,7 @@ export class CtrlSymbolsCreator {
         for (let i = start; i <= end; i++) {
             let lineText = this.textSplitter.getTextLineAt(i);
             //поле
-            let funcRegExp = this.RunRegExp(/^\s*(?<scope>private|public|protected)(?<static>\s+static)?\s+(?<const>const)?\s*(?<typeVar>[a-zA-Z0-9_<>]+)\s+(?<nameVar>\w+)\s*(?:=.*|;)/g, lineText);
+            let funcRegExp = this.RunRegExp(/^\s*(?<scope>private|public|protected)(?<static>\s+static)?\s+(?<const>const)?\s*(?<typeVar>[a-zA-Z0-9_<>]+|vector\s*<.*>)\s+(?<nameVar>\w+)\s*(?:=.*|;)/g, lineText);
             if(funcRegExp && funcRegExp.groups) {
                 let typeVar = funcRegExp.groups['typeVar'];
                 let scope = funcRegExp.groups['scope'];
@@ -192,7 +195,7 @@ export class CtrlSymbolsCreator {
                 continue;
             }
             //метод
-            funcRegExp = this.RunRegExp(/\s*(?<scope>private|public|protected)(?<static>\s+static)?\s+(?<typeMethod>[a-zA-Z0-9_<>]+)\s+(?<nameMethod>\w+)\s*\(/g, lineText);
+            funcRegExp = this.RunRegExp(/\s*(?<scope>private|public|protected)(?<static>\s+static)?\s+(?<typeMethod>[a-zA-Z0-9_<>]+|vector\s*<.*>)\s+(?<nameMethod>\w+)\s*\(/g, lineText);
             if(funcRegExp && funcRegExp.groups) {
                 let typeMethod = funcRegExp.groups['typeMethod'];
                 let nameMethod = funcRegExp.groups['nameMethod'];
@@ -312,7 +315,7 @@ export class CtrlSymbolsCreator {
             let lineText = this.textSplitter.getTextLineAt(i);
             textParams += lineText + '\n';
         }
-        let regexp = /\s*(?<const>const)?\s*(?<typeVar>[a-zA-Z0-9_\<\>]+)\s+(?<nameVar>&?[a-zA-z]\w*),?/gs;
+        let regexp = /\s*(?<const>const)?\s*(?<typeVar>[a-zA-Z0-9_\<\>]+|vector\s*<.*>)\s+(?<nameVar>&?[a-zA-z]\w*),?/gs;
         let result = regexp.exec(textParams); //пропускаем имя функции
         if(result && result.groups && result[3] == 'static') {
             let result = regexp.exec(textParams); //пропускаем статики

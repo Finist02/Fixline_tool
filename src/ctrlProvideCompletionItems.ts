@@ -15,12 +15,7 @@ export class ProvideCompletionItemsCtrl {
 	private SetSymbolsCompletionFunction(symbol: vscode.DocumentSymbol) {
 		for(let j = 0; j < symbol.children.length; j++) {
 			let variables = symbol.children[j];
-			let regex = /shared_ptr\s*<\s*(\w+)\s*>/;
-			let detail = variables.detail;
-			let match = regex.exec(detail);
-			if(match && match[1]) {
-				detail = match[1];
-			}
+			let detail = this.CheckVarType(variables.detail);
 			let completVar = new vscode.CompletionItem({label: variables.name, detail: ' ' +detail}, vscode.CompletionItemKind.Variable);
 			this.completions.push(completVar);
 		}
@@ -56,12 +51,7 @@ export class ProvideCompletionItemsCtrl {
 			complKind = vscode.CompletionItemKind.Enum;
 			isFunction =false;
 		}
-		let regex = /shared_ptr\s*<\s*(\w+)\s*>/;
-		let detail = childSymbol.detail;
-		let match = regex.exec(detail);
-		if(match && match[1]) {
-			detail = match[1];
-		}
+		let detail = this.CheckVarType(childSymbol.detail);
 		let complet = new vscode.CompletionItem({label: childSymbol.name, detail: ' ' +detail + basName}, complKind);
 		//отключен для нормального функциониорования CtrlSignatureHelpProvider
 		// if(isFunction) {
@@ -101,25 +91,13 @@ export class ProvideCompletionItemsCtrl {
 		for(let i = 0; i < symbols.length; i++) {
 			for(let j = 0; j < symbols[i].children.length; j++) {	
 				if(symbols[i].children[j].name == varName) {
-					let regex = /shared_ptr\s*<\s*(\w+)\s*>/;
-					let varType = symbols[i].children[j].detail;
-					let match = regex.exec(varType);
-					if(match && match[1]) {
-						varType = match[1];
-					}
-					return varType;
+					return this.CheckVarType(symbols[i].children[j].detail);
 				}
 				else if(symbols[i].children[j].range.contains(position)) {
 					let symbolChild = symbols[i].children[j];
 					for(let k = 0; k < symbolChild.children.length; k++) {
 						if(symbolChild.children[k].name == varName) {
-							let regex = /shared_ptr\s*<\s*(\w+)\s*>/;
-							let varType = symbolChild.children[k].detail;
-							let match = regex.exec(varType);
-							if(match && match[1]) {
-								varType = match[1];
-							}
-							return varType;
+							return this.CheckVarType(symbolChild.children[k].detail);
 						}
 					}
 				}
@@ -134,6 +112,21 @@ export class ProvideCompletionItemsCtrl {
 			}
 		})
 		return isExists;
+	}
+	private CheckVarType(varType: string)
+	{
+		let result = varType;
+		let regex = /vector\s*<\s*(.*)\s*>/;
+		let regex1 = /shared_ptr\s*<\s*(\w+)\s*>/;
+		let match = regex.exec(result);
+		if(match && match[1]) {
+			return 'vector';
+		}
+		let match1 = regex1.exec(result);
+		if(match1 && match1[1]) {
+			return match1[1];
+		}
+		return result;
 	}
 }
 
