@@ -10,6 +10,7 @@ import { CtrlHoverProvider } from './CtrlHoverProvider';
 import { CtrlSignatureHelpProvider } from './CtrlSignatureHelpProvider';
 import { CtrlSemanticTokensProvider, legend } from './ctrlSemanticTokensProvider';
 import { CtrlReferenceProvider } from './CtrlReferenceProvider';
+import { CreateChildClass } from './CtrlCreateChildClass';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -20,6 +21,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('extension.CheckScript', cmdCtrl.CheckScript));
 	context.subscriptions.push(vscode.commands.registerCommand('extension.OpenLogs', cmdCtrl.OpenLog));
 	context.subscriptions.push(vscode.commands.registerCommand('extension.OpenUnitTest', cmdCtrl.OpenUnitTest));
+	context.subscriptions.push(vscode.commands.registerCommand('extension.CreateChildClass', CreateChildClass));
 	context.subscriptions.push(vscode.commands.registerCommand("extension.CreateChangelog", cmdCtrl.CreateChangelog));
 	context.subscriptions.push(vscode.commands.registerCommand("extension.GetHelpChatGpt", cmdCtrl.GetHelpChatGpt));
 

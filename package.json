@@ -25,52 +25,68 @@
             {
                 "command": "extension.OpenUnitTest",
                 "title": "Open UnitTest",
-                "icon": "$(preview)"
+                "icon": "$(preview)",
+                "category": "Fixline"
+            },
+            {
+                "command": "extension.CreateChildClass",
+                "title": "Create child class",
+                "icon": "$(preview)",
+                "category": "Fixline"
             },
             {
                 "command": "extension.OpenPanel",
                 "title": "Open panel",
-                "icon": "$(preview)"
+                "icon": "$(preview)",
+                "category": "Fixline"
             },
             {
                 "command": "extension.OpenHelpCtrl",
                 "title": "Open ctrl Help",
-                "icon": "$(book)"
+                "icon": "$(book)",
+                "category": "Fixline"
             },
             {
                 "command": "extension.OpenProjectPanel",
                 "title": "Open project panel",
-                "icon": "$(preview)"
+                "icon": "$(preview)",
+                "category": "Fixline"
             },
             {
                 "command": "extension.CheckScript",
                 "title": "Check Script",
-                "icon": "$(debug)"
+                "icon": "$(debug)",
+                "category": "Fixline"
             },
             {
                 "command": "extension.CreateChangelog",
                 "title": "Create changelog",
-                "icon": "$(debug)"
+                "icon": "$(debug)",
+                "category": "Fixline"
             },
             {
                 "command": "extension.GetHelpChatGpt",
                 "title": "Get help Ctrlpp",
-                "icon": "$(debug)"
+                "icon": "$(debug)",
+                "category": "Fixline"
             },
             {
                 "command": "extension.RunScript",
                 "title": "Run script",
-                "icon": "$(run)"
+                "icon": "$(run)",
+                "category": "Fixline"
             },
             {
                 "command": "extension.OpenLogs",
                 "title": "Open Log",
-                "icon": "$(list-flat)"
+                "icon": "$(list-flat)",
+                "category": "Fixline"
             },
             {
                 "command": "extension.Panelpreview",
                 "title": "Panel preview",
-                "icon": "$(open-preview)"
+                "icon": "$(open-preview)",
+                "category": "Fixline"
             }
         ],
         "menus": {
