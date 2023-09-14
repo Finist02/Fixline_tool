@@ -65,7 +65,6 @@ export async function CreateChildClass() {
                     fileData = fileData.replace(/\$origClass/g, selectedClass.label);
 
                 }
-                console.log(newMembers);
                 const writeBytes = Buffer.from(fileData);
                 vscode.workspace.fs.writeFile(uriChildClass, writeBytes).then(() => {
                     OpenFileVscode(uriChildClass);
