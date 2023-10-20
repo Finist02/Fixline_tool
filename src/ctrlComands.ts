@@ -84,8 +84,8 @@ export async function GetHelpChatGpt()
 	});
 }
 export async function CreateChangelog() {
-	const GITLAB_TOKEN = vscode.workspace.getConfiguration("FixLineTool.OpenPanel").get("GitlabToken");
-	const GITLAB_URL = vscode.workspace.getConfiguration("FixLineTool.OpenPanel").get("GitlabUrl");
+	const GITLAB_TOKEN = vscode.workspace.getConfiguration("FixLineTool.Gitlab").get("GitlabToken");
+	const GITLAB_URL = vscode.workspace.getConfiguration("FixLineTool.Gitlab").get("GitlabUrl");
 	if( typeof(GITLAB_TOKEN) !== 'string' ||  typeof(GITLAB_URL) !== 'string') {
 		return;
 	}
@@ -197,7 +197,8 @@ export function OpenPanelWithPath(path: string | undefined) {
 		path = path.slice(path.indexOf("panels") + 7);
 		let user = vscode.workspace.getConfiguration("FixLineTool.OpenPanel").get("UserName");
 		let pass = vscode.workspace.getConfiguration("FixLineTool.OpenPanel").get("Password");
-		let command = getPathInConfigFile('pvss_path') +'/bin/WCCOAui.exe -p ' + path + ' -user ' + user + ':' + pass + ' -proj ' + getPathInConfigFile('proj_name');
+		let dollars = vscode.workspace.getConfiguration("FixLineTool.OpenPanel").get("Dollars");
+		let command = getPathInConfigFile('pvss_path') +'/bin/WCCOAui.exe -p ' + path + dollars + ' -user ' + user + ':' + pass + ' -proj ' + getPathInConfigFile('proj_name');
 		const output = execShell(command);
 	}
 }

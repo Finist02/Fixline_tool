@@ -145,17 +145,22 @@
                         "default": "root",
                         "description": "User Name"
                     },
+                    "FixLineTool.OpenPanel.Dollars": {
+                        "type": "string",
+                        "default": "",
+                        "description": "Dollars"
+                    },
                     "FixLineTool.OpenPanel.Password": {
                         "type": "string",
                         "default": "",
                         "description": "Password"
                     },
-                    "FixLineTool.OpenPanel.GitlabToken": {
+                    "FixLineTool.Gitlab.GitlabToken": {
                         "type": "string",
                         "default": "",
                         "description": "Token"
                     },
-                    "FixLineTool.OpenPanel.GitlabUrl": {
+                    "FixLineTool.Gitlab.GitlabUrl": {
                         "type": "string",
                         "default": "http://10.0.16.2",
                         "description": "GitlabUrl"
