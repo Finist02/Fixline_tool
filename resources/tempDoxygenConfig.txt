@@ -32,7 +32,7 @@ DOXYFILE_ENCODING      = UTF-8
 # title of most generated pages and in a few other places.
 # The default value is: My Project.
 
-PROJECT_NAME           = "avtovaz_configurator"
+PROJECT_NAME           = "avtovaz_smp99"
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. This
 # could be handy for archiving the generated documentation or if some version
@@ -58,7 +58,7 @@ PROJECT_LOGO           = ""
 # entered, it will be relative to the location where doxygen was started. If
 # left blank the current directory will be used.
 
-OUTPUT_DIRECTORY       = "D:/Projects/Kaskad_Proj/SubAvtovaz/avtovaz_configurator/data/help/avtovaz_configurator/"
+OUTPUT_DIRECTORY       = "D:/Projects/Kaskad_Proj/SubAvtovaz/avtovaz_smp99/data/help/avtovaz_smp99/"
 
 # If the CREATE_SUBDIRS tag is set to YES then doxygen will create 4096 sub-
 # directories (in 2 levels) under the output directory of each output format and
@@ -170,7 +170,7 @@ FULL_PATH_NAMES        = YES
 # will be relative from the directory where doxygen is started.
 # This tag requires that the tag FULL_PATH_NAMES is set to YES.
 
-STRIP_FROM_PATH        = "C:/Users/Finist/AppData/Local/Temp/KASKAD_docuGenerator_K8dKvE/"
+STRIP_FROM_PATH        = "C:/Users/Finist/AppData/Local/Temp/KASKAD_docuGenerator_ynzBzf/"
 
 # The STRIP_FROM_INC_PATH tag can be used to strip a user-defined part of the
 # path mentioned in the documentation of a class, which tells the reader which
@@ -813,7 +813,7 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = "C:/Users/Finist/AppData/Local/Temp/KASKAD_docuGenerator_K8dKvE/"
+INPUT                  = "C:/Users/Finist/AppData/Local/Temp/KASKAD_docuGenerator_ynzBzf/"
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -890,7 +890,7 @@ EXCLUDE_SYMBOLS        =
 # that contain example code fragments that are included (see the \include
 # command).
 
-EXAMPLE_PATH           = "C:/Users/Finist/AppData/Local/Temp/KASKAD_docuGenerator_K8dKvE/"
+EXAMPLE_PATH           = "C:/Users/Finist/AppData/Local/Temp/KASKAD_docuGenerator_ynzBzf/"
 
 # If the value of the EXAMPLE_PATH tag contains directories, you can use the
 # EXAMPLE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp and
@@ -910,7 +910,7 @@ EXAMPLE_RECURSIVE      = NO
 # that contain images that are to be included in the documentation (see the
 # \image command).
 
-IMAGE_PATH             = "D:/Projects/Kaskad_Proj/SubAvtovaz/avtovaz_configurator/pictures/" \
+IMAGE_PATH             = "D:/Projects/Kaskad_Proj/SubAvtovaz/avtovaz_smp99/pictures/" \
                          "C:/Sybcom/Kaskad/3.18/pictures/"
 
 # The INPUT_FILTER tag can be used to specify a program that doxygen should
@@ -1397,7 +1397,7 @@ QCH_FILE               = "index.qch"
 # The default value is: org.doxygen.Project.
 # This tag requires that the tag GENERATE_QHP is set to YES.
 
-QHP_NAMESPACE          = "avtovaz_configurator.318"
+QHP_NAMESPACE          = "avtovaz_smp99.318"
 
 # The QHP_VIRTUAL_FOLDER tag specifies the namespace to use when generating Qt
 # Help Project output. For more information please see Qt Help Project / Virtual
@@ -1406,7 +1406,7 @@ QHP_NAMESPACE          = "avtovaz_configurator.318"
 # The default value is: doc.
 # This tag requires that the tag GENERATE_QHP is set to YES.
 
-QHP_VIRTUAL_FOLDER     = "doc_avtovaz_configurator318"
+QHP_VIRTUAL_FOLDER     = "doc_avtovaz_smp99318"
 
 # If the QHP_CUST_FILTER_NAME tag is set, it specifies the name of a custom
 # filter to add. For more information please see Qt Help Project / Custom

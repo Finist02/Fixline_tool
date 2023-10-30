@@ -103,35 +103,51 @@ export async function CreateDoxyHelp() {
 	let doxygen_convertCtlPath = getPathInConfigFile('proj_path') + '/scripts/doxygen_convertCtl.ctl'
 	fs.copyFileSync(pathResourseFolder + '/resources/doxygen_convertCtl.ctl',  doxygen_convertCtlPath);
 	pathCreateHelp.forEach(pickedItem => {
-		const pathSubProj = pickedItem.description;
-		const pathFolderHelp = pathSubProj + '/data/help/' + pickedItem.label + '/';
-		if(!fs.existsSync(pathSubProj + '/data/help')) {
-			fs.mkdirSync(pathSubProj + '/data/help', {recursive: true,});
-		}
-		let configDoxy = fs.readFileSync(pathResourseFolder + '/resources/doxygenConfig.txt', 'utf8');
-		configDoxy = configDoxy.replace(/\${PROJECT_NAME}/gm, pickedItem.label);
-		configDoxy = configDoxy.replace('${OUTPUT_DIRECTORY}', pathFolderHelp);
-		configDoxy = configDoxy.replace('${IMAGE_PATH}', pathSubProj + '/pictures/');
-		const dirSourcesFolder = CopyFolderScriptsToTempFolder(pathSubProj + '/scripts/');
-		configDoxy = configDoxy.replace(/\${TEMP_PATH_SOURCE}/gm, dirSourcesFolder + '/');
-		const fd = fs.openSync(pathResourseFolder + '/resources/tempDoxygenConfig.txt', 'w+');
-		const position = 0;
-		fs.writeSync(fd, configDoxy, position, 'utf8');
-		let innerFiles = ThroughFiles(dirSourcesFolder);
-		innerFiles.forEach(filePath => {
-			const command = getPathInConfigFile('pvss_path') + '/bin/WCCOActrl.exe -proj ' + getPathInConfigFile('proj_name') + ' doxygen_convertCtl.ctl ' + filePath + ' ' + dirSourcesFolder;
-			cp.execSync(command);
-		})
-		execShell('doxygen ' + pathResourseFolder + '/resources/tempDoxygenConfig.txt').then(response  => {
-			if (dirSourcesFolder) {
-				fs.rmSync(dirSourcesFolder, { recursive: true });
-			}
-			vscode.window.showInformationMessage(pickedItem.label + ' документация собрана');
-		});
+		CreateHelpInSubProjectWithPb(pickedItem, pathResourseFolder);
 	});
 	if(fs.existsSync(doxygen_convertCtlPath)) {
 		fs.unlinkSync(doxygen_convertCtlPath);
 	}
+}
+
+function CreateHelpInSubProjectWithPb(pickedItem: vscode.QuickPickItem, pathResourseFolder: string) {
+	vscode.window.withProgress({
+        location: vscode.ProgressLocation.Notification,
+        title: pickedItem.label,
+        cancellable: false
+    },(progress) => {
+		progress.report({ increment: 0 });
+		const p = new Promise<void>(resolve => {			
+			const pathSubProj = pickedItem.description;
+			const pathFolderHelp = pathSubProj + '/data/help/' + pickedItem.label + '/';
+			if(!fs.existsSync(pathSubProj + '/data/help')) {
+				fs.mkdirSync(pathSubProj + '/data/help', {recursive: true,});
+			}
+			let configDoxy = fs.readFileSync(pathResourseFolder + '/resources/doxygenConfig.txt', 'utf8');
+			configDoxy = configDoxy.replace(/\${PROJECT_NAME}/gm, pickedItem.label);
+			configDoxy = configDoxy.replace('${OUTPUT_DIRECTORY}', pathFolderHelp);
+			configDoxy = configDoxy.replace('${IMAGE_PATH}', pathSubProj + '/pictures/');
+			const dirSourcesFolder = CopyFolderScriptsToTempFolder(pathSubProj + '/scripts/');
+			configDoxy = configDoxy.replace(/\${TEMP_PATH_SOURCE}/gm, dirSourcesFolder + '/');
+			const fd = fs.openSync(pathResourseFolder + '/resources/tempDoxygenConfig.txt', 'w+');
+			const position = 0;
+			fs.writeSync(fd, configDoxy, position, 'utf8');
+			let innerFiles = ThroughFiles(dirSourcesFolder);
+			const lenghtInnerFiles = 100 / innerFiles.length;
+			innerFiles.forEach(filePath => {
+				const command = getPathInConfigFile('pvss_path') + '/bin/WCCOActrl.exe -proj ' + getPathInConfigFile('proj_name') + ' doxygen_convertCtl.ctl ' + filePath + ' ' + dirSourcesFolder;
+				cp.execSync(command);
+				progress.report({ increment: lenghtInnerFiles, message: filePath});
+			})
+			execShell('doxygen ' + pathResourseFolder + '/resources/tempDoxygenConfig.txt').then(response  => {
+				if (dirSourcesFolder) {
+					fs.rmSync(dirSourcesFolder, { recursive: true });
+				}
+			});
+			resolve();
+		});
+		return p;
+	});
 }
 
 function CopyFolderScriptsToTempFolder(sourceFolderPath: string) {
