@@ -23,6 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('extension.OpenUnitTest', cmdCtrl.OpenUnitTest));
 	context.subscriptions.push(vscode.commands.registerCommand('extension.CreateChildClass', CreateChildClass));
 	context.subscriptions.push(vscode.commands.registerCommand("extension.CreateChangelog", cmdCtrl.CreateChangelog));
+	context.subscriptions.push(vscode.commands.registerCommand("extension.CreateDoxyHelp", cmdCtrl.CreateDoxyHelp));
 	context.subscriptions.push(vscode.commands.registerCommand("extension.GetHelpChatGpt", cmdCtrl.GetHelpChatGpt));
 
 	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider('ctl', panelPreviewProvider));

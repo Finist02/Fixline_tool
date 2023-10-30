@@ -6,6 +6,7 @@ import { QuickPickItemKind} from 'vscode';
 import axios from 'axios';
 import * as path from 'path';
 import hljs from 'highlight.js';
+import os = require('os');
 const md = require('markdown-it')({
 	highlight: function (str:string, lang: string ) {
 		if (lang && hljs.getLanguage(lang)) {
@@ -83,6 +84,74 @@ export async function GetHelpChatGpt()
 			</html>`;
 	});
 }
+
+export async function CreateDoxyHelp() {
+	let projectsFolders = GetProjectsInConfigFile(false);
+	let items: QuickPickItem[] = [];
+	projectsFolders.forEach(path => {
+		let splittedPath  = path.split('/');
+		items.push({
+			label: splittedPath[splittedPath.length-1],
+			description: path
+		});
+	})
+	const pathCreateHelp = await vscode.window.showQuickPick(items, {canPickMany: true});
+	if(pathCreateHelp == undefined) return;
+	const extensionFixline = vscode.extensions.getExtension('Danil.fixline-tool');
+	if(extensionFixline == undefined) return;
+	const pathResourseFolder = extensionFixline.extensionPath;
+	let doxygen_convertCtlPath = getPathInConfigFile('proj_path') + '/scripts/doxygen_convertCtl.ctl'
+	fs.copyFileSync(pathResourseFolder + '/resources/doxygen_convertCtl.ctl',  doxygen_convertCtlPath);
+	pathCreateHelp.forEach(pickedItem => {
+		const pathSubProj = pickedItem.description;
+		const pathFolderHelp = pathSubProj + '/data/help/' + pickedItem.label + '/';
+		if(!fs.existsSync(pathSubProj + '/data/help')) {
+			fs.mkdirSync(pathSubProj + '/data/help', {recursive: true,});
+		}
+		let configDoxy = fs.readFileSync(pathResourseFolder + '/resources/doxygenConfig.txt', 'utf8');
+		configDoxy = configDoxy.replace(/\${PROJECT_NAME}/gm, pickedItem.label);
+		configDoxy = configDoxy.replace('${OUTPUT_DIRECTORY}', pathFolderHelp);
+		configDoxy = configDoxy.replace('${IMAGE_PATH}', pathSubProj + '/pictures/');
+		const dirSourcesFolder = CopyFolderScriptsToTempFolder(pathSubProj + '/scripts/');
+		configDoxy = configDoxy.replace(/\${TEMP_PATH_SOURCE}/gm, dirSourcesFolder + '/');
+		const fd = fs.openSync(pathResourseFolder + '/resources/tempDoxygenConfig.txt', 'w+');
+		const position = 0;
+		fs.writeSync(fd, configDoxy, position, 'utf8');
+		let innerFiles = ThroughFiles(dirSourcesFolder);
+		innerFiles.forEach(filePath => {
+			const command = getPathInConfigFile('pvss_path') + '/bin/WCCOActrl.exe -proj ' + getPathInConfigFile('proj_name') + ' doxygen_convertCtl.ctl ' + filePath + ' ' + dirSourcesFolder;
+			cp.execSync(command);
+		})
+		execShell('doxygen ' + pathResourseFolder + '/resources/tempDoxygenConfig.txt').then(response  => {
+			if (dirSourcesFolder) {
+				fs.rmSync(dirSourcesFolder, { recursive: true });
+			}
+			vscode.window.showInformationMessage(pickedItem.label + ' документация собрана');
+		});
+	});
+	if(fs.existsSync(doxygen_convertCtlPath)) {
+		fs.unlinkSync(doxygen_convertCtlPath);
+	}
+}
+
+function CopyFolderScriptsToTempFolder(sourceFolderPath: string) {
+	let tmpDir = '';
+	const appPrefix = 'KASKAD_docuGenerator_';
+	try {
+		tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), appPrefix));
+		try {
+			fs.cpSync(sourceFolderPath, tmpDir, {recursive: true,});
+		} catch (e) {
+			console.log(e);
+		}
+	}
+	catch {
+		// handle error
+	}
+	tmpDir = tmpDir.replace(/\\/gm, '/');
+	return tmpDir;
+}
+
 export async function CreateChangelog() {
 	const GITLAB_TOKEN = vscode.workspace.getConfiguration("FixLineTool.Gitlab").get("GitlabToken");
 	const GITLAB_URL = vscode.workspace.getConfiguration("FixLineTool.Gitlab").get("GitlabUrl");

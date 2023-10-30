@@ -65,6 +65,12 @@
                 "category": "Fixline"
             },
             {
+                "command": "extension.CreateDoxyHelp",
+                "title": "Create help doxygen",
+                "icon": "$(debug)",
+                "category": "Fixline"
+            },
+            {
                 "command": "extension.GetHelpChatGpt",
                 "title": "Get help Ctrlpp",
                 "icon": "$(debug)",
