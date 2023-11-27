@@ -203,7 +203,7 @@ export async function CreateChangelog() {
 			}
 		}).then(response  => {
 			const projectsProp = response.data;
-			if(projectsProp[0]['name'] ==  pathCreateChangelog.label) {
+			if(projectsProp[0]['path'] ==  pathCreateChangelog.label) {
 				const idProject = projectsProp[0]['id'];
 				if (fs.existsSync(pathChangelog)) {
 					changelogData = fs.readFileSync(pathChangelog, 'utf8');
