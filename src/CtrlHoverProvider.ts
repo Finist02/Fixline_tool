@@ -179,7 +179,7 @@ export class CtrlHoverProvider  implements vscode.HoverProvider {
 		}
 		let lineText = document.getTextLineAt(rangeVar.start.line-1);
 		if(lineText.match(/^\s*\*\//)) {
-			for(let i = 1; i < 20; i++) {
+			for(let i = 1; i < 50; i++) {
 				lineText = document.getTextLineAt(rangeVar.start.line-i);
 				if(lineText.match(/^\s*\/\*/)) {
 					lineNumOpenComment = lineNumOpenComment - i+2;
