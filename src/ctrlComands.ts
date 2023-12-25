@@ -85,6 +85,53 @@ export async function GetHelpChatGpt()
 	});
 }
 
+export async function StartUnitTests() {
+	let projectsFolders = GetProjectsInConfigFile(false);
+	let items: QuickPickItem[] = [];
+	projectsFolders.forEach(path => {
+		let splittedPath  = path.split('/');
+		items.push({
+			label: splittedPath[splittedPath.length-1],
+			description: path
+		});
+	})
+	const pathStartTests = await vscode.window.showQuickPick(items);
+	if(pathStartTests == undefined) return;
+	const files = ThroughFiles(pathStartTests.description + '/scripts/tests/');
+	let reportPath = getPathInConfigFile('proj_path') + '/data/oaTest/results/report.xml';
+	fs.rmSync(reportPath);
+	vscode.window.withProgress({
+        location: vscode.ProgressLocation.Notification,
+        title: pathStartTests.label,
+        cancellable: false
+    },(progress) => {
+		progress.report({ increment: 0 });
+		const p = new Promise<void>(resolve => {
+			const lenghtInnerFiles = 100 / files.length;
+			files.forEach(pathFile => {
+				const command = getPathInConfigFile('pvss_path') + '/bin/WCCOActrl.exe -proj ' + getPathInConfigFile('proj_name') + ' ' + pathFile;
+				cp.execSync(command);
+				progress.report({ increment: lenghtInnerFiles, message: '\n' + pathFile});
+			});
+			resolve();
+		});
+		return p;
+	});
+	const fileData = fs.readFileSync(reportPath, 'utf8');
+	if(fileData.indexOf('<failure message=') > 0) {
+		vscode.window.showErrorMessage('Тесты провалены', 'Посмотреть отчет').then(selection => {
+			if(selection == 'Посмотреть отчет') {
+				vscode.workspace.openTextDocument(reportPath).then((a: vscode.TextDocument) => {
+					vscode.window.showTextDocument(a, 1, false)
+				})
+			}
+		});
+	}
+	else {
+		vscode.window.showInformationMessage('Все тесты пройдены', 'Ok');
+	}
+}
+
 export async function CreateDoxyHelp() {
 	let projectsFolders = GetProjectsInConfigFile(false);
 	let items: QuickPickItem[] = [];

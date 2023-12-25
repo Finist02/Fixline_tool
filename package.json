@@ -93,6 +93,11 @@
                 "title": "Panel preview",
                 "icon": "$(open-preview)",
                 "category": "Fixline"
+            },
+            {
+                "command": "extension.StartUnitTests",
+                "title": "Start tests",
+                "category": "Fixline"
             }
         ],
         "menus": {
@@ -168,7 +173,7 @@
                     },
                     "FixLineTool.Gitlab.GitlabUrl": {
                         "type": "string",
-                        "default": "http://10.0.16.2",
+                        "default": "http:///git.fixline.tech/",
                         "description": "GitlabUrl"
                     }
                 }
