@@ -166,6 +166,7 @@ function CreateHelpInSubProjectWithPb(pickedItem: vscode.QuickPickItem, pathReso
 		progress.report({ increment: 0 });
 		const p = new Promise<void>(resolve => {			
 			const pathSubProj = pickedItem.description;
+			if(pathSubProj == undefined) return;
 			const pathFolderHelp = pathSubProj + '/data/help/' + pickedItem.label + '/';
 			if(!fs.existsSync(pathSubProj + '/data/help')) {
 				fs.mkdirSync(pathSubProj + '/data/help', {recursive: true,});
@@ -174,15 +175,15 @@ function CreateHelpInSubProjectWithPb(pickedItem: vscode.QuickPickItem, pathReso
 			configDoxy = configDoxy.replace(/\${PROJECT_NAME}/gm, pickedItem.label);
 			configDoxy = configDoxy.replace('${OUTPUT_DIRECTORY}', pathFolderHelp);
 			configDoxy = configDoxy.replace('${IMAGE_PATH}', pathSubProj + '/pictures/');
-			const dirSourcesFolder = CopyFolderScriptsToTempFolder(pathSubProj + '/scripts/');
-			configDoxy = configDoxy.replace(/\${TEMP_PATH_SOURCE}/gm, dirSourcesFolder + '/');
+			const dirSourcesFolder = CopyFolderProjForDoxyToTempFolder(pathSubProj);
+			configDoxy = configDoxy.replace(/\${TEMP_PATH_SOURCE}/gm, dirSourcesFolder) + '/scripts/';
 			const fd = fs.openSync(pathResourseFolder + '/resources/tempDoxygenConfig.txt', 'w+');
 			const position = 0;
 			fs.writeSync(fd, configDoxy, position, 'utf8');
-			let innerFiles = ThroughFiles(dirSourcesFolder);
+			let innerFiles = ThroughFiles(dirSourcesFolder + '/scripts/');
 			const lenghtInnerFiles = 100 / innerFiles.length;
 			innerFiles.forEach(filePath => {
-				const command = getPathInConfigFile('pvss_path') + '/bin/WCCOActrl.exe -proj ' + getPathInConfigFile('proj_name') + ' doxygen_convertCtl.ctl ' + filePath + ' ' + dirSourcesFolder;
+				const command = getPathInConfigFile('pvss_path') + '/bin/WCCOActrl.exe -proj ' + getPathInConfigFile('proj_name') + ' doxygen_convertCtl.ctl ' + filePath + ' ' + dirSourcesFolder + '/scripts/';
 				cp.execSync(command);
 				progress.report({ increment: lenghtInnerFiles, message: filePath});
 			})
@@ -197,13 +198,19 @@ function CreateHelpInSubProjectWithPb(pickedItem: vscode.QuickPickItem, pathReso
 	});
 }
 
-function CopyFolderScriptsToTempFolder(sourceFolderPath: string) {
+function CopyFolderProjForDoxyToTempFolder(sourceFoldersPath: string) {
 	let tmpDir = '';
 	const appPrefix = 'KASKAD_docuGenerator_';
 	try {
 		tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), appPrefix));
 		try {
-			fs.cpSync(sourceFolderPath, tmpDir, {recursive: true,});
+			fs.cpSync(sourceFoldersPath + '/scripts/', tmpDir + '/scripts/', {recursive: true,});
+			if(fs.existsSync(sourceFoldersPath + '/pictures/')) {
+				fs.cpSync(sourceFoldersPath + '/pictures/', tmpDir + '/pictures/', {recursive: true,});
+			}
+			if(fs.existsSync(sourceFoldersPath + '/doc/')) {
+				fs.cpSync(sourceFoldersPath + '/doc/', tmpDir + '/doc/', {recursive: true,});
+			}
 		} catch (e) {
 			console.log(e);
 		}
