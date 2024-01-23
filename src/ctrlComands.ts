@@ -175,6 +175,7 @@ function CreateHelpInSubProjectWithPb(pickedItem: vscode.QuickPickItem, pathReso
 			configDoxy = configDoxy.replace(/\${PROJECT_NAME}/gm, pickedItem.label);
 			configDoxy = configDoxy.replace('${OUTPUT_DIRECTORY}', pathFolderHelp);
 			configDoxy = configDoxy.replace('${IMAGE_PATH}', pathSubProj + '/pictures/');
+			configDoxy = configDoxy.replace('${IMAGE_PATH_DOC}', pathSubProj + '/doc/');
 			const dirSourcesFolder = CopyFolderProjForDoxyToTempFolder(pathSubProj);
 			configDoxy = configDoxy.replace(/\${TEMP_PATH_SOURCE}/gm, dirSourcesFolder) + '/scripts/';
 			const fd = fs.openSync(pathResourseFolder + '/resources/tempDoxygenConfig.txt', 'w+');
