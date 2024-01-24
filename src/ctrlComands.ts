@@ -168,9 +168,10 @@ function CreateHelpInSubProjectWithPb(pickedItem: vscode.QuickPickItem, pathReso
 			const pathSubProj = pickedItem.description;
 			if(pathSubProj == undefined) return;
 			const pathFolderHelp = pathSubProj + '/data/help/' + pickedItem.label + '/';
-			if(!fs.existsSync(pathSubProj + '/data/help')) {
-				fs.mkdirSync(pathSubProj + '/data/help', {recursive: true,});
+			if(fs.existsSync(pathSubProj + '/data/help')) {
+				fs.rmSync(pathSubProj + '/data/help', { recursive: true });
 			}
+			fs.mkdirSync(pathSubProj + '/data/help', {recursive: true,});
 			let configDoxy = fs.readFileSync(pathResourseFolder + '/resources/doxygenConfig.txt', 'utf8');
 			configDoxy = configDoxy.replace(/\${PROJECT_NAME}/gm, pickedItem.label);
 			configDoxy = configDoxy.replace('${OUTPUT_DIRECTORY}', pathFolderHelp);
@@ -211,6 +212,9 @@ function CopyFolderProjForDoxyToTempFolder(sourceFoldersPath: string) {
 			}
 			if(fs.existsSync(sourceFoldersPath + '/doc/')) {
 				fs.cpSync(sourceFoldersPath + '/doc/', tmpDir + '/doc/', {recursive: true,});
+				if(fs.existsSync(sourceFoldersPath + '/CHANGELOG.md')) {
+					fs.cpSync(sourceFoldersPath + '/CHANGELOG.md', tmpDir + '/doc/CHANGELOG.md', {recursive: true,});
+				}
 			}
 		} catch (e) {
 			console.log(e);
@@ -262,11 +266,15 @@ export async function CreateChangelog() {
 				const idProject = projectsProp[0]['id'];
 				if (fs.existsSync(pathChangelog)) {
 					changelogData = fs.readFileSync(pathChangelog, 'utf8');
-					let resultReg = /(?<=@)[\da-f]{8}/.exec(changelogData);
-					if(resultReg)
-					{
-						firstCommit = resultReg[0];
+					if(changelogData.startsWith('# История изменений\n\n')) {
+						changelogData = changelogData.substring('# История изменений\n\n'.length);
 					}
+					// let resultReg = /(?<=@)[\da-f]{8}/.exec(changelogData);
+					// if(resultReg)
+					// {
+					// 	firstCommit = resultReg[0];
+					// }				
+					firstCommit  = cp.execSync('cd /D'+pathCreateChangelog.description+' && git log -n 1 --pretty=format:%H -- CHANGELOG.md').toString();
 				}
 				axios.get(GITLAB_URL+'/api/v4/projects/'+idProject+'/repository/changelog?'
 					+'version='+versionRelease
@@ -278,7 +286,7 @@ export async function CreateChangelog() {
 							'PRIVATE-TOKEN': GITLAB_TOKEN
 					}
 				}).then(response => {
-					const writeBytes = Buffer.from(response.data['notes'] + '\n' + changelogData);
+					const writeBytes = Buffer.from('# История изменений\n\n' + response.data['notes'] + '\n' + changelogData);
 					vscode.workspace.fs.writeFile(uriToFChangelog, writeBytes).then(() => {
 						OpenFileVscode(uriToFChangelog);
 					});	
