@@ -98,6 +98,11 @@
                 "command": "extension.StartUnitTests",
                 "title": "Start tests",
                 "category": "Fixline"
+            },
+            {
+                "command": "extension.CreateUMLDiagrams",
+                "title": "Create UML diagrams",
+                "category": "Fixline"
             }
         ],
         "menus": {
@@ -208,6 +213,7 @@
         "axios": "^1.4.0",
         "fsp-xml-parser": "^1.0.0",
         "highlight.js": "^11.8.0",
-        "markdown-it": "^13.0.1"
+        "markdown-it": "^13.0.1",
+        "xml2js": "^0.6.2"
     }
 }

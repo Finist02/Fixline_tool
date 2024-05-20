@@ -175,10 +175,10 @@ export class CtrlSymbolsCreator {
                 let docSymbol;
                 let SelectionRange = new vscode.Range(new vscode.Position(i, lineText.indexOf(nameVar)), new vscode.Position(i, lineText.indexOf(nameVar) + nameVar.length));
                 if(funcRegExp.groups['const'] == undefined) {
-                    docSymbol = new vscode.DocumentSymbol(nameVar, typeVar, vscode.SymbolKind.Field, this.textSplitter.getRangeLine(i), SelectionRange);
+                    docSymbol = new vscode.DocumentSymbol(nameVar, scope + ' ' + typeVar, vscode.SymbolKind.Field, this.textSplitter.getRangeLine(i), SelectionRange);
                 }
                 else {
-                    docSymbol = new vscode.DocumentSymbol(nameVar, typeVar, vscode.SymbolKind.Constant, this.textSplitter.getRangeLine(i), SelectionRange);
+                    docSymbol = new vscode.DocumentSymbol(nameVar, scope + ' ' + typeVar, vscode.SymbolKind.Constant, this.textSplitter.getRangeLine(i), SelectionRange);
                 }
                 if(this.typeQuery == TypeQuery.allSymbols) {
                     this.nodes[this.nodes.length - 1].push(docSymbol);
@@ -205,7 +205,7 @@ export class CtrlSymbolsCreator {
                 if(linesFunc[0] < 0 || linesInnerParams[0] < 0) continue;
                 let RangeFunc = new vscode.Range(this.textSplitter.getRangeLine(i).start, this.textSplitter.getRangeLine(linesFunc[1]).end);
                 let SelectionRange = new vscode.Range(new vscode.Position(i, lineText.indexOf(nameMethod)), new vscode.Position(i, lineText.indexOf(nameMethod) + nameMethod.length));
-                let docSymbol = new vscode.DocumentSymbol(nameMethod, typeMethod, vscode.SymbolKind.Method, RangeFunc, SelectionRange);                
+                let docSymbol = new vscode.DocumentSymbol(nameMethod, scope + ' ' + typeMethod, vscode.SymbolKind.Method, RangeFunc, SelectionRange);                
                 if(this.typeQuery == TypeQuery.allSymbols) {
                     this.nodes[this.nodes.length - 1].push(docSymbol);
                     this.nodes.push(docSymbol.children);
