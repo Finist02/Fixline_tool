@@ -105,7 +105,7 @@ export class CtrlHoverProvider  implements vscode.HoverProvider {
 					//метод или переменная в функции
 					for(let j = 0; j < symbol.children.length; j++) {
 						let childSymbol = symbol.children[j];
-						if(childSymbol.name == textUnderCursor) {
+						if(childSymbol.name == textUnderCursor && varBefore == '') {
 							return this.GetTextComment(document, childSymbol);
 						}
 						if(varBefore != '' && childSymbol.name == varBefore) {

@@ -104,7 +104,7 @@ export class CtrlDefinitionProvider implements vscode.DefinitionProvider {
 						//метод или переменная в функции
 						for(let j = 0; j < symbol.children.length; j++) {
 							let childSymbol = symbol.children[j];
-							if(childSymbol.name == textUnderCursor) {
+							if(childSymbol.name == textUnderCursor && varBefore == '') {
 								location =  new vscode.Location(document.uri, childSymbol.selectionRange);
 								return location;
 							}
