@@ -547,6 +547,11 @@ export const ThroughFiles = (directory: string) => {
 	return innerFiles;
 }
 
+export function GetDirectories(directory: string): string[] {
+    return fs.readdirSync(directory).filter(file => fs.statSync(path.join(directory, file)).isDirectory())
+}
+
+
 export function  GetProjectsInConfigFile(withPvss = true): string[] {
 	let paths = [];
 	let regexp =/proj_path = \"(.*?)\"/g;

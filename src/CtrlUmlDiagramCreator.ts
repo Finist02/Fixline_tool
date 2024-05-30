@@ -2,7 +2,7 @@ import * as cmdCtrl from './ctrlComands';
 import * as fs from 'fs';
 import * as vscode from 'vscode';
 import { QuickPickItem } from 'vscode';
-import { CtrlSymbolsCreator, TypeQuery } from './ctrlSymbolsCreator';
+import { CtrlSymbolsCreator, TextSplitter, TypeQuery } from './ctrlSymbolsCreator';
 var xml2js = require('xml2js');
 
 export async function CreateUMLDiagrams() {
@@ -15,22 +15,40 @@ export async function CreateUMLDiagrams() {
 			description: path
 		});
 	})
-	const pathCreateUML = await vscode.window.showQuickPick(items);
+	const selectedSubProj = await vscode.window.showQuickPick(items);
+	if(selectedSubProj == undefined) return;
+	const foldersInSubProjectClasses = cmdCtrl.GetDirectories(selectedSubProj.description + '/scripts/libs/classes');
+	
+	let items1: QuickPickItem[] = [];
+	items1.push({
+		label: 'all',
+		description: selectedSubProj.description + '/scripts/libs/classes/'
+	});
+	foldersInSubProjectClasses.forEach(path => {
+		items1.push({
+			label: path,
+			description: selectedSubProj.description + '/scripts/libs/classes/' + path
+		});
+	})
+	const pathCreateUML = await vscode.window.showQuickPick(items1);
 	if(pathCreateUML == undefined) return;
-	const pathsScript = cmdCtrl.ThroughFiles(pathCreateUML.description + '/scripts/libs/classes');
-    let structFolders = {};
+	if(pathCreateUML.description == undefined) return;
+	const pathsScript = cmdCtrl.ThroughFiles(pathCreateUML.description);
+	let structFolders = {};
 	let creator = new DrawIoCreator();
 	pathsScript.forEach(pathScript => {
-        let fileEndPath = pathScript.replace(pathCreateUML.description?.replace(/\//g, '\\') + '\\scripts\\libs\\classes\\', '');
-        let uri = vscode.Uri.file(pathScript);
-        let fileData = fs.readFileSync(pathScript, 'utf8');
-        let ctrlSymbolsCreator = new CtrlSymbolsCreator(fileData, TypeQuery.allSymbols);
-        let symbols = ctrlSymbolsCreator.GetSymbols();
+		let fileEndPath = pathScript.replace(pathCreateUML.description?.replace(/\//g, '\\') + '\\scripts\\libs\\classes\\', '');
+		let uri = vscode.Uri.file(pathScript);
+		let fileData = fs.readFileSync(pathScript, 'utf8');
+		let ctrlSymbolsCreator = new CtrlSymbolsCreator(fileData, TypeQuery.allSymbols);
+		let symbols = ctrlSymbolsCreator.GetSymbols();
+		const textSplitter = new TextSplitter(fileData);
+		creator.SetTextSplitter(textSplitter);
 		creator.AddSymbols(symbols);
-    });
+	});
 	let drawIoData = creator.GetDocument();
 	const writeBytes = Buffer.from(drawIoData);
-	let uriFile = vscode.Uri.parse("file:" + pathCreateUML.description + '/file.drawio');
+	let uriFile = vscode.Uri.parse("file:" + selectedSubProj.description + '/' + pathCreateUML.label + '.drawio');
 	vscode.workspace.fs.writeFile(uriFile, writeBytes).then(() => {
 		vscode.workspace.openTextDocument(uriFile).then((a: vscode.TextDocument) => {
 			vscode.window.showTextDocument(a, 1, true)
@@ -65,6 +83,10 @@ class DrawIoCreator {
 	private id = 2;
 	private posX = 30;
 	private posY = 30;
+	private maxCurrentY = this.posY;
+	private textSplitter: TextSplitter | undefined;
+	private fields: string[] = new Array;
+	private methods: string[] = new Array;
 	private cellArray : mxCell[] = [{$: {id: "0"}},	{$: {id: "1", parent: "0"}}];
 	private drawDoc = {
 		mxfile: {
@@ -102,13 +124,38 @@ class DrawIoCreator {
 		}
 	};
 	
-	public AddSymbols(symbols: vscode.DocumentSymbol[])
-	{
+	public SetTextSplitter(textSplitter: TextSplitter) {
+		this.textSplitter = textSplitter;
+	}
+
+	public AddSymbols(symbols: vscode.DocumentSymbol[])	{
 		symbols.forEach(symbol =>{
 			if(symbol.kind == vscode.SymbolKind.Class) {
-				console.log(symbol);
-				this.PushClass(symbol);
-			}			
+				symbol.children.forEach(child => {
+					if(this.textSplitter == undefined) return;
+					const symbolText = this.textSplitter.getText(child.range).trimStart();
+					const preffix = symbolText.startsWith('public') ? '+ ' : '- ';
+					if(child.kind == vscode.SymbolKind.Field || child.kind == vscode.SymbolKind.Constant) {
+						this.fields.push(preffix + child.name + ': ' + child.detail);
+					}
+					else {
+						const textMethod = this.textSplitter.getText(child.range);
+						const signatureMethod = textMethod.match(/(.*?){/s);
+						if(signatureMethod != undefined && signatureMethod[1] != undefined) {
+							const innerParameters = signatureMethod[1].match(/\(.*\)/);
+							if(innerParameters != undefined && innerParameters[0] != undefined) {
+								this.methods.push(preffix + child.name + innerParameters[0] + ': ' + child.detail);
+							}
+							else {
+								this.methods.push(preffix + child.name + '(): ' + child.detail);
+							}
+						}
+					}
+				});
+				this.FillClass(symbol.name);
+				this.methods = [];
+				this.fields = [];
+			}
 		})
 	}
 	public GetDocument() {
@@ -117,11 +164,15 @@ class DrawIoCreator {
 		return xml;
 	}
 
-	private PushClass(classSymbol: vscode.DocumentSymbol)
-	{
+	public FillClass(className: string) {
+		let arrayTerms = [...this.methods, ...this.fields, 'class ' + className];
+		const lenghtLongestMember = arrayTerms.sort((a, b) => b.length - a.length)[0].length;
 		this.id++;
-		const valueText = 'class ' + classSymbol.name;
-		const widthBlock = valueText.length * 8 + 30;
+		const valueText = 'class ' + className;
+		const widthBlock = lenghtLongestMember * 5.5;
+		const countFieldsInDiagram = this.fields.length == 0 ? 1 : this.fields.length;
+		const countMethodsInDiagram = this.methods.length == 0 ? 1 : this.methods.length;
+		const heightClass = (countMethodsInDiagram + countFieldsInDiagram + 1) * 26 + 8;
 		this.drawDoc.mxfile.diagram.mxGraphModel.root.mxCell.push(
 			{
 				$: {
@@ -136,7 +187,7 @@ class DrawIoCreator {
 						x: this.posX.toString(),
 						y: this.posY.toString(),
 						width: widthBlock.toString(),
-						height: "90",
+						height: heightClass.toString(),
 						as: "geometry" 
 					}
 				} 
@@ -144,61 +195,52 @@ class DrawIoCreator {
 		);
 		let idNodeMember = this.id;
 		let posYMember = 26;
-		classSymbol.children.forEach(child => {
-			if(child.kind != vscode.SymbolKind.Method) {
-				const isPublic = child.detail.startsWith('public');
-				idNodeMember++;
-				const returnType = child.detail.split(' ')[1];
-				this.PushMember(idNodeMember.toString(), isPublic, child.name, returnType, posYMember)
-				posYMember += 26;
-
-		}});
-		idNodeMember++;
-		this.PushDivedeLine(idNodeMember.toString());
-		classSymbol.children.forEach(child => {
-			if(child.kind == vscode.SymbolKind.Method) {
-				const isPublic = child.detail.startsWith('public');
-				idNodeMember++;
-				const returnType = child.detail.split(' ')[1];
-				this.PushMember(idNodeMember.toString(), isPublic, child.name + '()', returnType, posYMember)
-				posYMember += 26;
-
-		}});
-		this.id = idNodeMember;
-		this.id++
-		this.posX += widthBlock + 20;
-		if(this.posX > 1470) {
-			this.posX = 30;
-			this.posY += 160;
+		if(this.fields.length == 0) {
+			idNodeMember++;
+			this.drawDoc.mxfile.diagram.mxGraphModel.root.mxCell.push({
+				$: {
+					id: idNodeMember.toString(),
+					parent: this.id.toString(),
+					vertex: "1",
+					value:	"",
+					style: 'text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;'
+				},
+				mxGeometry: {
+					$: { 
+						y: posYMember.toString(),
+						width: widthBlock.toString(),
+						height: "26",
+						as: "geometry" 
+			}}});
+			posYMember += 26;
 		}
-	}
-
-	private PushMember(idNode: string, isPublic: boolean, memberName: string, typeName: string, posYMember: number)
-	{
-		const memberPrefix = isPublic ? '+ ' : '- ';
-		this.drawDoc.mxfile.diagram.mxGraphModel.root.mxCell.push({
-			$: {
-				id: idNode,
-				parent: this.id.toString(),
-				vertex: "1",
-				value:	memberPrefix + memberName + ': ' + typeName,
-				style: 'text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;'
-			},
-			mxGeometry: {
-				$: { 
-					y: posYMember.toString(),
-					width: "160",
-					height: "26",
-					as: "geometry" 
-		}}});
-	}
-
-	private PushDivedeLine(idNode: string)
-	{
+		else {
+			this.fields.forEach(field => {
+				idNodeMember++;
+				this.drawDoc.mxfile.diagram.mxGraphModel.root.mxCell.push({
+					$: {
+						id: idNodeMember.toString(),
+						parent: this.id.toString(),
+						vertex: "1",
+						value:	field,
+						style: 'text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;'
+					},
+					mxGeometry: {
+						$: { 
+							y: posYMember.toString(),
+							width: widthBlock.toString(),
+							height: "26",
+							as: "geometry" 
+				}}});
+				posYMember += 26;
+			});
+		}
+		
+		idNodeMember++;
 		this.drawDoc.mxfile.diagram.mxGraphModel.root.mxCell.push(
 			{
 				$: {
-					id: idNode,
+					id: idNodeMember.toString(),
 					parent: this.id.toString(),
 					vertex: "1",
 					value:	"",
@@ -206,16 +248,66 @@ class DrawIoCreator {
 				},
 				mxGeometry: {
 					$: { 
-						y: this.posY.toString(),
-						width: "160",
+						y: posYMember.toString(),
+						width: widthBlock.toString(),
 						height: "8",
 						as: "geometry" 
 					}
 				} 
 			}
 		);
-		this.posY += 8;
+		posYMember += 8;
+		if(this.methods.length == 0) {
+			idNodeMember++;
+			this.drawDoc.mxfile.diagram.mxGraphModel.root.mxCell.push({
+				$: {
+					id: idNodeMember.toString(),
+					parent: this.id.toString(),
+					vertex: "1",
+					value:	"",
+					style: 'text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;'
+				},
+				mxGeometry: {
+					$: { 
+						y: posYMember.toString(),
+						width: widthBlock.toString(),
+						height: "26",
+						as: "geometry" 
+			}}});
+			posYMember += 26;
+		}
+		else {
+			this.methods.forEach(method => {
+				idNodeMember++;
+				this.drawDoc.mxfile.diagram.mxGraphModel.root.mxCell.push({
+					$: {
+						id: idNodeMember.toString(),
+						parent: this.id.toString(),
+						vertex: "1",
+						value:	method,
+						style: 'text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;'
+					},
+					mxGeometry: {
+						$: { 
+							y: posYMember.toString(),
+							width: widthBlock.toString(),
+							height: "26",
+							as: "geometry" 
+				}}});
+				posYMember += 26;
+			});
+		}
+		this.id = idNodeMember;
+		this.id++
+		this.posX += widthBlock + 20;
+		if(this.maxCurrentY < posYMember) {
+			this.maxCurrentY = posYMember;
+		}
+		if(this.posX > 1470) {
+			this.posX = 30;
+			this.posY += this.maxCurrentY + 52;
+			this.maxCurrentY = 30;
+		}
 	}
-
 }
 

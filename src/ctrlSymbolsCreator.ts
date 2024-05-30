@@ -167,31 +167,39 @@ export class CtrlSymbolsCreator {
         for (let i = start; i <= end; i++) {
             let lineText = this.textSplitter.getTextLineAt(i);
             //поле
-            let funcRegExp = this.RunRegExp(/^\s*(?<scope>private|public|protected)(?<static>\s+static)?\s+(?<const>const)?\s*(?<typeVar>[a-zA-Z0-9_<>]+|vector\s*<.*>)\s+(?<nameVar>\w+)\s*(?:=.*|;)/g, lineText);
+            let funcRegExp = this.RunRegExp(/^\s*(?<scope>private|public|protected)(?<static>\s+static)?\s+(?<const>const)?\s*(?<typeVar>[a-zA-Z0-9_<>]+|vector\s*<.*>)\s+(?<nameVar>\w+|\s*\w+(?:,\s*\w+)+)\s*(?:=.*|;)/g, lineText);
             if(funcRegExp && funcRegExp.groups) {
                 let typeVar = funcRegExp.groups['typeVar'];
                 let scope = funcRegExp.groups['scope'];
                 let nameVar = funcRegExp.groups['nameVar'];
-                let docSymbol;
-                let SelectionRange = new vscode.Range(new vscode.Position(i, lineText.indexOf(nameVar)), new vscode.Position(i, lineText.indexOf(nameVar) + nameVar.length));
-                if(funcRegExp.groups['const'] == undefined) {
-                    docSymbol = new vscode.DocumentSymbol(nameVar, scope + ' ' + typeVar, vscode.SymbolKind.Field, this.textSplitter.getRangeLine(i), SelectionRange);
-                }
-                else {
-                    docSymbol = new vscode.DocumentSymbol(nameVar, scope + ' ' + typeVar, vscode.SymbolKind.Constant, this.textSplitter.getRangeLine(i), SelectionRange);
-                }
-                if(this.typeQuery == TypeQuery.allSymbols) {
-                    this.nodes[this.nodes.length - 1].push(docSymbol);
-                }
-                else if(this.typeQuery == TypeQuery.protectedSymbols && (scope == 'protected' || scope == 'public')) {
-                    this.nodes[this.nodes.length - 1].push(docSymbol);
-                }
-                else if(this.typeQuery == TypeQuery.publicSymbols && scope == 'public') {
-                    this.nodes[this.nodes.length - 1].push(docSymbol);
-                }
-                else if(this.typeQuery == TypeQuery.staticSymbols && scope == 'public' && funcRegExp.groups['static']) {
-                    this.nodes[this.nodes.length - 1].push(docSymbol);
-                }
+                const isConst = funcRegExp.groups['const'] == undefined;
+                const isStatic = funcRegExp.groups['static'] == undefined;
+                const varsNames =  nameVar.split(',');
+                varsNames.forEach(varName => {
+                    varName = varName.trimStart().trimEnd();
+                    let docSymbol;
+                    let SelectionRange = new vscode.Range(new vscode.Position(i, lineText.indexOf(nameVar)), new vscode.Position(i, lineText.indexOf(nameVar) + nameVar.length));
+                    if(isConst) {
+                        docSymbol = new vscode.DocumentSymbol(varName, typeVar, vscode.SymbolKind.Field, this.textSplitter.getRangeLine(i), SelectionRange);
+                    }
+                    else {
+                        docSymbol = new vscode.DocumentSymbol(varName, typeVar, vscode.SymbolKind.Constant, this.textSplitter.getRangeLine(i), SelectionRange);
+                    }
+
+
+                    if(this.typeQuery == TypeQuery.allSymbols) {
+                        this.nodes[this.nodes.length - 1].push(docSymbol);
+                    }
+                    else if(this.typeQuery == TypeQuery.protectedSymbols && (scope == 'protected' || scope == 'public')) {
+                        this.nodes[this.nodes.length - 1].push(docSymbol);
+                    }
+                    else if(this.typeQuery == TypeQuery.publicSymbols && scope == 'public') {
+                        this.nodes[this.nodes.length - 1].push(docSymbol);
+                    }
+                    else if(this.typeQuery == TypeQuery.staticSymbols && scope == 'public' && isStatic) {
+                        this.nodes[this.nodes.length - 1].push(docSymbol);
+                    }
+                })
                 continue;
             }
             //метод
@@ -205,7 +213,7 @@ export class CtrlSymbolsCreator {
                 if(linesFunc[0] < 0 || linesInnerParams[0] < 0) continue;
                 let RangeFunc = new vscode.Range(this.textSplitter.getRangeLine(i).start, this.textSplitter.getRangeLine(linesFunc[1]).end);
                 let SelectionRange = new vscode.Range(new vscode.Position(i, lineText.indexOf(nameMethod)), new vscode.Position(i, lineText.indexOf(nameMethod) + nameMethod.length));
-                let docSymbol = new vscode.DocumentSymbol(nameMethod, scope + ' ' + typeMethod, vscode.SymbolKind.Method, RangeFunc, SelectionRange);                
+                let docSymbol = new vscode.DocumentSymbol(nameMethod, typeMethod, vscode.SymbolKind.Method, RangeFunc, SelectionRange);                
                 if(this.typeQuery == TypeQuery.allSymbols) {
                     this.nodes[this.nodes.length - 1].push(docSymbol);
                     this.nodes.push(docSymbol.children);
