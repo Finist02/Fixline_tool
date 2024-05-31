@@ -131,55 +131,97 @@ class DrawIoCreator {
 	public AddSymbols(symbols: vscode.DocumentSymbol[])	{
 		symbols.forEach(symbol =>{
 			if(symbol.kind == vscode.SymbolKind.Class) {
-				symbol.children.forEach(child => {
-					if(this.textSplitter == undefined) return;
-					const symbolText = this.textSplitter.getText(child.range).trimStart();
-					const preffix = symbolText.startsWith('public') ? '+ ' : '- ';
-					if(child.kind == vscode.SymbolKind.Field || child.kind == vscode.SymbolKind.Constant) {
-						this.fields.push(preffix + child.name + ': ' + child.detail);
-					}
-					else {
-						const textMethod = this.textSplitter.getText(child.range);
-						const signatureMethod = textMethod.match(/(.*?){/s);
-						if(signatureMethod != undefined && signatureMethod[1] != undefined) {
-							const innerParameters = signatureMethod[1].match(/\(.*\)/);
-							if(innerParameters != undefined && innerParameters[0] != undefined) {
-								this.methods.push(preffix + child.name + innerParameters[0] + ': ' + child.detail);
-							}
-							else {
-								this.methods.push(preffix + child.name + '(): ' + child.detail);
-							}
-						}
-					}
-				});
+				this.FillArraysTerms(symbol);
 				this.FillClass(symbol.name);
-				this.methods = [];
-				this.fields = [];
+				this.ClearArraysTerms();
 			}
 		})
 	}
+
 	public GetDocument() {
 		let builder = new xml2js.Builder({headless : true});
 		let xml = builder.buildObject(this.drawDoc);
 		return xml;
 	}
 
-	public FillClass(className: string) {
+	private FillArraysTerms(symbol : vscode.DocumentSymbol) {
+		symbol.children.forEach(child => {
+			if(this.textSplitter == undefined) return;
+			const symbolText = this.textSplitter.getText(child.range).trimStart();
+			const preffix = symbolText.startsWith('public') ? '+ ' : '- ';
+			if(child.kind == vscode.SymbolKind.Field || child.kind == vscode.SymbolKind.Constant) {
+				this.fields.push(preffix + child.name + ': ' + child.detail);
+			}
+			else {
+				const textMethod = this.textSplitter.getText(child.range);
+				const signatureMethod = textMethod.match(/(.*?){/s);
+				if(signatureMethod != undefined && signatureMethod[1] != undefined) {
+					const innerParameters = signatureMethod[1].match(/\(.*\)/);
+					if(innerParameters != undefined && innerParameters[0] != undefined) {
+						this.methods.push(preffix + child.name + innerParameters[0] + ': ' + child.detail);
+					}
+					else {
+						this.methods.push(preffix + child.name + '(): ' + child.detail);
+					}
+				}
+			}
+		});
+	}
+	private ClearArraysTerms() {
+		this.methods = [];
+		this.fields = [];
+	}
+	
+	private FillClass(className: string) {
+		this.id++;
+		const widthBlock = this.GetWidthBlock(className);
+		this.PushClassBlock(className, widthBlock);
+		let idNodeMember = this.id;
+		let posYMember = 26;
+		const newVars = this.PushFields(idNodeMember, posYMember, widthBlock);
+		posYMember = newVars.yPos;
+		idNodeMember = newVars.id;
+		idNodeMember++;
+		this.PushDivideLine(idNodeMember, posYMember, widthBlock);
+		posYMember += 8;
+		const newVars1 = this.PushMethods(idNodeMember, posYMember, widthBlock);
+		posYMember = newVars1.yPos;
+		idNodeMember = newVars1.id;
+		this.id = idNodeMember;
+		this.id++
+		this.posX += widthBlock + 20;
+		if(this.maxCurrentY < posYMember) {
+			this.maxCurrentY = posYMember;
+		}
+		if(this.posX > 1470) {
+			this.posX = 30;
+			this.posY += this.maxCurrentY + 52;
+			this.maxCurrentY = 30;
+		}
+	}
+	
+	private GetWidthBlock(className: string) {
 		let arrayTerms = [...this.methods, ...this.fields, 'class ' + className];
 		const lenghtLongestMember = arrayTerms.sort((a, b) => b.length - a.length)[0].length;
-		this.id++;
-		const valueText = 'class ' + className;
-		const widthBlock = lenghtLongestMember * 5.5;
+		return lenghtLongestMember * 5.5;
+	}
+
+	private GetHeightClass() {
 		const countFieldsInDiagram = this.fields.length == 0 ? 1 : this.fields.length;
 		const countMethodsInDiagram = this.methods.length == 0 ? 1 : this.methods.length;
-		const heightClass = (countMethodsInDiagram + countFieldsInDiagram + 1) * 26 + 8;
+		return (countMethodsInDiagram + countFieldsInDiagram + 1) * 26 + 8;
+	}
+
+	private PushClassBlock(className: string, widthBlock: number) {
+		const heightClass = this.GetHeightClass();
+		const valueTextClass = 'class ' + className;
 		this.drawDoc.mxfile.diagram.mxGraphModel.root.mxCell.push(
 			{
 				$: {
 					id: this.id.toString(),
 					parent: "1",
 					vertex: "1",
-					value:	valueText,
+					value:	valueTextClass,
 					style: 'swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;'
 				},
 				mxGeometry: {
@@ -193,8 +235,9 @@ class DrawIoCreator {
 				} 
 			}
 		);
-		let idNodeMember = this.id;
-		let posYMember = 26;
+	}
+
+	private PushFields(idNodeMember: number, posYMember: number, widthBlock: number) {
 		if(this.fields.length == 0) {
 			idNodeMember++;
 			this.drawDoc.mxfile.diagram.mxGraphModel.root.mxCell.push({
@@ -235,8 +278,10 @@ class DrawIoCreator {
 				posYMember += 26;
 			});
 		}
-		
-		idNodeMember++;
+		return {id: idNodeMember, yPos: posYMember}
+	}
+
+	private PushDivideLine(idNodeMember: number, posYMember: number, widthBlock: number) {
 		this.drawDoc.mxfile.diagram.mxGraphModel.root.mxCell.push(
 			{
 				$: {
@@ -256,7 +301,9 @@ class DrawIoCreator {
 				} 
 			}
 		);
-		posYMember += 8;
+	}
+
+	private PushMethods(idNodeMember: number, posYMember: number, widthBlock: number) {
 		if(this.methods.length == 0) {
 			idNodeMember++;
 			this.drawDoc.mxfile.diagram.mxGraphModel.root.mxCell.push({
@@ -297,17 +344,7 @@ class DrawIoCreator {
 				posYMember += 26;
 			});
 		}
-		this.id = idNodeMember;
-		this.id++
-		this.posX += widthBlock + 20;
-		if(this.maxCurrentY < posYMember) {
-			this.maxCurrentY = posYMember;
-		}
-		if(this.posX > 1470) {
-			this.posX = 30;
-			this.posY += this.maxCurrentY + 52;
-			this.maxCurrentY = 30;
-		}
+		return {id: idNodeMember, yPos: posYMember}
 	}
 }
 
