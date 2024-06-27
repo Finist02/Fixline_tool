@@ -235,6 +235,10 @@ export async function CreateChangelog() {
 	}
 	let projectsFolders = GetProjectsInConfigFile(false);
 	let items: QuickPickItem[] = [];
+	items.push({
+		label: 'all',
+		description: 'all sub projects'
+	});
 	projectsFolders.forEach(path => {
 		let splittedPath  = path.split('/');
 		items.push({
@@ -243,60 +247,92 @@ export async function CreateChangelog() {
 		});
 	})
 	const pathCreateChangelog = await vscode.window.showQuickPick(items);
-	const versionRelease = await vscode.window.showInputBox({
-		placeHolder: 'Укажите версию релиза',
-		prompt: 'Укажите версию релиза',
-		value: '0.1.1'
-	});
-	if(pathCreateChangelog) {
-		let changelogData = '';
-		const gitBracnhes  = await execShell('cd /D'+pathCreateChangelog.description+' && git branch');
-		const currentBranch = GetBranchToCreateChangelog(gitBracnhes);
-		const lastCommit  = await execShell('cd /D'+pathCreateChangelog.description+' && git log --pretty=format:"%h" -1');
-		let firstCommit  = await execShell('cd /D'+pathCreateChangelog.description+' && git log --max-parents=0 HEAD --pretty=format:"%h"');
-		const pathChangelog = pathCreateChangelog.description + '/CHANGELOG.md';
-		let uriToFChangelog = vscode.Uri.parse("file:" + pathChangelog);
-		axios.get(GITLAB_URL+'/api/v4/projects?search='+pathCreateChangelog.label, {
-			headers: {
-				'PRIVATE-TOKEN': GITLAB_TOKEN
-			}
-		}).then(response  => {
-			const projectsProp = response.data;
-			if(projectsProp[0]['path'] ==  pathCreateChangelog.label) {
-				const idProject = projectsProp[0]['id'];
-				if (fs.existsSync(pathChangelog)) {
-					changelogData = fs.readFileSync(pathChangelog, 'utf8');
-					if(changelogData.startsWith('# История изменений\n\n')) {
-						changelogData = changelogData.substring('# История изменений\n\n'.length);
+	if(pathCreateChangelog == undefined) return;
+	const versionRelease = await vscode.window.showQuickPick([
+		{label: 'maintenance', description: 'maintenance'}
+		,{label: 'minor', description: 'minor'}
+		,{label: 'major', description: 'major'}
+	]);
+	if(versionRelease == undefined) return;
+	if(pathCreateChangelog.label == 'all') {
+		projectsFolders.forEach(path => {
+			let splittedPath  = path.split('/');
+			CreateChangelogSubProject({label: splittedPath[splittedPath.length-1],description: path}, versionRelease.label, GITLAB_TOKEN, GITLAB_URL);
+		})
+	}
+	else {
+		CreateChangelogSubProject(pathCreateChangelog, versionRelease.label, GITLAB_TOKEN, GITLAB_URL);
+	}
+}
+async function CreateChangelogSubProject(pathCreateChangelog: vscode.QuickPickItem, typeUpdate: string, GITLAB_TOKEN: string, GITLAB_URL: string) {
+	let changelogData = '';
+	const gitBracnhes  = await execShell('cd /D'+pathCreateChangelog.description+' && git branch');
+	const currentBranch = GetBranchToCreateChangelog(gitBracnhes);
+	const lastCommit  = await execShell('cd /D'+pathCreateChangelog.description+' && git log --pretty=format:"%h" -1');
+	let firstCommit  = await execShell('cd /D'+pathCreateChangelog.description+' && git log --max-parents=0 HEAD --pretty=format:"%h"');
+	const pathChangelog = pathCreateChangelog.description + '/CHANGELOG.md';
+	let uriToFChangelog = vscode.Uri.parse("file:" + pathChangelog);
+	axios.get(GITLAB_URL+'/api/v4/projects?search='+pathCreateChangelog.label, {
+		headers: {
+			'PRIVATE-TOKEN': GITLAB_TOKEN
+		}
+	}).then(response  => {
+		const projectsProp = response.data;
+		if(projectsProp[0]['path'] ==  pathCreateChangelog.label) {
+			let versionRelease = '1.0.0';
+			const idProject = projectsProp[0]['id'];
+			if (fs.existsSync(pathChangelog)) {
+				changelogData = fs.readFileSync(pathChangelog, 'utf8');
+				let funcRegExp = /## (?<major>\d*)\.(?<minor>\d*).(?<maintenance>\d*) \(\d\d\d\d-\d\d-\d\d\)/m.exec(changelogData);
+				if(funcRegExp && funcRegExp.groups) {
+					let major = Number(funcRegExp.groups['major']);
+					let minor = Number(funcRegExp.groups['minor']);
+					let maintenance = Number(funcRegExp.groups['maintenance']);
+					if(typeUpdate == 'major') {
+						major++;
+						versionRelease = major.toString() + '.0.0';
 					}
-					// let resultReg = /(?<=@)[\da-f]{8}/.exec(changelogData);
-					// if(resultReg)
-					// {
-					// 	firstCommit = resultReg[0];
-					// }				
-					firstCommit  = cp.execSync('cd /D'+pathCreateChangelog.description+' && git log -n 1 --pretty=format:%H -- CHANGELOG.md').toString();
+					else if(typeUpdate == 'minor') {
+						minor++;
+						versionRelease = major.toString() + '.' + minor.toString() + '.0';
+					}
+					else if(typeUpdate == 'maintenance') {
+						maintenance++;
+						versionRelease = major.toString() + '.' + minor.toString() + '.' + maintenance.toString();
+					}
 				}
-				axios.get(GITLAB_URL+'/api/v4/projects/'+idProject+'/repository/changelog?'
-					+'version='+versionRelease
-					+'&from='+firstCommit
-					+'&to='+lastCommit
-					+'&branch='+currentBranch,
-					{
-						headers: {
-							'PRIVATE-TOKEN': GITLAB_TOKEN
-					}
-				}).then(response => {
+				else {
+					vscode.window.showInformationMessage('Не найдена версия релиза ' + pathChangelog, 'Ok');
+				}
+				if(changelogData.startsWith('# История изменений')) {
+					changelogData = changelogData.substring('# История изменений'.length);
+				}		
+				firstCommit  = cp.execSync('cd /D'+pathCreateChangelog.description+' && git log -n 1 --pretty=format:%H -- CHANGELOG.md').toString();
+			}
+			axios.get(GITLAB_URL+'/api/v4/projects/'+idProject+'/repository/changelog?'
+				+'version='+versionRelease
+				+'&from='+firstCommit
+				+'&to='+lastCommit
+				+'&branch='+currentBranch,
+				{
+					headers: {
+						'PRIVATE-TOKEN': GITLAB_TOKEN
+				}
+			}).then(response => {
+				if(!response.data['notes'].endsWith('Незначительные изменения\n') && !response.data['notes'].endsWith('No changes.\n'))
+				{
 					const writeBytes = Buffer.from('# История изменений\n\n' + response.data['notes'] + '\n' + changelogData);
 					vscode.workspace.fs.writeFile(uriToFChangelog, writeBytes).then(() => {
 						OpenFileVscode(uriToFChangelog);
 					});	
 				}
-				).catch(err => {
-					console.log(err);
-				})
+				
 			}
-		})		
-	}
+			).catch(err => {
+				console.log(err);
+			})
+		}
+	})	
 }
 
 function GetBranchToCreateChangelog(gitBracnhes: string) {
