@@ -12,6 +12,8 @@ import { CtrlSemanticTokensProvider, legend } from './ctrlSemanticTokensProvider
 import { CtrlReferenceProvider } from './CtrlReferenceProvider';
 import { CreateChildClass } from './CtrlCreateChildClass';
 import { CreateUMLDiagrams } from './CtrlUmlDiagramCreator';
+import { GetTokens } from './CtrlTokenizer';
+import { CtrlCodeFormatter } from './CtrlFormatCode';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -28,7 +30,9 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("extension.StartUnitTests", cmdCtrl.StartUnitTests));
 	context.subscriptions.push(vscode.commands.registerCommand("extension.GetHelpChatGpt", cmdCtrl.GetHelpChatGpt));
 	context.subscriptions.push(vscode.commands.registerCommand("extension.CreateUMLDiagrams", CreateUMLDiagrams));
+	// context.subscriptions.push(vscode.commands.registerCommand("extension.CreateUMLDiagrams", GetTokens));
 
+	context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider({language: "ctrlpp"}, new CtrlCodeFormatter()));
 	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider('ctl', panelPreviewProvider));
 	context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider({language: "ctrlpp"}, new CtrlDocumentSymbolProvider()));
 	context.subscriptions.push(vscode.languages.registerDefinitionProvider({language: "ctrlpp"}, new CtrlDefinitionProvider()));
