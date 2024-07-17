@@ -20,11 +20,14 @@ export class CtrlCodeFormatter implements vscode.DocumentFormattingEditProvider 
             const line = this.document.lineAt(i);
             this.lineText = line.text;
             let countCharsInLine = this.lineText.length;
-            for (let j = 0; j <= countCharsInLine; j++) {
-                if (j == 0 && !(isLiteralString || isComment)) {
-                    if (this.iterTabs > 0 && line.text.slice(0, line.firstNonWhitespaceCharacterIndex) != '\t'.repeat(this.iterTabs)
+            for (let j = 0; j < countCharsInLine; j++) {
+                if (j == 0 && !(isLiteralString || isComment || this.lineText.startsWith('//') || this.lineText.startsWith('/*')
+                || this.lineText.match(/\s*(\"|\+|\))/))) {
+                    if (i > 0 && (this.document.lineAt(i - 1).text.endsWith('(') || this.document.lineAt(i).text.match(/\s*,/))) {
+
+                    }
+                    else if (this.iterTabs > 0 && line.text.slice(0, line.firstNonWhitespaceCharacterIndex) != '\t'.repeat(this.iterTabs)
                         && line.text.charAt(line.firstNonWhitespaceCharacterIndex) != '}') {
-                        this.bufferChanges.push(vscode.TextEdit.replace(new vscode.Range(new vscode.Position(i, 0), new vscode.Position(i, line.firstNonWhitespaceCharacterIndex)), '\t'.repeat(this.iterTabs)));
                         this.lineText = '\t'.repeat(this.iterTabs) + this.lineText.slice(line.firstNonWhitespaceCharacterIndex, this.lineText.length);
                         countCharsInLine = this.lineText.length;
                     }
@@ -63,13 +66,13 @@ export class CtrlCodeFormatter implements vscode.DocumentFormattingEditProvider 
                         break;
                     case '{':
                         if (isLiteralString || isComment) break;
-                        this.formatScope(i, j, this.lineText, '\t'.repeat(this.iterTabs));
+                        this.formatScope(i, j, '\t'.repeat(this.iterTabs));
                         this.iterTabs++;
                         break;
                     case '}':
                         if (isLiteralString || isComment) break;
                         this.iterTabs--;
-                        this.formatScope(i, j, this.lineText, '\t'.repeat(this.iterTabs));
+                        this.formatScope(i, j, '\t'.repeat(this.iterTabs));
                         break;
                     case '=':
                         if (isLiteralString || isComment) break;
@@ -83,9 +86,13 @@ export class CtrlCodeFormatter implements vscode.DocumentFormattingEditProvider 
                     default:
                         break;
                 }
-                if (isCommentString) continue;
+                if (isCommentString) {
+                    break;
+                }
             }
-
+            if (this.lineText != line.text) {
+                this.bufferChanges.push(vscode.TextEdit.replace(line.range, this.lineText));
+            }
         }
         if (this.iterTabs != 0) {
             return [];
@@ -98,61 +105,63 @@ export class CtrlCodeFormatter implements vscode.DocumentFormattingEditProvider 
         this.bufferChanges = [];
     }
 
-    private formatScope(lineNumber: number, iterChar: number, text: string, insertString: string) {
+    private formatScope(lineNumber: number, iterChar: number, insertString: string) {
         if (!this.document) return;
-        const endDeletePos = iterChar;
+        let endDeletePos = iterChar;
         while (iterChar > 0) {
-            let prevChar = text.charCodeAt(iterChar - 1);
+            iterChar--;
+            let prevChar = this.lineText.charCodeAt(iterChar - 1);
             if (prevChar > 32) {
-                this.bufferChanges.push(vscode.TextEdit.insert(new vscode.Position(lineNumber, iterChar), '\n'));
+                this.lineText = this.lineText.slice(0, iterChar) + '\n' + this.lineText.slice(iterChar, this.lineText.length);
+                endDeletePos++;
+                iterChar++;
                 break;
             }
-            iterChar--;
         }
-        this.bufferChanges.push(vscode.TextEdit.replace(new vscode.Range(new vscode.Position(lineNumber, iterChar), new vscode.Position(lineNumber, endDeletePos)), insertString));
+        this.lineText = this.lineText.slice(0, iterChar) + insertString + this.lineText.slice(endDeletePos, this.lineText.length);
     }
 
     private addSpaces(lineNumber: number, iterChar: number) {
         if (this.lineText.length > iterChar) {
             const nextChar = this.lineText.charAt(iterChar + 1);
-            const idx = nextChar.match(/=|\+|-|\*|\/|\s/);
+            const idx = nextChar.match(/=|\+|-|\*|\/|\s|<|>|\!/);
             if (!idx) {
-                this.lineText = this.lineText.slice(0, iterChar) + ' ' + this.lineText.slice(iterChar + 1, this.lineText.length);
-                this.bufferChanges.push(vscode.TextEdit.insert(new vscode.Position(lineNumber, iterChar + 1), ' '));
+                this.lineText = this.lineText.slice(0, iterChar + 1) + ' ' + this.lineText.slice(iterChar + 1, this.lineText.length);
             }
         }
         if (iterChar > 1) {
             const prevChar = this.lineText.charAt(iterChar - 1);
-            const idx = prevChar.match(/=|\+|-|\*|\/|\s/);
+            const idx = prevChar.match(/=|\+|-|\*|\/|\s|<|>|\!/);
             if (!idx) {
-                this.lineText = this.lineText.slice(0, iterChar - 1) + ' ' + this.lineText.slice(iterChar, this.lineText.length);
-                this.bufferChanges.push(vscode.TextEdit.insert(new vscode.Position(lineNumber, iterChar), ' '));
+                this.lineText = this.lineText.slice(0, iterChar) + ' ' + this.lineText.slice(iterChar, this.lineText.length);
             }
         }
     }
 
     private replaceSpaces(lineNumber: number, iterChar: number) {
+        const startChar = iterChar;
         while (this.lineText.length > iterChar) {
             const nextChar = this.lineText.charAt(iterChar + 1);
             if (nextChar == ' ' || nextChar == '\t') {
-                this.lineText = this.lineText.slice(0, iterChar) + this.lineText.slice(iterChar, this.lineText.length);
-                this.bufferChanges.push(vscode.TextEdit.delete(new vscode.Range(new vscode.Position(lineNumber, iterChar), new vscode.Position(lineNumber, iterChar))));
+                let textBefore = this.lineText.slice(0, iterChar + 1);
+                let textAfter = this.lineText.slice(iterChar + 2, this.lineText.length);
+                console.log(textBefore + '!' + textAfter);
+                this.lineText = this.lineText.slice(0, iterChar + 1) + this.lineText.slice(iterChar + 1, this.lineText.length);
             }
             else {
                 break;
             }
             iterChar++;
         }
-        while (iterChar > 1) {
-            const prevChar = this.lineText.charAt(iterChar - 1);
-            if (prevChar == ' ' || prevChar == '\t') {
-                this.lineText = this.lineText.slice(0, iterChar - 1) + this.lineText.slice(iterChar, this.lineText.length);
-                this.bufferChanges.push(vscode.TextEdit.delete(new vscode.Range(new vscode.Position(lineNumber, iterChar - 1), new vscode.Position(lineNumber, iterChar - 1))));
-            }
-            else {
-                break;
-            }
-            iterChar--;
-        }
+        // while (iterChar > 1) {
+        //     const prevChar = this.lineText.charAt(iterChar - 1);
+        //     if (prevChar == ' ' || prevChar == '\t') {
+        //         this.lineText = this.lineText.slice(0, iterChar - 1) + this.lineText.slice(iterChar, this.lineText.length);
+        //     }
+        //     else {
+        //         break;
+        //     }
+        //     iterChar--;
+        // }
     }
 }
