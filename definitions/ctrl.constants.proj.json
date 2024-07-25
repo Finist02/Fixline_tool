@@ -1,0 +1,56 @@
+{
+    "hover": {
+        "format" : "```\n${definition}\n```\n\n-------\n\nPredefined WinCC OA constant\n\n${description}"
+    },
+    "completionItemKind": "Constant",
+    "defines":[
+        {
+            "definition": "const int __LINE__",
+            "description": [
+            "During run-time, the constant is replaced with the value of the current line number."
+            ],
+            "id": "__LINE__"
+        },
+        {
+            "definition": "const string __FILE__",
+            "description": [
+            "During run-time, the constant is replaced with the name of the file (or library) in which the constant is called."
+            ],
+            "id": "__FILE__"
+        },
+        {
+            "definition": "const string __FUNCTION__",
+            "description": [
+            "During run-time, the constant is replaced with the name of the function in which the constant is called."
+            ],
+            "id": "__FUNCTION__"
+        },
+        {
+            "definition": "const string PROJ",
+            "description": [
+                "The constant PROJ contains the current WinCC OA project (a manager runs actual with this project) as a string.",
+                "For example: \"Testproj_de_en\".",
+                "@available CTRL, UI"
+            ],
+            "id": "PROJ"
+        },
+        {
+            "definition": "const string PROJ_PATH",
+            "description": [
+            "Path to the project directory as defined in the file config in the directory PVSS_II.",
+            "Points to the project-specific resources.",
+            "For example: C:/TestProjs/SLT_QualityChecks/",
+            "@warning the drive character is always uppercase."
+            ],
+            "id": "PROJ_PATH"
+        },
+        {
+            "definition": "const string DATA_PATH",
+            "description": [
+            "Path to the DATA directory for the current project.",
+            "The variable DATA_PATH leads to project-specific data."
+            ],
+            "id": "DATA_PATH"
+        }
+    ]
+}

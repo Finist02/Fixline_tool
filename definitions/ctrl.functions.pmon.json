@@ -1,0 +1,92 @@
+{ 
+    "hover":{ 
+      "format":"```\n${definition}\n```\n\n-------\n\nPredefined WinCC OA function\n\n${description}"
+    },
+    "completionItemKind":"Function",
+    "defines":[
+      { 
+        "definition":"int pmonGetCount()",
+        "description":[ 
+  
+        ],
+        "id":"pmonGetCount"
+      },
+      { 
+        "definition":"string pmonGetName(int idx)",
+        "description":[ 
+  
+        ],
+        "id":"pmonGetName"
+      },
+      { 
+        "definition":"int pmonGetNum(int idx)",
+        "description":[ 
+  
+        ],
+        "id":"pmonGetNum"
+      },
+      { 
+        "definition":"string pmonGetOptions(int idx)",
+        "description":[ 
+  
+        ],
+        "id":"pmonGetOptions"
+      },
+      { 
+        "definition":"int pmonGetState(int idx)",
+        "description":[ 
+  
+        ],
+        "id":"pmonGetState"
+      },
+      { 
+        "definition":"time pmonGetStartTime(int idx)",
+        "description":[ 
+  
+        ],
+        "id":"pmonGetStartTime"
+      },
+      { 
+        "definition":"int pmonGetPID(int idx)",
+        "description":[ 
+  
+        ],
+        "id":"pmonGetPID"
+      },
+      { 
+        "definition":"int pmonGetStartMode(int idx)",
+        "description":[ 
+  
+        ],
+        "id":"pmonGetStartMode"
+      },
+      { 
+        "definition":"int pmonGetSecondsToKill(int idx)",
+        "description":[ 
+  
+        ],
+        "id":"pmonGetSecondsToKill"
+      },
+      { 
+        "definition":"int pmonGetRestartCount(int idx)",
+        "description":[ 
+  
+        ],
+        "id":"pmonGetRestartCount"
+      },
+      { 
+        "definition":"int pmonGetResetMinutes(int idx)",
+        "description":[ 
+  
+        ],
+        "id":"pmonGetResetMinutes"
+      },
+      { 
+        "definition":"string pmonStartModeToStr(int startMode)",
+        "description":[ 
+  
+        ],
+        "id":"pmonStartModeToStr"
+      }
+    ]
+  }

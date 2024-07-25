@@ -1,0 +1,312 @@
+{
+  "hover": {
+    "format": "```\n${definition}\n```\n\n-------\n\nPredefined WinCC OA function\n\n${description}"
+  },
+  "completionItemKind": "Function",
+  "defines": [
+    {
+      "definition": "int dynlen(<dyn_type> x)",
+      "description": [
+        "Outputs the number of field elements."
+      ],
+      "id": "dynlen"
+    },
+    {
+      "definition": "dyn_int makeDynInt(int x1 [, int x2 ...])",
+      "description": [
+        "Returns a dynamic field of integers."
+      ],
+      "id": "makeDynInt"
+    },
+    {
+      "definition": "dyn_uint makeDynUInt(uint x1 [, uint x2 ...])",
+      "description": [],
+      "id": "makeDynUInt"
+    },
+    {
+      "definition": "dyn_float makeDynFloat(float x1 [, float x2 ...])",
+      "description": [
+        "Returns a dynamic field of floating-point numbers."
+      ],
+      "id": "makeDynFloat"
+    },
+    {
+      "definition": "dyn_time makeDynTime(time x1 [, time x2 ...])",
+      "description": [
+        "Returns a dynamic array of internal times."
+      ],
+      "id": "makeDynTime"
+    },
+    {
+      "definition": "dyn_string makeDynString(string x1 [, string x2 ...])",
+      "description": [
+        "Returns a dynamic field of strings."
+      ],
+      "id": "makeDynString"
+    },
+    {
+      "definition": "dyn_bool makeDynBool(bool x1 [, bool x2 ...])",
+      "description": [
+        "Returns a dynamic field of bits."
+      ],
+      "id": "makeDynBool"
+    },
+    {
+      "definition": "dyn_string makeDynChar(char x1 [, char x2 ...])",
+      "description": [],
+      "id": "makeDynChar"
+    },
+    {
+      "definition": "dyn_anytype makeDynAnytype(anytype x1 [, anytype x2 ...])",
+      "description": [
+        "The function returns an dyn_anytype with n (n = the number of defined elements) elements."
+      ],
+      "id": "makeDynAnytype"
+    },
+    {
+      "definition": "dyn_mixed makeDynMixed(mixed x1 [, mixed x2 ...])",
+      "description": [],
+      "id": "makeDynMixed"
+    },
+    {
+      "definition": "dyn_long makeDynLong(long l1 [, long l2, ...])",
+      "description": [],
+      "id": "makeDynLong"
+    },
+    {
+      "definition": "dyn_ulong makeDynULong(ulong ul1 [, ulong ul2, ...])",
+      "description": [],
+      "id": "makeDynULong"
+    },
+    {
+      "definition": "dyn_bit32 makeDynBit32(bit32 b1 [, bit32 b2, ...])",
+      "description": [],
+      "id": "makeDynBit32"
+    },
+    {
+      "definition": "dyn_bit64 makeDynBit64(bit64 b1 [, bit64 b2, ...])",
+      "description": [],
+      "id": "makeDynBit64"
+    },
+    {
+      "definition": "dyn_shape makeDynShape(shape s1 [, shape s2, ...])",
+      "description": [],
+      "id": "makeDynShape"
+    },
+    {
+      "definition": "dyn_mapping makeDynMapping(mapping m1 [, mapping m2, ...])",
+      "description": [
+        "Returns a dynamic array of mappings."
+      ],
+      "id": "makeDynMapping"
+    },
+    {
+      "definition": "dyn_atime makeDynATime(atime a1 [, atime a2, ...])",
+      "description": [
+        "Returns a dynamic field of alert times."
+      ],
+      "id": "makeDynATime"
+    },
+    {
+      "definition": "vector<void> makeVector(...)",
+      "description": [],
+      "id": "makeVector"
+    },
+    {
+      "definition": "dyn_int getDynInt(<dyn_dyn_type> array, int column)",
+      "description": [],
+      "id": "getDynInt"
+    },
+    {
+      "definition": "dyn_uint getDynUInt(<dyn_dyn_type> array, int column)",
+      "description": [],
+      "id": "getDynUInt"
+    },
+    {
+      "definition": "dyn_float getDynFloat(<dyn_dyn_type> array, int column)",
+      "description": [],
+      "id": "getDynFloat"
+    },
+    {
+      "definition": "dyn_time getDynTime(<dyn_dyn_type> array, int column)",
+      "description": [],
+      "id": "getDynTime"
+    },
+    {
+      "definition": "dyn_string getDynString(<dyn_dyn_type> array, int column)",
+      "description": [],
+      "id": "getDynString"
+    },
+    {
+      "definition": "dyn_bool getDynBool(<dyn_dyn_type> array, int column)",
+      "description": [],
+      "id": "getDynBool"
+    },
+    {
+      "definition": "dyn_char getDynChar(<dyn_dyn_type> array, int column)",
+      "description": [],
+      "id": "getDynChar"
+    },
+    {
+      "definition": "dyn_anytype getDynAnytype(<dyn_dyn_type> array, int column)",
+      "description": [],
+      "id": "getDynAnytype"
+    },
+    {
+      "definition": "dyn_mixed getDynMixed(<dyn_dyn_type> array, int column)",
+      "description": [],
+      "id": "getDynMixed"
+    },
+    {
+      "definition": "dyn_long getDynLong(<dyn_dyn_type> array, int column)",
+      "description": [],
+      "id": "getDynLong"
+    },
+    {
+      "definition": "dyn_ulong getDynULong(<dyn_dyn_type> array, int column)",
+      "description": [],
+      "id": "getDynULong"
+    },
+    {
+      "definition": "dyn_bit32 getDynBit32(<dyn_dyn_type> array, int column)",
+      "description": [],
+      "id": "getDynBit32"
+    },
+    {
+      "definition": "dyn_bit64 getDynBit64(<dyn_dyn_type> array, int column)",
+      "description": [],
+      "id": "getDynBit64"
+    },
+    {
+      "definition": "dyn_atime getDynATime(<dyn_dyn_type> array, int column)",
+      "description": [],
+      "id": "getDynATime"
+    },
+    {
+      "definition": "int dynMin(dyn_int x [, dyn_bool mask])\\r\\nuint dynMin(dyn_uint x [, dyn_bool mask])\\r\\nfloat dynMin(dyn_float x [, dyn_bool mask])",
+      "description": [],
+      "id": "dynMin"
+    },
+    {
+      "definition": "int dynMax(dyn_int x [, dyn_bool mask])\\r\\nuint dynMax(dyn_uint x [, dyn_bool mask])\\r\\nfloat dynMax(dyn_float x [, dyn_bool mask])",
+      "description": [
+        "Outputs the largest field element."
+      ],
+      "id": "dynMax"
+    },
+    {
+      "definition": "int dynSum(dyn_int x [, dyn_bool mask])\\r\\nuint dynSum (dyn_uint x [, dyn_bool mask])\\r\\nfloat dynSum(dyn_float x [, dyn_bool mask])",
+      "description": [],
+      "id": "dynSum"
+    },
+    {
+      "definition": "float dynAvg(<dyn_type> x [, dyn_bool mask])",
+      "description": [],
+      "id": "dynAvg"
+    },
+    {
+      "definition": "float dynAvgWT(unsigned order,time t1,time t2,<dyn_type> x,dyn_time t[,dyn_bool mask])",
+      "description": [],
+      "id": "dynAvgWT"
+    },
+    {
+      "definition": "int dynAppend(<dyn_type> &x, <type> y)\\nint dynAppend(<dyn_type> &x, <dyn_type> y)",
+      "description": [
+        "Appends y to the field x."
+      ],
+      "id": "dynAppend"
+    },
+    {
+      "definition": "int dynAppendConst(<dyn_type> &x, <type> y)\\nint dynAppendConst(<dyn_type> &x, <dyn_type> y)",
+      "description": [],
+      "id": "dynAppendConst"
+    },
+    {
+      "definition": "int dynInsertAt(<dyn_type> &aDyn, <type>|<dyn_type> aValue, int position)",
+      "description": [],
+      "id": "dynInsertAt"
+    },
+    {
+      "definition": "int dynInsertAtConst(<dyn_type> &aDyn, <type>|<dyn_type> aValue, int position)",
+      "description": [],
+      "id": "dynInsertAtConst"
+    },
+    {
+      "definition": "int dynContains(<dyn_type> x, <type> y)",
+      "description": [
+        "Returns the index of the first occurrence of y in the dynamic field x."
+      ],
+      "id": "dynContains"
+    },
+    {
+      "definition": "int dynUnique(<dyn_type> x)",
+      "description": [],
+      "id": "dynUnique"
+    },
+    {
+      "definition": "int dynSortAsc(dyn_type dynvar)",
+      "description": [
+        "Sorts a field in ascending order."
+      ],
+      "id": "dynSortAsc"
+    },
+    {
+      "definition": "int dynSort(dyn_type dynvar [, bool ascending = true])",
+      "description": [
+        "Sorts a dynamic variable field in ascending or descending order."
+      ],
+      "id": "dynSort"
+    },
+    {
+      "definition": "int dynDynSort(dyn_dyn_type dynvar, int | dyn_int col [, bool | dyn_bool ascending = true])",
+      "description": [],
+      "id": "dynDynSort"
+    },
+    {
+      "definition": "int dynDynTurn(dyn_dyn_type &dynvar)",
+      "description": [],
+      "id": "dynDynTurn"
+    },
+    {
+      "definition": "int dynClear(<dyn_type> &aDyn)",
+      "description": [
+        "Deletes the entire field."
+      ],
+      "id": "dynClear"
+    },
+    {
+      "definition": "int dynRemove(<dyn_type> &aDyn, int element)",
+      "description": [
+        "Deletes a particular field element."
+      ],
+      "id": "dynRemove"
+    },
+    {
+      "definition": "int dynCount(dyn_anytype aDyn, anytype element)",
+      "description": [
+        "Returns the number of elements with the same pattern in the array."
+      ],
+      "id": "dynCount"
+    },
+    {
+      "definition": "dyn_anytype dynIntersect(dyn_anytype aPattern, dyn_anytype aDyn)",
+      "description": [],
+      "id": "dynIntersect"
+    },
+    {
+      "definition": "dyn_string dynPatternMatch(string pattern, dyn_string s)",
+      "description": [],
+      "id": "dynPatternMatch"
+    },
+    {
+      "definition": "dyn_string uniDynPatternMatch(string pattern, dyn_string s)",
+      "description": [],
+      "id": "uniDynPatternMatch"
+    },
+    {
+      "definition": "int uniStrReplace(string &source, string search, string replace)",
+      "description": [],
+      "id": "uniStrReplace"
+    }
+  ]
+}

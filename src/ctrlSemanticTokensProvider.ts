@@ -129,3 +129,28 @@ export class CtrlSemanticTokensProvider implements vscode.DocumentSemanticTokens
 		return tokensBuilder;
 	  }
 }
+
+
+// private tokenTypes = [
+//     'namespace'
+//     , 'class'
+//     , 'enum'
+//     , 'struct'
+//     , 'typeParameter'
+//     , 'type'
+//     , 'parameter'
+//     , 'variable'
+//     , 'property'
+//     , 'enumMember'
+//     , 'function'
+//     , 'method'
+//     , 'comment'
+//     , 'string'
+//     , 'keyword'
+//     , 'number'
+//     , 'regexp'
+//     , 'operator'
+// ];
+// private tokenModifiers = ['declaration', 'definition', 'readonly', 'static', 'deprecated', 'async', 'modification', 'documentation', 'defaultLibrary'];
+// private legend = new vscode.SemanticTokensLegend(this.tokenTypes);
+// private tokensBuilder = new vscode.SemanticTokensBuilder(this.legend);

@@ -1,0 +1,207 @@
+{
+  "hover": {
+    "format": "```\n${definition}\n```\n\n-------\n\nPredefined WinCC OA function\n\n${description}"
+  },
+  "completionItemKind": "Function",
+  "defines": [
+    {
+      "definition": "int sprintf(string &s, string format [,<type1> var1 [,<type2> var2 ...]])",
+      "description": [],
+      "id": "sprintf"
+    },
+    {
+      "definition": "int sscanf(string s, string format, <type1> &var1 [,<type2> &var2 ...])",
+      "description": [],
+      "id": "sscanf"
+    },
+    {
+      "definition": "string crypt(string text [, int isVersion = 2 [, int iterations = 0]])",
+      "description": [
+        "Encrypts the transferred text."
+      ],
+      "id": "crypt"
+    },
+    {
+      "definition": "int sprintfUL(string &s, string format [,<type1> var1 [,<type2> var2 ...]])",
+      "description": [],
+      "id": "sprintfUL"
+    },
+    {
+      "definition": "int sprintfPL(string &s, string format [,<type1> var1 [,<type2> var2 ...]])",
+      "description": [],
+      "id": "sprintfPL"
+    },
+    {
+      "definition": "int sscanfUL(string s, string format, <type1> &var1 [,<type2> &var2 ...])",
+      "description": [],
+      "id": "sscanfUL"
+    },
+    {
+      "definition": "int sscanfPL(string s, string format, <t",
+      "description": [],
+      "id": "sscanfPL"
+    },
+    {
+      "definition": "int uniSPrintf(string &s, string format [,<type1> var1 [,<type2> var2 ...]])",
+      "description": [],
+      "id": "uniSPrintf"
+    },
+    {
+      "definition": "int uniSPrintfUL(string &s, string format [,<type1> var1 [,<type2> var2 ...]])",
+      "description": [],
+      "id": "uniSPrintfUL"
+    },
+    {
+      "definition": "int strlen(string s)",
+      "description": [
+        "Returns the length of a string in Bytes."
+      ],
+      "id": "strlen"
+    },
+    {
+      "definition": "string strwalk(string s, int &pos)",
+      "description": [
+        "The function allows to move through a string and returns the corresponding character of a specific position."
+      ],
+      "id": "strwalk"
+    },
+    {
+      "definition": "string strltrim(string s[, string trimstr])",
+      "description": [
+        "Trims certain characters from a string, beginning from left."
+      ],
+      "id": "strltrim"
+    },
+    {
+      "definition": "string strrtrim(string s[, string trimstr])",
+      "description": [
+        "Cuts certain characters out of a string, starting from the right."
+      ],
+      "id": "strrtrim"
+    },
+    {
+      "definition": "string substr(string s, int pos [, int len ])",
+      "description": [
+        "Cuts a string or a character of a certain length (in Bytes) out of another string."
+      ],
+      "id": "substr"
+    },
+    {
+      "definition": "int strpos(string s, string searchstr, int startPos = 0)",
+      "description": [
+        "Returns the position of a string within another."
+      ],
+      "id": "strpos"
+    },
+    {
+      "definition": "int strtok(string s [, string set])",
+      "description": [
+        "Finds the first occurrence of a string in another string."
+      ],
+      "id": "strtok"
+    },
+    {
+      "definition": "int strreplace(string &source, string search, string replace)",
+      "description": [
+        "Replaces parts of a string with another string."
+      ],
+      "id": "strreplace"
+    },
+    {
+      "definition": "int strchange(string &source, unsigned from, unsigned count, string replace)",
+      "description": [],
+      "id": "strchange"
+    },
+    {
+      "definition": "string strexpand(string s, unsigned length)",
+      "description": [],
+      "id": "strexpand"
+    },
+    {
+      "definition": "string strformat(string format, int len, anytype value)",
+      "description": [],
+      "id": "strformat"
+    },
+    {
+      "definition": "bool patternMatch(string pattern, string s)\\ndyn_bool patternMatch(string pattern, dyn_string ds)",
+      "description": [],
+      "id": "patternMatch"
+    },
+    {
+      "definition": "dyn_string strsplit(string line, string delim)",
+      "description": [
+        "Splits strings using delimiters."
+      ],
+      "id": "strsplit"
+    },
+    {
+      "definition": "string strjoin(dyn_string lines, string delim)",
+      "description": [],
+      "id": "strjoin"
+    },
+    {
+      "definition": "string strtoupper(string text)",
+      "description": [
+        "Changes a string to uppercase."
+      ],
+      "id": "strtoupper"
+    },
+    {
+      "definition": "string strtolower(string text)",
+      "description": [
+        "Changes a string to lowercas"
+      ],
+      "id": "strtolower"
+    },
+    {
+      "definition": "int uniStrLen(string s)",
+      "description": [],
+      "id": "uniStrLen"
+    },
+    {
+      "definition": "string uniSubStr(string s, int pos [, int len])",
+      "description": [],
+      "id": "uniSubStr"
+    },
+    {
+      "definition": "int uniStrPos(string s, string searchstr, int startPos = 0)",
+      "description": [],
+      "id": "uniStrPos"
+    },
+    {
+      "definition": "string uniStrToUpper(string text)",
+      "description": [],
+      "id": "uniStrToUpper"
+    },
+    {
+      "definition": "string uniStrToLower(string text)",
+      "description": [],
+      "id": "uniStrToLower"
+    },
+    {
+      "definition": "int uniStrTok(string s [, string set])",
+      "description": [],
+      "id": "uniStrTok"
+    },
+    {
+      "definition": "int uniStrChange(string &source, unsigned from, unsigned count, string replace)",
+      "description": [],
+      "id": "uniStrChange"
+    },
+    {
+      "definition": "string uniStrExpand(string s, unsigned length)",
+      "description": [],
+      "id": "uniStrExpand"
+    },
+    {
+      "definition": "string uniStrFormat(string format, int len, anytype value)",
+      "description": [],
+      "id": "uniStrFormat"
+    },
+    {
+      "definition": "bool uniPatternMatch(string pattern, string s)\\ndyn_bool uniPatternMatch(string pattern, dyn_string ds)",
+      "description": [],
+      "id": "uniPatternMatch"
+    }
+  ]
+}

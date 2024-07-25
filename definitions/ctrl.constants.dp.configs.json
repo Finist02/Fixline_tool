@@ -1,0 +1,165 @@
+{
+    "hover": {
+        "format" : "```\n${definition}\n```\n\n-------\n\nPredefined WinCC OA constant\n\nData point configs\n\n${description}"
+    },
+    "completionItemKind": "Constant",
+    "defines":[
+        
+        {
+            "definition": "const int DPCONFIG_NONE = 0",
+            "description": [
+            ],
+            "id": "DPCONFIG_NONE"
+        },
+        {
+            "definition": "const int DPCONFIG_PERIPH_ADDR_MAIN = 16",
+            "description": [
+            ],
+            "id": "DPCONFIG_PERIPH_ADDR_MAIN"
+        },
+        {
+            "definition": "const int DPCONFIG_DEFAULTVALUE = 3",
+            "description": [
+            ],
+            "id": "DPCONFIG_DEFAULTVALUE"
+        },
+        {
+            "definition": "const int DPCONFIG_MINMAX_PVSS_RANGECHECK = 7",
+            "description": [
+            ],
+            "id": "DPCONFIG_MINMAX_PVSS_RANGECHECK"
+        },
+        {
+            "definition": "const int DPCONFIG_SET_PVSS_RANGECHECK = 8",
+            "description": [
+            ],
+            "id": "DPCONFIG_SET_PVSS_RANGECHECK"
+        },
+        {
+            "definition": "const int DPCONFIG_MATCH_PVSS_RANGECHECK = 64",
+            "description": [
+            ],
+            "id": "DPCONFIG_MATCH_PVSS_RANGECHECK"
+        },
+        {
+            "definition": "const int DPCONFIG_USER_RANGECHECK = 9",
+            "description": [
+            ],
+            "id": "DPCONFIG_USER_RANGECHECK"
+        },
+        {
+            "definition": "const int DPCONFIG_AUTH = 62",
+            "description": [
+            ],
+            "id": "DPCONFIG_AUTH"
+        },
+        {
+            "definition": "const int DPCONFIG_CONVERSION_RAW_TO_ING_MAIN = 33",
+            "description": [
+            ],
+            "id": "DPCONFIG_CONVERSION_RAW_TO_ING_MAIN"
+        },
+        {
+            "definition": "const int DPCONFIG_CONVERSION_ING_TO_RAW_MAIN = 36",
+            "description": [
+            ],
+            "id": "DPCONFIG_CONVERSION_ING_TO_RAW_MAIN"
+        },
+        {
+            "definition": "const int DPCONFIG_CONVERSION_RAW_TO_ENG_MAIN = 33",
+            "description": [
+            ],
+            "id": "DPCONFIG_CONVERSION_RAW_TO_ENG_MAIN"
+        },
+        {
+            "definition": "const int DPCONFIG_CONVERSION_ENG_TO_RAW_MAIN = 36",
+            "description": [
+            ],
+            "id": "DPCONFIG_CONVERSION_ENG_TO_RAW_MAIN"
+        },
+        {
+            "definition": "const int DPCONFIG_SMOOTH_SIMPLE_MAIN = 48",
+            "description": [
+            ],
+            "id": "DPCONFIG_SMOOTH_SIMPLE_MAIN"
+        },
+        {
+            "definition": "const int DPCONFIG_SMOOTH_DERIV_MAIN = 49",
+            "description": [
+            ],
+            "id": "DPCONFIG_SMOOTH_DERIV_MAIN"
+        },
+        {
+            "definition": "const int DPCONFIG_SMOOTH_FLUTTER_MAIN = 50",
+            "description": [
+            ],
+            "id": "DPCONFIG_SMOOTH_FLUTTER_MAIN"
+        },
+        {
+            "definition": "const int DPCONFIG_ALERT_BINARYSIGNAL = 12",
+            "description": [
+            ],
+            "id": "DPCONFIG_ALERT_BINARYSIGNAL"
+        },
+        {
+            "definition": "const int DPCONFIG_ALERT_NONBINARYSIGNAL = 13",
+            "description": [
+            ],
+            "id": "DPCONFIG_ALERT_NONBINARYSIGNAL"
+        },
+        {
+            "definition": "const int DPCONFIG_ALERT_CLASS = 14",
+            "description": [
+            ],
+            "id": "DPCONFIG_ALERT_CLASS"
+        },
+        {
+            "definition": "const int DPCONFIG_DB_ARCHIVEINFO = 45",
+            "description": [
+            ],
+            "id": "DPCONFIG_DB_ARCHIVEINFO"
+        },
+        {
+            "definition": "const int DPCONFIG_DB_ARCHIVECLASS = 58",
+            "description": [
+            ],
+            "id": "DPCONFIG_DB_ARCHIVECLASS"
+        },
+        {
+            "definition": "const int DPCONFIG_DISTRIBUTION_INFO = 56",
+            "description": [
+            ],
+            "id": "DPCONFIG_DISTRIBUTION_INFO"
+        },
+        {
+            "definition": "const int DPCONFIG_LOGGER_INFO = 57",
+            "description": [
+            ],
+            "id": "DPCONFIG_LOGGER_INFO"
+        },
+        {
+            "definition": "const int DPCONFIG_DP_FUNCTION = 60",
+            "description": [
+            ],
+            "id": "DPCONFIG_DP_FUNCTION"
+        },
+        {
+            "definition": "const int DPCONFIG_STAT_FUNCTION = 63",
+            "description": [
+            ],
+            "id": "DPCONFIG_STAT_FUNCTION"
+        },
+        {
+            "definition": "const int DPCONFIG_SUM_ALERT = 59",
+            "description": [
+            ],
+            "id": "DPCONFIG_SUM_ALERT"
+        },
+        {
+            "definition": "const int DPCONFIG_GENERAL = 55",
+            "description": [
+            ],
+            "id": "DPCONFIG_GENERAL"
+        }
+    ]
+}

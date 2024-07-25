@@ -156,6 +156,11 @@
                 "type": "object",
                 "title": "Fixline tool",
                 "properties": {
+                    "FixLineTool.Syntax.CheckSyntax": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Сheck syntax"
+                    },
                     "FixLineTool.OpenPanel.UserName": {
                         "type": "string",
                         "default": "root",

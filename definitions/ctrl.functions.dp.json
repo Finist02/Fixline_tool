@@ -1,0 +1,416 @@
+{
+  "hover": {
+    "format": "```\n${definition}\n```\n\n-------\n\nPredefined WinCC OA function\n\n${description}"
+  },
+  "completionItemKind": "Function",
+  "defines": [
+    {
+      "definition": "int dpConnect([class object,] string|function_ptr work, [bool answer,] string dp1 [, string dp2 ...])",
+      "description": [
+        "Calls a callback function whenever the passed data point values/attributes change. To pass also any other data, the function dpConnectUserData() can be used."
+      ],
+      "id": "dpConnect"
+    },
+    {
+      "definition": "int dpConnectUserData([class object,] string|function_ptr work, anytype userData, [bool answer,] string dp1 [, string dp2 ...])",
+      "description": [
+        "Calls a callback function on data change of the defined data point values/attributes and passes them to it. In contrast to dpConnect(), this function allows to pass also any data to the callback function."
+      ],
+      "id": "dpConnectUserData"
+    },
+    {
+      "definition": "int dpDisconnect([class object,] string|function_ptr work, string dp1 [, string dp2 ...])",
+      "description": [
+        "The function unregisters function work()."
+      ],
+      "id": "dpDisconnect"
+    },
+    {
+      "definition": "int dpDisconnectUserData([class object,] string|function_ptr work, anytype userData [, string dp1 ...])",
+      "description": [
+        "Unregisters a callback function which was called using dpConnectUserData()."
+      ],
+      "id": "dpDisconnectUserData"
+    },
+    {
+      "definition": "int dpSet(string dp1, <type1> var1 [, string dp2, <type2> var2, ...])",
+      "description": [
+        "The function assigns data point attributes values or creates data point configs."
+      ],
+      "id": "dpSet"
+    },
+    {
+      "definition": "int dpSetWait(string dp1, <type1> var1 [, string dp2, <type2> var2, ...])",
+      "description": [
+        "Assigns data point attributes and waits for an answer from the event manager."
+      ],
+      "id": "dpSetWait"
+    },
+    {
+      "definition": "int dpSetTimed(time t, string dp1, <type1> val1 [, string dp2, <type2> val2, ...])",
+      "description": [
+        "Assigns values and a source time to the original attributes that can be changed by the user or to the attribute \"_corr.._value\"."
+      ],
+      "id": "dpSetTimed"
+    },
+    {
+      "definition": "int dpSetTimedAndCompare(time t, string dp1, <type1> val1 [, string dp2, <type2> val2, ...])",
+      "description": [],
+      "id": "dpSetTimedAndCompare"
+    },
+    {
+      "definition": "int dpSetTimedWait(time t, string dp1, <type1> val1 [, string dp2, <type2> val2, ...])",
+      "description": [],
+      "id": "dpSetTimedWait"
+    },
+    {
+      "definition": "int dpGet(string dp1, <type1> var1 [,string dp2, <type2> var2,...])",
+      "description": [
+        "Reads values of data point attributes in variables."
+      ],
+      "id": "dpGet"
+    },
+    {
+      "definition": "int dpGetMaxAge(unsigned age, string dp1, <type1> var1 [,string dp2, <type2> var2,...])",
+      "description": [],
+      "id": "dpGetMaxAge"
+    },
+    {
+      "definition": "int dpGetPeriod(time t1, time t2, unsigned count, string dp1, <dyn_type1> xa1, dyn_time ta1 [,dyn_int evtypea1][,string dp2,<dyn_type2> xa2,dyn_time ta2,dyn_int evtypa2 ...])",
+      "description": [
+        "Querying DP attributes over a particular time period."
+      ],
+      "id": "dpGetPeriod"
+    },
+    {
+      "definition": "int dpGetPeriodSplit(int reqId, int progress, time t1, time t2, unsigned count, string dp1, <dyn_type1> xa1, dyn_time ta1 [,dyn_int evtypea1][,string dp2,<dyn_type2> xa2,dyn_time ta2,dyn_int evtypa2 ...])",
+      "description": [],
+      "id": "dpGetPeriodSplit"
+    },
+    {
+      "definition": "int dpCancelSplitRequest(int reqId)",
+      "description": [],
+      "id": "dpCancelSplitRequest"
+    },
+    {
+      "definition": "int dpGetAsynch(time t, string dp1, <type1> var1 [, string dp2, <type2> var2 ...])",
+      "description": [
+        "Reads values of data point attributes at a particular source time and writes them to variables."
+      ],
+      "id": "dpGetAsynch"
+    },
+    {
+      "definition": "int dpCreate(string dpname, string dptype [, int sysnum [, unsigned dpNo ]])",
+      "description": [
+        "Creates a data point."
+      ],
+      "id": "dpCreate"
+    },
+    {
+      "definition": "void dpCopy(string dpSource, string dpDestination, int &error, [int iDriverNumber])",
+      "description": [
+        "Copies a data point including the configuration."
+      ],
+      "id": "dpCopy"
+    },
+    {
+      "definition": "int dpDelete(string dpname)",
+      "description": [],
+      "id": "dpDelete"
+    },
+    {
+      "definition": "int dpRename(string oldName, string newName)",
+      "description": [],
+      "id": "dpRename"
+    },
+    {
+      "definition": "bool dpExists(string dpname)",
+      "description": [
+        "Checks the existence of a data point."
+      ],
+      "id": "dpExists"
+    },
+    {
+      "definition": "bool dpGetId(string dpname, unsigned &dpid, int &elid)",
+      "description": [],
+      "id": "dpGetId"
+    },
+    {
+      "definition": "string dpGetName(unsigned dpid, int elid, int sysnum = ownSystem)",
+      "description": [
+        "Returns the data point name for the passed data point ID and element ID."
+      ],
+      "id": "dpGetName"
+    },
+    {
+      "definition": "dyn_string dpNames([string dpPattern [, string dpType]])",
+      "description": [
+        "Returns all the data point names or data point element names that match a pattern. The data point structures are written to the array in alphabetical order."
+      ],
+      "id": "dpNames"
+    },
+    {
+      "definition": "dyn_string dpTypes([string pattern [, unsigned system]])",
+      "description": [
+        "Returns all the data point types from the current project."
+      ],
+      "id": "dpTypes"
+    },
+    {
+      "definition": "dyn_string dpAliases(string aliasFilter [, string dpeFilter])",
+      "description": [],
+      "id": "dpAliases"
+    },
+    {
+      "definition": "int dpElementType(string dp)",
+      "description": [
+        "Returns the data type."
+      ],
+      "id": "dpElementType"
+    },
+    {
+      "definition": "int dpAttributeType(string dp)",
+      "description": [],
+      "id": "dpAttributeType"
+    },
+    {
+      "definition": "string dpSubStr(string dp, int pattern)",
+      "description": [
+        "The function dpSubStr() returns the part (sub string) of a data point name given by pattern. The function returns the neutral form of configs and attributes."
+      ],
+      "id": "dpSubStr"
+    },
+    {
+      "definition": "string dpTypeName(string dp)",
+      "description": [],
+      "id": "dpTypeName"
+    },
+    {
+      "definition": "int dpGetStatusBit(bit64 aStatus, string aBitAttribute)",
+      "description": [],
+      "id": "dpGetStatusBit"
+    },
+    {
+      "definition": "bool dpIsLegalName(string dp)",
+      "description": [],
+      "id": "dpIsLegalName"
+    },
+    {
+      "definition": "string dpAliasToName(string alias)",
+      "description": [],
+      "id": "dpAliasToName"
+    },
+    {
+      "definition": "string dpNameToAlias(string dp)\\ndyn_string dpNameToAlias(dyn_string dp)",
+      "description": [],
+      "id": "dpNameToAlias"
+    },
+    {
+      "definition": "string dpGetAlias(string dpName)\\ndyn_string dpGetAlias(dyn_string dpName)",
+      "description": [
+        "New consistent name for the function dpNameToAlias. The function dpGetAlias() returns the alias for the specified data point element."
+      ],
+      "id": "dpGetAlias"
+    },
+    {
+      "definition": "int getAllDpAliases(dyn_string &dps, dyn_string &aliases [, string aliasFilter [, string dpeFilter]])",
+      "description": [],
+      "id": "getAllDpAliases"
+    },
+    {
+      "definition": "int dpGetAllAliases(dyn_string &dps, dyn_string &aliases [, string aliasFilter [, string dpeFilter]])",
+      "description": [],
+      "id": "dpGetAllAliases"
+    },
+    {
+      "definition": "int dpGetAllDescriptions(dyn_string &dps, dyn_string &descriptions [, string descriptionFilter [, string dpeFilter [, int mode]]])",
+      "description": [],
+      "id": "dpGetAllDescriptions"
+    },
+    {
+      "definition": "int dpGetAllComments(dyn_string &dps, dyn_string &comments [, string commentFilter [, string dpeFilter [, int mode]])",
+      "description": [],
+      "id": "dpGetAllComments"
+    },
+    {
+      "definition": "langString getDpComment(string dp [, int mode])",
+      "description": [],
+      "id": "getDpComment"
+    },
+    {
+      "definition": "int setDpComment(string dp, langString comment)",
+      "description": [],
+      "id": "setDpComment"
+    },
+    {
+      "definition": "langString dpGetDescription(string dp [, int mode])",
+      "description": [
+        "Returns the description for the data point element(s).",
+        "The function replaces dpGetComment(), which remains for compatibility!"
+      ],
+      "id": "dpGetDescription"
+    },
+    {
+      "definition": "langString dpGetComment(string dp [, int mode])",
+      "description": [
+        "Returns the comment for the data point element(s)."
+      ],
+      "id": "dpGetComment"
+    },
+    {
+      "definition": "langString dpGetFormat(string dp)",
+      "description": [
+        "This function returns the \"format\" of a data point."
+      ],
+      "id": "dpGetFormat"
+    },
+    {
+      "definition": "langString dpGetUnit(string dp)",
+      "description": [],
+      "id": "dpGetUnit"
+    },
+    {
+      "definition": "int dpSetDescription(string dp, langString description)",
+      "description": [
+        "Sets a comment for the data point element dp.",
+        "The function replaces dpSetComment(), which remains for compatibility!"
+      ],
+      "id": "dpSetDescription"
+    },
+    {
+      "definition": "int dpSetComment(string dp, langString comment)",
+      "description": [
+        "Sets a comment for the data point element dp."
+      ],
+      "id": "dpSetComment"
+    },
+    {
+      "definition": "int dpSetFormat(string dp, langString dpFormat)",
+      "description": [],
+      "id": "dpSetFormat"
+    },
+    {
+      "definition": "int dpSetUnit(string dp, langString dpUnit)",
+      "description": [],
+      "id": "dpSetUnit"
+    },
+    {
+      "definition": "string dpValToString(string dp, anytype val, bool unit = FALSE)\\ndyn_string dpValToString(string dp, dyn_anytype val, bool unit = FALSE)",
+      "description": [],
+      "id": "dpValToString"
+    },
+    {
+      "definition": "int setDpAlias(string dp, string alias)",
+      "description": [],
+      "id": "setDpAlias"
+    },
+    {
+      "definition": "int dpSetAlias(string dp, string alias)",
+      "description": [
+        "The function dpSetAlias() sets the alias for the specified data point element."
+      ],
+      "id": "dpSetAlias"
+    },
+    {
+      "definition": "int dpQuery(string query, dyn_dyn_anytype tab)",
+      "description": [
+        "Retrieves attribute values with the help of SQL statements."
+      ],
+      "id": "dpQuery"
+    },
+    {
+      "definition": "int dpQuerySplit(int reqId, int progress, string query, dyn_dyn_anytype tab)",
+      "description": [
+        "Retrieves attribute values with the help of SQL statements. Use the function when you query a large amount of data. The function reduces the system load and offers a considerable advantage when dealing with a large amount of data.",
+        "",
+        "As of the first function call, the data is collected internally. This means that the archive manager sends all collected data to the DATA manager. The DATA manager sends the data further to the UI or the CTRL manager, which buffers the data. The UI or the CTRL manager buffers the data until the data is queried via the split functions (dpQuerySplit, dpGetPeriodSplit). Which manager buffers the data depends on the manager (UI or CTRL) that is used to query the data.",
+        "",
+        "Depending on how fast the CTRL script queries the data blocks (depending on the amount of data and on the system load), less bigger or more smaller data blocks are returned."
+      ],
+      "id": "dpQuerySplit"
+    },
+    {
+      "definition": "int dpQueryConnectAll([class object,] string|function_ptr work, bool wantsanswer, anytype userData, string query,[int blockingTime])",
+      "description": [
+        "Registration to a work function if changes are made to values."
+      ],
+      "id": "dpQueryConnectAll"
+    },
+    {
+      "definition": "int dpQueryConnectSingle([class object,] string|function_ptr work, bool wantsanswer, anytype userData, string query,[int blockingTime])",
+      "description": [
+        "The function dpQueryConnectSingle calls a function \"workfunc\" (also called callback function) when values of data points that are queried change."
+      ],
+      "id": "dpQueryConnectSingle"
+    },
+    {
+      "definition": "int dpQueryDisconnect([class object,] string|function_ptr work, anytype userData)",
+      "description": [
+        "Ends registration to a work function."
+      ],
+      "id": "dpQueryDisconnect"
+    },
+    {
+      "definition": "int dpWaitForValue(dyn_string dpNamesWait, dyn_anytype conditions, dyn_string dpNamesReturn, dyn_anytype &returnValues, time timeout, [bool &timerExpired])",
+      "description": [],
+      "id": "dpWaitForValue"
+    },
+    {
+      "definition": "int dpSetAndWaitForValue(dyn_string dpNamesSet, dyn_anytype dpValuesSet, dyn_string dpNamesWait, dyn_anytype conditions, dyn_string dpNamesReturn, dyn_anytype &returnValues, time timeout, [bool &timerExpired])",
+      "description": [],
+      "id": "dpSetAndWaitForValue"
+    },
+    {
+      "definition": "int dpTypeCreate(dyn_dyn_string elements, dyn_dyn_int types)",
+      "description": [],
+      "id": "dpTypeCreate"
+    },
+    {
+      "definition": "int dpTypeChange(dyn_dyn_string elements, dyn_dyn_int types [, dyn_string oldElementNames])",
+      "description": [],
+      "id": "dpTypeChange"
+    },
+    {
+      "definition": "int dpTypeDelete(string name)",
+      "description": [],
+      "id": "dpTypeDelete"
+    },
+    {
+      "definition": "dyn_dyn_string dpGetDpTypeRefs(string name)",
+      "description": [
+        "The function returns all references in a DPT."
+      ],
+      "id": "dpGetDpTypeRefs"
+    },
+    {
+      "definition": "dyn_dyn_string dpGetRefsToDpType(string name)",
+      "description": [],
+      "id": "dpGetRefsToDpType"
+    },
+    {
+      "definition": "int dpTypeGet(string name, dyn_dyn_string &eleme",
+      "description": [],
+      "id": "dpTypeGet"
+    },
+    {
+      "definition": "dyn_string dpGetAllConfigs(<type1> var1)",
+      "description": [],
+      "id": "dpGetAllConfigs"
+    },
+    {
+      "definition": "dyn_string dpGetAllDetails(string config)",
+      "description": [],
+      "id": "dpGetAllDetails"
+    },
+    {
+      "definition": "string getTypeRefName(string dpe)",
+      "description": [],
+      "id": "getTypeRefName"
+    },
+    {
+      "definition": "bool removeDoneCB()",
+      "description": [],
+      "id": "removeDoneCB"
+    }
+  ]
+}
