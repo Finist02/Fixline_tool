@@ -337,7 +337,7 @@ class CtrlDiagnostic {
         else if (varTypes.indexOf(token.symbol) > -1 || this.userVarTypes.indexOf(token.symbol) > -1) {
             const nextToken = this.tokenizer.getNextToken();
             this.tokenizer.backToken();
-            if (nextToken?.symbol == ')') {
+            if (nextToken?.symbol == ')' || nextToken?.symbol == ':') {
                 return false;
             }
             return true;
