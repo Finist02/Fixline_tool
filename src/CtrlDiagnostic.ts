@@ -98,6 +98,12 @@ class CtrlDiagnostic {
                 this.checkClass(token);
                 this.checkUsingPrivateMembers(token);
             }
+            else if (token.symbol == 'struct') {
+                token = this.tokenizer.getNextToken();
+                if (token) {
+                    this.userVarTypes.push(token.symbol);
+                }
+            }
             token = this.tokenizer.getNextToken();
         }
     }
@@ -153,6 +159,18 @@ class CtrlDiagnostic {
     private checkNewVarClass(token: Token) {
         let classNameToken = this.tokenizer.getNextToken();
         if (classNameToken) {
+            let nextToken = this.tokenizer.getNextToken();
+            if (nextToken?.symbol != ':') {  //унаследован
+                this.tokenizer.backToken();
+            }
+            else {
+                nextToken = this.tokenizer.getNextToken();
+                if (nextToken) {
+                    if (this.userVarTypes.indexOf(nextToken.symbol) < 0) {
+                        this.pushErrorDiagnostic('Unknow parent class', nextToken.range);
+                    }
+                }
+            }
             if (this.checkVariable(classNameToken)) {
                 let doc = this.nodes[this.nodes.length - 1][this.nodes[this.nodes.length - 1].length - 1].children;
                 this.nodes.push(doc);
@@ -160,7 +178,7 @@ class CtrlDiagnostic {
             }
             if (this.tokenizer.getNextToken()?.symbol == '{') {
                 try {
-                    this.checkMembers(classNameToken);                    
+                    this.checkMembers(classNameToken);
                 } catch (error) {
                     console.log(error);
                 }
@@ -177,7 +195,7 @@ class CtrlDiagnostic {
         let member = this.tokenizer.getNextToken();
         while (member != null) {
             if (member.symbol == 'public' || member.symbol == 'private' || member.symbol == 'protected') {
-                const typeMemberToken = this.getVarType();
+                let typeMemberToken = this.getVarType();
                 if (typeMemberToken) {
                     let memberName = null;
                     if (classNameToken.symbol == typeMemberToken.symbol) { //constructor
@@ -279,6 +297,15 @@ class CtrlDiagnostic {
             token = this.tokenizer.getNextToken();
         }
         if (token == null) return;
+        if (token?.symbol == ':') {
+            token = this.tokenizer.getNextToken();
+            while (token && token.symbol != '{') {
+                token = this.tokenizer.getNextToken();
+                if (token) {
+                    this.checkUsingVars(token);
+                }
+            }
+        }
         if (token?.symbol == '{') {
             try {
                 this.checkBodyFunction();

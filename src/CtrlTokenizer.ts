@@ -179,6 +179,7 @@ export class CtrlTokenizer {
                     case ']':
                     case '[':
                     case '.':
+                    case ':':
                         if (bufferToken != '') {
                             this.token.push(new Token(this.craeteRange(i, j - bufferToken.length, j), bufferToken));
                         }
