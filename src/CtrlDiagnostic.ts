@@ -30,7 +30,6 @@ const varTypes: string[] = [
     , 'dyn_errClass'
     , 'short'
     , 'signed'
-    , 'nullptr'
     , 'vector'
     , 'mapping'
     , 'dyn_mapping'
@@ -160,7 +159,11 @@ class CtrlDiagnostic {
                 this.userVarTypes.push(classNameToken.symbol);
             }
             if (this.tokenizer.getNextToken()?.symbol == '{') {
-                this.checkMembers(classNameToken);
+                try {
+                    this.checkMembers(classNameToken);                    
+                } catch (error) {
+                    console.log(error);
+                }
             }
             this.popNodesMembers();
         }
@@ -180,6 +183,7 @@ class CtrlDiagnostic {
                     if (classNameToken.symbol == typeMemberToken.symbol) { //constructor
                         memberName = typeMemberToken;
                         if (this.tokenizer.getNextToken()?.symbol == '(') {
+                            this.nodes[this.nodes.length - 1].push(new vscode.DocumentSymbol(memberName.symbol, 'public', vscode.SymbolKind.Variable, memberName.range, memberName.range));
                             this.checkFunction(memberName);
                         }
                         else {
