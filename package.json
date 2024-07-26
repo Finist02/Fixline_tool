@@ -161,6 +161,11 @@
                         "default": false,
                         "description": "Сheck syntax"
                     },
+                    "FixLineTool.Syntax.InnersReadFiles": {
+                        "type": "number",
+                        "default": 2,
+                        "description": "Deep read files"
+                    },
                     "FixLineTool.OpenPanel.UserName": {
                         "type": "string",
                         "default": "root",

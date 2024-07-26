@@ -1,69 +1,9 @@
-import * as fs from 'fs';
-import { CtrlTokenizer, Token, TokensInLine } from './CtrlTokenizer';
 import * as vscode from 'vscode';
+import * as fs from 'fs';
+import { CtrlTokenizer, Token } from './CtrlTokenizer';
 import { GetProjectsInConfigFile } from './ctrlComands';
-import exp = require('constants');
-import { CtrlSymbols } from './CctrlSymbols';
-
-
-const varTypes: string[] = [
-    'blob'
-    , 'bool'
-    , 'void'
-    , 'shape'
-    , 'anytype'
-    , 'mixed'
-    , 'char'
-    , 'double'
-    , 'file'
-    , 'float'
-    , 'int'
-    , 'uint'
-    , 'long'
-    , 'ulong'
-    , 'string'
-    , 'time'
-    , 'unsigned'
-    , 'dyn_blob'
-    , 'dyn_bool'
-    , 'dyn_char'
-    , 'dyn_errClass'
-    , 'short'
-    , 'signed'
-    , 'vector'
-    , 'mapping'
-    , 'dyn_mapping'
-    , 'dyn_int'
-    , 'dyn_uint'
-    , 'dyn_long'
-    , 'dyn_ulong'
-    , 'dyn_float'
-    , 'dyn_time'
-    , 'dyn_string'
-    , 'dyn_anytype'
-    , 'dyn_dyn_anytype'
-    , 'dyn_dyn_mapping'
-    , 'dyn_dyn_int'
-    , 'dyn_dyn_uint'
-    , 'dyn_dyn_long'
-    , 'dyn_dyn_ulong'
-    , 'dyn_dyn_float'
-    , 'dyn_dyn_time'
-    , 'dyn_dyn_string'
-    , 'dyn_dyn_bool'
-    , 'dyn_dyn_char'
-    , 'shared_ptr'
-    , 'vector'
-    , 'void'
-];
-
-const reservedWords: string[] = [
-    'class'
-    , 'public'
-    , 'private'
-    , 'static'
-    , 'const'
-]
+import { CtrlSymbols } from './CtrlSymbols';
+import { reservedWords, varTypes } from './CtrlVarTypes';
 
 export async function startDiagnosticFile(document: vscode.TextDocument, collection: vscode.DiagnosticCollection) {
     const checkSyntax = vscode.workspace.getConfiguration("FixLineTool.Syntax").get("CheckSyntax");
@@ -109,6 +49,7 @@ class CtrlDiagnostic {
     }
 
     private checkUsesExistingPath(token: Token) {
+        CtrlSymbols.filesRead = [];
         if (this.tokenizer == undefined) return;
         let tokenLibrary = this.tokenizer.getNextToken();
         if (tokenLibrary == null) return;
@@ -440,7 +381,10 @@ class CtrlDiagnostic {
 
     private appendUserVarTypesFromFile(path: string) {
         let fileData = fs.readFileSync(path, 'utf8');
-        const symbols = new CtrlSymbols(fileData);
+        const innersReadFiles = vscode.workspace.getConfiguration("FixLineTool.Syntax").get("InnersReadFiles");
+        let deepFileRead = 1;
+        if (typeof innersReadFiles === 'number') deepFileRead = innersReadFiles;
+        const symbols = new CtrlSymbols(fileData, deepFileRead);
         symbols.getNewTypesData().forEach(symbol => {
             if (symbol.kind == vscode.SymbolKind.Class
                 || symbol.kind == vscode.SymbolKind.Struct
