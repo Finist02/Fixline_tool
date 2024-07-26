@@ -165,6 +165,9 @@ export class CtrlTokenizer {
                             continue;
                         }
                         else {
+                            if (bufferToken != '') {
+                                this.token.push(new Token(this.craeteRange(i, j - bufferToken.length, j), bufferToken));
+                            }
                             this.token.push(new Token(this.craeteRange(i, j - 1, j), char));
                             bufferToken = '';
                             continue;

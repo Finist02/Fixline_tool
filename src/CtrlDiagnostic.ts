@@ -486,7 +486,7 @@ class CtrlDiagnostic {
         if (varTypes.indexOf(varName) > -1 || this.userVarTypes.indexOf(varName) > -1 || reservedWords.indexOf(varName) > -1) {
             return false;
         }
-        const matchVarName = varName.match(/[A-Za-z]+[A-Za-z\d-_]*/);
+        const matchVarName = varName.match(/[A-Za-z_]+[A-Za-z\d-_]*/);
         return !(matchVarName == null || matchVarName?.[0] != matchVarName?.input);
     }
 
