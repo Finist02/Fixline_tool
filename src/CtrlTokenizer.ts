@@ -6,7 +6,7 @@ export class TextSplitter {
     readonly text: string;
     private splitterLine = '\n';
     constructor(text: string) {
-        if (text.indexOf('\r\n') > 0) {
+        if (text.indexOf('\r\n') >= 0) {
             this.splitterLine = '\r\n';
         }
         this.text = text;
@@ -79,8 +79,6 @@ export class CtrlTokenizer {
     private currIdxToken = -1;
     private token: Token[] = [];
     private allTokens: Token[] = [];
-    private tokensArray: TokensInLine[] = [];
-    // private document: vscode.TextDocument;
     readonly textSplitter: TextSplitter;
     constructor(document: vscode.TextDocument | string) {
         if (typeof document === 'string') {
@@ -89,7 +87,6 @@ export class CtrlTokenizer {
         else {
             this.textSplitter = new TextSplitter(document.getText());
         }
-        // this.document = document;
         this.createTokens();
     }
     private createTokens() {
@@ -205,14 +202,9 @@ export class CtrlTokenizer {
                     bufferToken = '';
                 }
             }
-            this.tokensArray.push(new TokensInLine(startTokenLine, this.token));
             this.allTokens = this.allTokens.concat(this.token);
             this.token = [];
         }
-    }
-
-    public getTokens() {
-        return this.tokensArray;
     }
 
     public getNextToken() {
@@ -263,23 +255,3 @@ export class CtrlTokenizer {
     }
 }
 
-
-
-export class CtrlSymbolCreator {
-    private symbols: vscode.DocumentSymbol[] = [];
-    private nodes: Array<vscode.DocumentSymbol[]> = [this.symbols];
-    public createSymbols(document: vscode.TextDocument) {
-        const tokenizer = new CtrlTokenizer(document);
-        const tokens = tokenizer.getTokens();
-        // console.log(tokens);
-        tokens.forEach(tokensInLine => {
-            tokensInLine.tokens.forEach(token => {
-                console.log(token.symbol + ' ');
-            })
-            // console.log('\n');
-        });
-    }
-    public getSymbols() {
-
-    }
-}

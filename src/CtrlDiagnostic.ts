@@ -267,8 +267,13 @@ class CtrlDiagnostic {
             if (this.isDeclarVariable(nextToken)) {
                 return nextToken;
             }
+            else if (this.tokenizer.getNextToken()?.symbol == '(') {
+                this.tokenizer.backToken();
+                this.tokenizer.backToken();
+                return nextToken;
+            }
             else {
-                this.pushErrorDiagnostic('Unknow type', nextToken.range);
+                this.pushErrorDiagnostic('Unknown type', nextToken.range);
             }
         }
         return null;
@@ -486,7 +491,7 @@ class CtrlDiagnostic {
         if (varTypes.indexOf(varName) > -1 || this.userVarTypes.indexOf(varName) > -1 || reservedWords.indexOf(varName) > -1) {
             return false;
         }
-        const matchVarName = varName.match(/[A-Za-z_]+[A-Za-z\d-_]*/);
+        const matchVarName = varName.match(/[A-Za-z_]+[A-Za-z\d\-_]*/);
         return !(matchVarName == null || matchVarName?.[0] != matchVarName?.input);
     }
 
