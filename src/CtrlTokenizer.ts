@@ -110,7 +110,7 @@ export class CtrlTokenizer {
                                 bufferToken = this.textSplitter.getText(rangeComment);
                                 if (i != rangeComment.end.line) {
                                     i = rangeComment.end.line;
-                                    isCommentString = true;
+                                    // isCommentString = true;
                                 }
                                 j = rangeComment.end.character - 1;
                                 this.token.push(new Token(rangeComment, bufferToken));
