@@ -8,7 +8,7 @@ import { CtrlDefinitionProvider } from './CtrlDefinitionProvider';
 import * as cmdCtrl from './ctrlComands';
 import { CtrlHoverProvider } from './CtrlHoverProvider';
 import { CtrlSignatureHelpProvider } from './CtrlSignatureHelpProvider';
-import { CtrlSemanticTokensProvider, legend } from './ctrlSemanticTokensProvider';
+import { CtrlSemanticTokensProvider, legend } from './CtrlSemanticTokensProvider';
 import { CtrlReferenceProvider } from './CtrlReferenceProvider';
 import { CreateChildClass } from './CtrlCreateChildClass';
 import { CreateUMLDiagrams } from './CtrlUmlDiagramCreator';

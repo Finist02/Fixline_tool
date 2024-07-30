@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { CtrlTokenizer, Token } from './CtrlTokenizer';
+import { varTypes } from './CtrlVarTypes';
 
 export class CtrlCodeFormatter implements vscode.DocumentFormattingEditProvider {
     private iterTabs = 0;
@@ -22,9 +23,23 @@ export class CtrlCodeFormatter implements vscode.DocumentFormattingEditProvider 
                     this.addSpacesAfterForIf(token);
                     break;
                 case '-':
-                    if (['?', '>', '<', '<=', '>=', '==',':', '=', 'return', 'case'].indexOf(prevToken.symbol) < 0) {
+                    if (['?', '>', '<', '<=', '>=', '==', ':', '=', 'return', 'case'].indexOf(prevToken.symbol) < 0) {
                         this.addSpacesBetweenOperator(token);
                     }
+                    break;
+                case '>':
+                    tokenizer.backToken();
+                    tokenizer.backToken();
+                    tokenizer.backToken();
+                    const prevPrevToken = tokenizer.getNextToken();
+                    tokenizer.getNextToken();
+                    tokenizer.getNextToken();
+                    if (prevPrevToken?.symbol != '<')
+                        this.addSpacesBetweenOperator(token);
+                    break;
+                case '<':
+                    if (prevToken.symbol != 'shared_ptr')
+                        this.addSpacesBetweenOperator(token);
                     break;
                 case '=':
                 case '+':
@@ -36,8 +51,6 @@ export class CtrlCodeFormatter implements vscode.DocumentFormattingEditProvider 
                 case '/=':
                 case '&&':
                 case '||':
-                case '>':
-                case '<':
                 case '<=':
                 case '>=':
                     this.addSpacesBetweenOperator(token);
@@ -45,7 +58,8 @@ export class CtrlCodeFormatter implements vscode.DocumentFormattingEditProvider 
                 case '}':
                     nextToken = tokenizer.getNextToken();
                     tokenizer.backToken();
-                    this.checkNewLineAfterScope(token, nextToken, -1);
+                    if (nextToken?.symbol != ';')
+                        this.checkNewLineAfterScope(token, nextToken, -1);
                     this.iterTabs--;
                     this.checkNewLineScope(token, prevToken);
                     break;
@@ -59,7 +73,7 @@ export class CtrlCodeFormatter implements vscode.DocumentFormattingEditProvider 
                 case ';':
                     nextToken = tokenizer.getNextToken();
                     tokenizer.backToken();
-                    if (nextToken && nextToken?.symbol != '}') {
+                    if (nextToken && nextToken?.symbol != '}' && !nextToken.symbol.startsWith('/')) {
                         this.checkNewLineAfterExpression(token, nextToken);
                     }
                     break;
@@ -100,7 +114,8 @@ export class CtrlCodeFormatter implements vscode.DocumentFormattingEditProvider 
             this.checkNewLineAfterExpression(token, nextToken, corrTabs);
         }
         else if (token.range.end.character < this.document.lineAt(token.range.start.line).text.length) {
-            if (this.document.lineAt(token.range.start.line).text.charAt(token.range.end.character) != ';') {
+            const nextChar = this.document.lineAt(token.range.start.line).text.charAt(token.range.end.character);
+            if (nextChar != ';' && nextChar != ' ' && nextChar != '\t') {
                 this.bufferChanges.push(
                     vscode.TextEdit.insert(this.createPosition(token.range.end.line, token.range.end.character), '\n' + '\t'.repeat(this.iterTabs)));
 
@@ -120,8 +135,7 @@ export class CtrlCodeFormatter implements vscode.DocumentFormattingEditProvider 
         }
     }
     private checkEmptySpacesEnd(token: Token) {
-        if (!(token.symbol.startsWith('//') || token.symbol.startsWith('/*'))
-            && token.symbol != '}' && token.symbol != '{') {
+        if (!(token.symbol.startsWith('//') || token.symbol.startsWith('/*'))) {
             let lineText = this.document.lineAt(token.range.start.line).text;
             const prevLengText = lineText.length;
             lineText = lineText.trimEnd();
@@ -136,8 +150,28 @@ export class CtrlCodeFormatter implements vscode.DocumentFormattingEditProvider 
         }
     }
     private checkTabs(token: Token) {
-        if (!(token.symbol.startsWith('//') || token.symbol.startsWith('/*'))
-            && token.symbol != '}' && token.symbol != '{') {
+        if (token.symbol == '}') {
+            let lineText = this.document.lineAt(token.range.start.line).text;
+            if (!lineText.startsWith('\t'.repeat(this.iterTabs))) {
+                this.bufferChanges.push(
+                    vscode.TextEdit.replace(
+                        new vscode.Range(this.createPosition(token.range.start.line, 0), this.createPosition(token.range.start.line, token.range.start.character))
+                        , '\t'.repeat(this.iterTabs)
+                    ));
+            }
+        }
+        else if (token.symbol == '{') {
+            let lineText = this.document.lineAt(token.range.start.line).text;
+            if (!lineText.startsWith('\t'.repeat(this.iterTabs - 1))) {
+                this.bufferChanges.push(
+                    vscode.TextEdit.replace(
+                        new vscode.Range(this.createPosition(token.range.start.line, 0), this.createPosition(token.range.start.line, token.range.start.character))
+                        , '\t'.repeat(this.iterTabs - 1)
+                    ));
+            }
+        }
+        else if (!(token.symbol.startsWith('//') || token.symbol.startsWith('/*'))) {
+            // && token.symbol != '}' && token.symbol != '{') {
             let lineText = this.document.lineAt(token.range.start.line).text;
             if (!lineText.startsWith('\t'.repeat(this.iterTabs))) {
                 this.bufferChanges.push(

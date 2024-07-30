@@ -166,6 +166,11 @@
                         "default": 2,
                         "description": "Deep read files"
                     },
+                    "FixLineTool.Syntax.HighlightCommentDoxygen": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Highlight comment Doxygen"
+                    },
                     "FixLineTool.OpenPanel.UserName": {
                         "type": "string",
                         "default": "root",

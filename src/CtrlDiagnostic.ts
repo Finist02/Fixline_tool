@@ -93,7 +93,7 @@ class CtrlDiagnostic {
         const nextToken = this.tokenizer.getNextToken();
         if (!(nextToken?.symbol == ';')) {
             this.tokenizer.backToken();
-            this.pushErrorDiagnostic('Class inner body error', token.range);
+            this.pushErrorDiagnostic('Class inner body error not close correctly ;', token.range);
         }
     }
 
@@ -243,7 +243,7 @@ class CtrlDiagnostic {
             token = this.tokenizer.getNextToken();
         }
         if (token == null) return;
-        if (token?.symbol == ':') {
+        if (token?.symbol == ':' || token?.symbol == 'synchronized') {
             token = this.tokenizer.getNextToken();
             while (token && token.symbol != '{') {
                 token = this.tokenizer.getNextToken();
@@ -464,7 +464,7 @@ class CtrlDiagnostic {
     }
 
     private checkUsingVars(token: Token) {
-        if (token.symbol.charCodeAt(0) < 65) return; //  заглушка от множесива токенов (символ A начинаются с 65)
+        if (token.symbol.charCodeAt(0) < 65) return; //  заглушка от множества токенов (символ A начинаются с 65)
         for (let j = this.nodes.length - 1; j > 0; j--) {
             for (let i = 0; i < this.nodes[j].length; i++) {
                 if (this.nodes[j][i].detail == 'public' || this.nodes[j][i].detail == 'private') { //если поднялись до методов

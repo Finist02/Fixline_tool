@@ -112,7 +112,7 @@ export class CtrlTokenizer {
                                     i = rangeComment.end.line;
                                     // isCommentString = true;
                                 }
-                                j = rangeComment.end.character - 1;
+                                j = rangeComment.end.character ;
                                 this.token.push(new Token(rangeComment, bufferToken));
                                 bufferToken = '';
                                 continue;
