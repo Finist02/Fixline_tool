@@ -49,7 +49,6 @@ class CtrlDiagnostic {
     }
 
     private checkUsesExistingPath(token: Token) {
-        CtrlSymbols.filesRead = [];
         if (this.tokenizer == undefined) return;
         let tokenLibrary = this.tokenizer.getNextToken();
         if (tokenLibrary == null) return;
@@ -251,6 +250,9 @@ class CtrlDiagnostic {
                     this.checkUsingVars(token);
                 }
             }
+        }
+        if(token?.symbol.startsWith('//') || token?.symbol.startsWith('/*')){
+            token = this.tokenizer.getNextToken();
         }
         if (token?.symbol == '{') {
             try {

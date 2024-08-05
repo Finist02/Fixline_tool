@@ -38,20 +38,20 @@ export class TextSplitter {
     public getTextWithoutComment(range: vscode.Range) {
         let text = this.getText(range);
         let commentRegExp = /\/\*.*?\*\//gs.exec(text);
-        while(commentRegExp) {
+        while (commentRegExp) {
             const countNewLines = commentRegExp[0].split('\n');
-            if(countNewLines.length > 1) {
-                text = text.replace(commentRegExp[0], '\n'.repeat(countNewLines.length-1));
+            if (countNewLines.length > 1) {
+                text = text.replace(commentRegExp[0], '\n'.repeat(countNewLines.length - 1));
             }
             else {
-                text = text.replace(commentRegExp[0], ' '.repeat(commentRegExp[0].length-1));
+                text = text.replace(commentRegExp[0], ' '.repeat(commentRegExp[0].length - 1));
             }
             commentRegExp = /\/\*.*?\*\//gs.exec(text);
         }
         let lineCommentRegExp = /\/\/.*?\n/gs.exec(text);
-        while(lineCommentRegExp) {
-                text = text.replace(lineCommentRegExp[0], '\n');
-                lineCommentRegExp = /\/\/.*?\n/gs.exec(text);
+        while (lineCommentRegExp) {
+            text = text.replace(lineCommentRegExp[0], '\n');
+            lineCommentRegExp = /\/\/.*?\n/gs.exec(text);
         }
         return text;
     }
@@ -69,6 +69,9 @@ export class TokensInLine {
 export class Token {
     readonly range: vscode.Range;
     readonly symbol: string = '';
+    public isConst: boolean = false;
+    public isStatic: boolean = false;
+    public isVector: boolean = false;
     constructor(range: vscode.Range, symbol: string) {
         this.range = range;
         this.symbol = symbol;
@@ -80,6 +83,7 @@ export class CtrlTokenizer {
     private token: Token[] = [];
     private allTokens: Token[] = [];
     readonly textSplitter: TextSplitter;
+    readonly commentTokens: Token[] = [];
     constructor(document: vscode.TextDocument | string) {
         if (typeof document === 'string') {
             this.textSplitter = new TextSplitter(document);
@@ -89,12 +93,40 @@ export class CtrlTokenizer {
         }
         this.createTokens();
     }
+    public getNextToken() {
+        this.currIdxToken++;
+        if (this.currIdxToken < this.allTokens.length) {
+            return this.allTokens[this.currIdxToken];
+        }
+        return null;
+    }
+
+    public backToken() {
+        this.currIdxToken--;
+    }
+
+    public resetIndexTokens() {
+        this.currIdxToken = -1;
+    }
+
+    public getTokens(range: vscode.Range) {
+        let tokens = [];
+        for (let i = 0; i < this.allTokens.length; i++) {
+            if (this.allTokens[i].range.start.line >= range.start.line
+                && this.allTokens[i].range.end.line <= range.end.line) {
+                    tokens.push(this.allTokens[i]);
+            }
+        }
+        return tokens;
+    }
+
+
+
     private createTokens() {
         let bufferToken = '';
         let isCommentString = false;
         for (let i = 0; i < this.textSplitter.lineCount; i++) {
             const line = this.textSplitter.lineAt(i);
-            let startTokenLine = i;
             for (let j = 0; j < line.length; j++) {
                 if (isCommentString) {
                     isCommentString = false;
@@ -110,16 +142,17 @@ export class CtrlTokenizer {
                                 bufferToken = this.textSplitter.getText(rangeComment);
                                 if (i != rangeComment.end.line) {
                                     i = rangeComment.end.line;
-                                    // isCommentString = true;
                                 }
-                                j = rangeComment.end.character ;
+                                j = rangeComment.end.character;
                                 this.token.push(new Token(rangeComment, bufferToken));
+                                this.commentTokens.push(new Token(rangeComment, bufferToken));
                                 bufferToken = '';
                                 continue;
                             }
                             if (nextChar == '/') {
                                 bufferToken = this.textSplitter.getText(this.craeteRange(i, j, line.length));
                                 this.token.push(new Token(this.craeteRange(i, j, line.length), bufferToken));
+                                this.commentTokens.push(new Token(this.craeteRange(i, j, line.length), bufferToken));
                                 bufferToken = '';
                                 isCommentString = true;
                                 continue;
@@ -207,19 +240,10 @@ export class CtrlTokenizer {
         }
     }
 
-    public getNextToken() {
-        this.currIdxToken++;
-        if (this.currIdxToken < this.allTokens.length) {
-            return this.allTokens[this.currIdxToken];
-        }
-        return null;
-    }
-    public backToken() {
-        this.currIdxToken--;
-    }
     private craeteRange(lineNumber: number, start: number, end: number) {
         return new vscode.Range(new vscode.Position(lineNumber, start), new vscode.Position(lineNumber, end));
     }
+
     private findEndComment(lineNumber: number, position: number) {
         let i = lineNumber, j = position;
         for (i; i < this.textSplitter.lineCount; i++) {

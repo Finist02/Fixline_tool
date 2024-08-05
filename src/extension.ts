@@ -14,6 +14,7 @@ import { CreateChildClass } from './CtrlCreateChildClass';
 import { CreateUMLDiagrams } from './CtrlUmlDiagramCreator';
 import { CtrlCodeFormatter } from './CtrlFormatCode';
 import { startDiagnosticFile } from './CtrlDiagnostic';
+import { CtrlGetAllmembers } from './CtrlSymbols';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -29,7 +30,8 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("extension.CreateDoxyHelp", cmdCtrl.CreateDoxyHelp));
 	context.subscriptions.push(vscode.commands.registerCommand("extension.StartUnitTests", cmdCtrl.StartUnitTests));
 	context.subscriptions.push(vscode.commands.registerCommand("extension.GetHelpChatGpt", cmdCtrl.GetHelpChatGpt));
-	context.subscriptions.push(vscode.commands.registerCommand("extension.CreateUMLDiagrams", CreateUMLDiagrams));
+	context.subscriptions.push(vscode.commands.registerCommand("extension.CreateUMLDiagrams", CtrlGetAllmembers));
+	// context.subscriptions.push(vscode.commands.registerCommand("extension.CreateUMLDiagrams", CreateUMLDiagrams));
 
 	context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider({ language: "ctrlpp" }, new CtrlCodeFormatter()));
 	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider('ctl', panelPreviewProvider));
