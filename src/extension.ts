@@ -14,10 +14,12 @@ import { CreateUMLDiagrams } from './CtrlUmlDiagramCreator';
 import { CtrlCodeFormatter } from './CtrlFormatCode';
 import { startDiagnosticFile } from './CtrlDiagnostic';
 import { CtrlSemanticTokensProvider, legend } from './CtrlSemanticTokensProvider';
+import AuthSettings from "./CtrlSecretStorage"
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+	AuthSettings.init(context);
 	context.subscriptions.push(vscode.commands.registerCommand('extension.OpenProjectPanel', cmdCtrl.showQuickPick));
 	context.subscriptions.push(vscode.commands.registerCommand('extension.RunScript', cmdCtrl.RunScript));
 	context.subscriptions.push(vscode.commands.registerCommand('extension.OpenPanel', cmdCtrl.OpenPanel));

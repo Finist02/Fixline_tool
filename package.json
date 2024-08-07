@@ -186,11 +186,6 @@
                         "default": "",
                         "description": "Password"
                     },
-                    "FixLineTool.Gitlab.GitlabToken": {
-                        "type": "string",
-                        "default": "",
-                        "description": "Token"
-                    },
                     "FixLineTool.Gitlab.GitlabUrl": {
                         "type": "string",
                         "default": "http:///git.fixline.tech/",
