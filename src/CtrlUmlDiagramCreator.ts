@@ -1,4 +1,4 @@
-import * as cmdCtrl from './ctrlComands';
+import * as cmdCtrl from './CtrlComands';
 import * as fs from 'fs';
 import * as vscode from 'vscode';
 import { QuickPickItem } from 'vscode';

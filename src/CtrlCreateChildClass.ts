@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as vscode from 'vscode';
 import { QuickPickItem } from 'vscode';
 import { QuickPickItemKind} from 'vscode';
-import { GetPvssPath } from './ctrlComands';
+import { GetPvssPath } from './CtrlComands';
 import { CtrlSymbolsCreator, TypeQuery } from './ctrlSymbolsCreator';
 
 export async function CreateChildClass() {

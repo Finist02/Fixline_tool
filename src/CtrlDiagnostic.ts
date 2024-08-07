@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import { CtrlTokenizer, Token } from './CtrlTokenizer';
-import { GetProjectsInConfigFile } from './ctrlComands';
+import { GetProjectsInConfigFile } from './CtrlComands';
 import { CtrlSymbols } from './CtrlSymbols';
 import { reservedWords, varTypes } from './CtrlVarTypes';
 
@@ -100,7 +100,7 @@ class CtrlDiagnostic {
         let classNameToken = this.tokenizer.getNextToken();
         if (classNameToken) {
             let nextToken = this.tokenizer.getNextToken();
-            if (nextToken?.symbol != ':') {  //унаследован
+            if (nextToken?.symbol != '::') {  //унаследован
                 this.tokenizer.backToken();
             }
             else {
@@ -242,7 +242,7 @@ class CtrlDiagnostic {
             token = this.tokenizer.getNextToken();
         }
         if (token == null) return;
-        if (token?.symbol == ':' || token?.symbol == 'synchronized') {
+        if (token?.symbol == '::' || token?.symbol == 'synchronized') {
             token = this.tokenizer.getNextToken();
             while (token && token.symbol != '{') {
                 token = this.tokenizer.getNextToken();
@@ -285,7 +285,7 @@ class CtrlDiagnostic {
         else if (varTypes.indexOf(token.symbol) > -1 || this.userVarTypes.indexOf(token.symbol) > -1) {
             const nextToken = this.tokenizer.getNextToken();
             this.tokenizer.backToken();
-            if (nextToken?.symbol == ')' || nextToken?.symbol == ':') {
+            if (nextToken?.symbol == ')' || nextToken?.symbol == '::') {
                 return false;
             }
             return true;

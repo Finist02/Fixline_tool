@@ -69,9 +69,6 @@ export class TokensInLine {
 export class Token {
     readonly range: vscode.Range;
     readonly symbol: string = '';
-    public isConst: boolean = false;
-    public isStatic: boolean = false;
-    public isVector: boolean = false;
     constructor(range: vscode.Range, symbol: string) {
         this.range = range;
         this.symbol = symbol;
@@ -101,6 +98,13 @@ export class CtrlTokenizer {
         return null;
     }
 
+    public getPrevToken(steps: number = 1) {
+        if (this.currIdxToken - steps >= 0) {
+            return this.allTokens[this.currIdxToken - steps];
+        }
+        return null;
+    }
+
     public backToken() {
         this.currIdxToken--;
     }
@@ -114,7 +118,7 @@ export class CtrlTokenizer {
         for (let i = 0; i < this.allTokens.length; i++) {
             if (this.allTokens[i].range.start.line >= range.start.line
                 && this.allTokens[i].range.end.line <= range.end.line) {
-                    tokens.push(this.allTokens[i]);
+                tokens.push(this.allTokens[i]);
             }
         }
         return tokens;
@@ -178,13 +182,13 @@ export class CtrlTokenizer {
                     case '!':
                     case '&':
                     case '|':
+                    case ':':
                         if (bufferToken != '' && (char == '<' || char == '>')) {
                             this.token.push(new Token(this.craeteRange(i, j - bufferToken.length, j), bufferToken));
                             this.token.push(new Token(this.craeteRange(i, j - 1, j), char));
                             bufferToken = '';
-                            continue;
                         }
-                        else if (j < line.length - 1 && line.charAt(j + 1).match(/\-|\+|\=|\<|\>|\*|\/|\%|\!|\&|\|/)) {
+                        else if (j < line.length - 1 && line.charAt(j + 1).match(/\-|\+|\=|\<|\>|\*|\/|\%|\!|\&|\:/)) {
                             if (bufferToken != '') {
                                 this.token.push(new Token(this.craeteRange(i, j - bufferToken.length, j), bufferToken));
                             }
@@ -192,7 +196,6 @@ export class CtrlTokenizer {
                             j++;
                             this.token.push(new Token(this.craeteRange(i, j - bufferToken.length, j), bufferToken));
                             bufferToken = '';
-                            continue;
                         }
                         else {
                             if (bufferToken != '') {
@@ -200,7 +203,6 @@ export class CtrlTokenizer {
                             }
                             this.token.push(new Token(this.craeteRange(i, j - 1, j), char));
                             bufferToken = '';
-                            continue;
                         }
                         continue;
                     case '}':
@@ -212,7 +214,6 @@ export class CtrlTokenizer {
                     case ']':
                     case '[':
                     case '.':
-                    case ':':
                         if (bufferToken != '') {
                             this.token.push(new Token(this.craeteRange(i, j - bufferToken.length, j), bufferToken));
                         }

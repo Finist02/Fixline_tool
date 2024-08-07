@@ -2,8 +2,8 @@ import * as vscode from 'vscode';
 import { CtrlSymbolsCreator } from './ctrlSymbolsCreator';
 import { TypeQuery } from './ctrlSymbolsCreator';
 import * as fs from 'fs';
-import * as cmdCtrl from './ctrlComands';
-import { GetProjectsInConfigFile } from './ctrlComands';
+import * as cmdCtrl from './CtrlComands';
+import { GetProjectsInConfigFile } from './CtrlComands';
 
 
 
