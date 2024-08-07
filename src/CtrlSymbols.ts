@@ -182,7 +182,7 @@ export class CtrlSymbols {
             this.addEnumMembers();
             nextToken = this.tokenizer.getNextToken();
             if (nextToken) {
-                docSymbol.range = new vscode.Range(docSymbol.range.start, nextToken.range.end);
+                docSymbol.selectionRange = new vscode.Range(docSymbol.range.start, nextToken.range.end);
             }
             this.nodes.pop();
         }
@@ -195,6 +195,14 @@ export class CtrlSymbols {
                 break;
             }
             else if (token.symbol == ',') {
+                token = this.tokenizer.getNextToken();
+                continue;
+            }
+            else if (token.symbol == '=') {
+                token = this.tokenizer.getNextToken();
+                continue;
+            }
+            else if (token.symbol.charCodeAt(0) < 58 && token.symbol.charCodeAt(0) > 47) {
                 token = this.tokenizer.getNextToken();
                 continue;
             }
@@ -220,7 +228,7 @@ export class CtrlSymbols {
         else if (token.symbol == 'vector' || token.symbol.startsWith('dyn_')) {
             return vscode.SymbolKind.Array;
         }
-        else if (token.symbol == 'int'||token.symbol == 'float'||token.symbol == 'uint'||token.symbol == 'double') {
+        else if (token.symbol == 'int' || token.symbol == 'float' || token.symbol == 'uint' || token.symbol == 'double') {
             return vscode.SymbolKind.Number;
         }
         return vscode.SymbolKind.Variable;
@@ -478,12 +486,7 @@ export class CtrlAllSymbols extends CtrlSymbols {
 
                 }
                 else {
-                    if (varType.modifiers.indexOf(SymbolModifiers.Const) >= 0) {
-                        this.addVaribles(memberName, varType);
-                    }
-                    else {
-                        this.addVaribles(memberName, varType);
-                    }
+                    this.addVaribles(memberName, varType);
                 }
             }
         }
@@ -523,13 +526,7 @@ export class CtrlAllSymbols extends CtrlSymbols {
                             }
                             else {
                                 this.tokenizer.backToken();
-                                
-                                // if (typeMemberToken.modifiers.indexOf(SymbolModifiers.Const) >= 0) {
-                                    this.addVaribles(memberName, typeMemberToken);
-                                // }
-                                // else {
-                                //     this.addVaribles(memberName, typeMemberToken.token);
-                                // }
+                                this.addVaribles(memberName, typeMemberToken);
                             }
                         }
                     }
@@ -611,8 +608,8 @@ export class CtrlAllSymbols extends CtrlSymbols {
     }
 
     private addVaribles(memberName: Token, typeProperty: TokenProperty) {
-        const symbolKind = this.getSymbolKind(typeProperty.token)
-        this.addVariable(memberName, typeProperty, symbolKind);
+        const symbolKind = this.getSymbolKind(typeProperty.token);
+        const newSymbol = this.addVariable(memberName, typeProperty, symbolKind);
         let nextToken = this.tokenizer.getNextToken();
         while (nextToken?.symbol == ',') {
             nextToken = this.tokenizer.getNextToken();
@@ -621,7 +618,10 @@ export class CtrlAllSymbols extends CtrlSymbols {
             }
             nextToken = this.tokenizer.getNextToken();
         }
-        this.tokenizer.backToken();
+        while (nextToken?.symbol != ';') {
+            nextToken = this.tokenizer.getNextToken();
+        }
+        newSymbol.selectionRange = new vscode.Range(memberName.range.start, nextToken.range.end);
     }
 
     private addVariable(variable: Token, typeProperty: TokenProperty, symbolKind: vscode.SymbolKind = vscode.SymbolKind.Variable) {
@@ -629,7 +629,7 @@ export class CtrlAllSymbols extends CtrlSymbols {
         newSymbol.rangeType = typeProperty.token.range;
         newSymbol.modifiers = typeProperty.modifiers;
         this.nodes[this.nodes.length - 1].push(newSymbol);
-        return true;
+        return newSymbol;
     }
 
     private checkParameters(token: Token, varType: TokenProperty) {
@@ -800,7 +800,7 @@ export class CtrlPublicSymbols extends CtrlSymbols {
                                 this.nodes[this.nodes.length - 1].push(symbolMember);
                                 const rangeEnd = this.getRangeContext();
                                 if (rangeEnd) {
-                                    symbolMember.range = new vscode.Range(memberName.range.start, rangeEnd);
+                                    symbolMember.selectionRange = new vscode.Range(memberName.range.start, rangeEnd);
                                 }
                             }
                             else {
@@ -856,7 +856,7 @@ export class CtrlPublicSymbols extends CtrlSymbols {
             }
             nextToken = this.tokenizer.getNextToken();
             if (nextToken) {
-                docSymbol.range = new vscode.Range(docSymbol.range.start, nextToken.range.end);
+                docSymbol.selectionRange = new vscode.Range(docSymbol.range.start, nextToken.range.end);
             }
             this.nodes.pop();
         }
@@ -881,7 +881,7 @@ export class CtrlPublicSymbols extends CtrlSymbols {
                             this.nodes[this.nodes.length - 1].push(symbolMember);
                             const rangeEnd = this.getRangeContext();
                             if (rangeEnd) {
-                                symbolMember.range = new vscode.Range(memberName.range.start, rangeEnd);
+                                symbolMember.selectionRange = new vscode.Range(memberName.range.start, rangeEnd);
                             }
                         }
                     }
@@ -893,7 +893,7 @@ export class CtrlPublicSymbols extends CtrlSymbols {
                                 this.nodes[this.nodes.length - 1].push(symbolMember);
                                 const rangeEnd = this.getRangeContext();
                                 if (rangeEnd) {
-                                    symbolMember.range = new vscode.Range(memberName.range.start, rangeEnd);
+                                    symbolMember.selectionRange = new vscode.Range(memberName.range.start, rangeEnd);
                                 }
                             }
                             else {

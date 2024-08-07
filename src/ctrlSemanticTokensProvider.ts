@@ -70,9 +70,9 @@ export class CtrlSemanticTokensProvider implements vscode.DocumentSemanticTokens
 		for (let i = 0; i < allSymbols.length; i++) {
 			if (allSymbols[i].modifiers.indexOf(SymbolModifiers.Const) >= 0) {
 				constantsInOtherFiles.push(allSymbols[i].name);
-				this.tokensBuilder.push(allSymbols[i].selectionRange, 'enumMember', ['declaration']);
+				this.tokensBuilder.push(allSymbols[i].range, 'enumMember', ['declaration']);
 			}
-			else if (allSymbols[i].kind == vscode.SymbolKind.Enum) {
+			if (allSymbols[i].kind == vscode.SymbolKind.Enum) {
 				this.enums.push(allSymbols[i].name);
 				this.highlightEnum(allSymbols[i], this.tokensBuilder);
 			}
@@ -98,15 +98,18 @@ export class CtrlSemanticTokensProvider implements vscode.DocumentSemanticTokens
 				this.highlightBodyFunctionConst(allSymbols[i].children, functionTokens, constantsInOtherFiles);
 
 			}
-
+			else { 
+				let varTokens = tokenizer.getTokens(allSymbols[i].selectionRange);
+				this.highlightBodyFunctionConst([allSymbols[i]], varTokens, constantsInOtherFiles);
+			}
 		}
 	}
 
 	private highlightEnum(symbol: vscode.DocumentSymbol, tokensBuilder: vscode.SemanticTokensBuilder) {
-		tokensBuilder.push(symbol.selectionRange, 'class', ['declaration']);
+		tokensBuilder.push(symbol.range, 'class', ['declaration']);
 		for (let j = 0; j < symbol.children.length; j++) { // enumMembers
 			const children = symbol.children[j];
-			tokensBuilder.push(children.selectionRange, 'enumMember', ['declaration']);
+			tokensBuilder.push(children.range, 'enumMember', ['declaration']);
 		}
 	}
 
@@ -118,7 +121,7 @@ export class CtrlSemanticTokensProvider implements vscode.DocumentSemanticTokens
 			const symbol = symbols.shift();
 			if (symbol == undefined) break;
 			this.highlitghtScope(tokens, constInScopes1, constMembers, symbol.range);
-			constInScopes1 = constInScopes1.filter((constElement: string)  => {
+			constInScopes1 = constInScopes1.filter((constElement: string) => {
 				return constElement != symbol.name
 			});
 			if (symbol.modifiers.indexOf(SymbolModifiers.Const) >= 0) {

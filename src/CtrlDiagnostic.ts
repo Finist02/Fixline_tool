@@ -39,10 +39,11 @@ class CtrlDiagnostic {
                 this.checkUsingPrivateMembers(token);
             }
             else if (token.symbol == 'struct') {
-                token = this.tokenizer.getNextToken();
-                if (token) {
-                    this.userVarTypes.push(token.symbol);
-                }
+                this.checkClass(token, 'public');
+                this.checkUsingPrivateMembers(token);
+            }
+            else if (token.symbol == 'enum') {
+                this.checkEnum(token);
             }
             token = this.tokenizer.getNextToken();
         }
@@ -87,8 +88,8 @@ class CtrlDiagnostic {
         }
     }
 
-    private checkClass(token: Token) {
-        this.checkNewVarClass(token);
+    private checkClass(token: Token, defaultMembersType: string = 'private') {
+        this.checkNewVarClass(token, defaultMembersType);
         const nextToken = this.tokenizer.getNextToken();
         if (!(nextToken?.symbol == ';')) {
             this.tokenizer.backToken();
@@ -96,7 +97,68 @@ class CtrlDiagnostic {
         }
     }
 
-    private checkNewVarClass(token: Token) {
+    private checkEnum(token: Token) {
+        let enumNameToken = this.tokenizer.getNextToken();
+        if (enumNameToken) {
+            if (this.checkVariable(enumNameToken)) {
+                let doc = this.nodes[this.nodes.length - 1][this.nodes[this.nodes.length - 1].length - 1].children;
+                this.nodes.push(doc);
+                this.userVarTypes.push(enumNameToken.symbol);
+            }
+            if (this.tokenizer.getNextToken()?.symbol == '{') {
+                try {
+                    this.checkEnumMembers();
+                } catch (error) {
+                    console.log('checkEnum', error);
+                }
+            }
+            this.popNodesMembers();
+            const nextToken = this.tokenizer.getNextToken();
+            if (!(nextToken?.symbol == ';')) {
+                this.tokenizer.backToken();
+                this.pushErrorDiagnostic('Enum inner body error not close correctly ;', token.range);
+            }
+        }
+        else {
+            this.pushErrorDiagnostic('Enum is not declared', token.range);
+            this.tokenizer.backToken();
+        }
+    }
+
+    private checkEnumMembers() {
+        let token = this.tokenizer.getNextToken();
+        while (token != null) {
+            if (this.checkVariable(token)) {
+                token = this.tokenizer.getNextToken();
+                if (token) {
+                    if (token.symbol == '=') {
+                        let tokenNumber = this.tokenizer.getNextToken();
+                        if (tokenNumber) {
+                            if (tokenNumber.symbol.charCodeAt(0) < 58 && tokenNumber.symbol.charCodeAt(0) > 47) {
+                                token = this.tokenizer.getNextToken();
+                                if (token?.symbol != ',') {
+                                    this.pushErrorDiagnostic('Enum expected ,', tokenNumber.range);
+                                }
+                            }
+                            else {
+                                this.pushErrorDiagnostic('Enum expected number', tokenNumber.range);
+                            }
+                        }
+                    }
+                    else if (token.symbol == '}') {
+                        break;
+                    }
+                    else if (token.symbol != ',') {
+                        this.pushErrorDiagnostic('Enum expected ,', token.range);
+                        break;
+                    }
+                }
+            }
+            token = this.tokenizer.getNextToken();
+        }
+    }
+
+    private checkNewVarClass(token: Token, defaultMembersType: string = 'private') {
         let classNameToken = this.tokenizer.getNextToken();
         if (classNameToken) {
             let nextToken = this.tokenizer.getNextToken();
@@ -118,7 +180,7 @@ class CtrlDiagnostic {
             }
             if (this.tokenizer.getNextToken()?.symbol == '{') {
                 try {
-                    this.checkMembers(classNameToken);
+                    this.checkMembers(classNameToken, defaultMembersType);
                 } catch (error) {
                     console.log(error);
                 }
@@ -131,7 +193,7 @@ class CtrlDiagnostic {
         }
     }
 
-    private checkMembers(classNameToken: Token) {
+    private checkMembers(classNameToken: Token, defaultMembersType: string = 'private') {
         let member = this.tokenizer.getNextToken();
         while (member != null) {
             if (member.symbol == 'public' || member.symbol == 'private' || member.symbol == 'protected') {
@@ -171,7 +233,21 @@ class CtrlDiagnostic {
                 }
             }
             else if (this.isDeclarVariable(member)) {//in class default private, in strict public
+                let memberName = this.tokenizer.getNextToken();
+                if (memberName) {
+                    if (this.tokenizer.getNextToken()?.symbol == '(') {
+                        this.checkVaribles(memberName, defaultMembersType);
+                        this.checkFunction(memberName);
+                    }
+                    else {
+                        this.tokenizer.backToken();
+                        this.checkVaribles(memberName, defaultMembersType);
+                    }
 
+                }
+                else {
+                    this.pushErrorDiagnostic('Variable is not declared', member.range);
+                }
             }
             else if (member.symbol == '}') {
                 return;
@@ -251,7 +327,7 @@ class CtrlDiagnostic {
                 }
             }
         }
-        if(token?.symbol.startsWith('//') || token?.symbol.startsWith('/*')){
+        if (token?.symbol.startsWith('//') || token?.symbol.startsWith('/*')) {
             token = this.tokenizer.getNextToken();
         }
         if (token?.symbol == '{') {
