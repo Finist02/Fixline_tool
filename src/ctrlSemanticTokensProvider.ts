@@ -87,7 +87,7 @@ export class CtrlSemanticTokensProvider implements vscode.DocumentSemanticTokens
 					const children = allSymbols[i].children[j];
 					if (children.modifiers.indexOf(SymbolModifiers.Const) >= 0) {
 						constMembers.push(children.name);
-						this.tokensBuilder.push(children.selectionRange, 'enumMember', ['declaration']);
+						this.tokensBuilder.push(children.range, 'enumMember', ['declaration']);
 					}
 					else if (children.kind == vscode.SymbolKind.Method || children.kind == vscode.SymbolKind.Constructor) {
 						let methodTokens = tokenizer.getTokens(children.selectionRange);

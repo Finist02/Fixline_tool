@@ -137,14 +137,27 @@ class CtrlDiagnostic {
         while (token != null) {
             if (this.checkVariable(token)) {
                 token = this.tokenizer.getNextToken();
+                if (token?.symbol.startsWith('/')) {
+                    token = this.tokenizer.getNextToken();
+                }
                 if (token) {
                     if (token.symbol == '=') {
                         let tokenNumber = this.tokenizer.getNextToken();
                         if (tokenNumber) {
                             if (tokenNumber.symbol.charCodeAt(0) < 58 && tokenNumber.symbol.charCodeAt(0) > 47) {
                                 token = this.tokenizer.getNextToken();
+                                if (token?.symbol.startsWith('/')) {
+                                    token = this.tokenizer.getNextToken();
+                                }
+                                if (token?.symbol == '}') {
+                                    break;
+                                }
                                 if (token?.symbol != ',') {
                                     this.pushErrorDiagnostic('Enum expected ,', tokenNumber.range);
+                                }
+                                token = this.tokenizer.getNextToken();
+                                if (!token?.symbol.startsWith('/')) {
+                                    this.tokenizer.backToken();
                                 }
                             }
                             else {
@@ -156,12 +169,15 @@ class CtrlDiagnostic {
                         break;
                     }
                     else if (token.symbol != ',') {
-                        this.pushErrorDiagnostic('Enum expected ,', token.range);
+                        this.pushErrorDiagnostic('Enum expected1 ,', token.range);
                         break;
                     }
                 }
             }
             token = this.tokenizer.getNextToken();
+            if (token?.symbol.startsWith('/')) {
+                token = this.tokenizer.getNextToken();
+            }
         }
     }
 
@@ -207,14 +223,30 @@ class CtrlDiagnostic {
                 let typeMemberToken = this.getVarType();
                 if (typeMemberToken) {
                     let memberName = null;
-                    if (classNameToken.symbol == typeMemberToken.symbol) { //constructor
+                    if (classNameToken.symbol == typeMemberToken.symbol) { //type selfClass
                         memberName = typeMemberToken;
-                        if (this.tokenizer.getNextToken()?.symbol == '(') {
+                        if (this.tokenizer.getNextToken()?.symbol == '(') { //constructor
                             this.nodes[this.nodes.length - 1].push(new vscode.DocumentSymbol(memberName.symbol, 'public', vscode.SymbolKind.Variable, memberName.range, memberName.range));
                             this.checkFunction(memberName);
                         }
-                        else {
-                            this.pushErrorDiagnostic('Constructor is not declared correctly', member.range);
+                        else {//method selftype
+                            this.tokenizer.backToken();
+                            memberName = this.tokenizer.getNextToken();
+                            if (memberName) {
+                                if (this.tokenizer.getNextToken()?.symbol == '(') {
+                                    this.checkVaribles(memberName, member.symbol);
+                                    this.checkFunction(memberName);
+                                }
+                                else {
+                                    this.tokenizer.backToken();
+                                    this.checkVaribles(memberName, member.symbol);
+                                }
+
+                            }
+                            else {
+                                this.pushErrorDiagnostic('Variable is not declared', member.range);
+                            }
+                            // this.pushErrorDiagnostic('Constructor is not declared correctly', member.range);
                         }
                     }
                     else {

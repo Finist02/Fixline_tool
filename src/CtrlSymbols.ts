@@ -179,6 +179,7 @@ export class CtrlSymbols {
             this.tokenizer.getNextToken();
             this.nodes[this.nodes.length - 1].push(docSymbol);
             this.nodes.push(docSymbol.children);
+            this.userVarTypes.push(nextToken.symbol);
             this.addEnumMembers();
             nextToken = this.tokenizer.getNextToken();
             if (nextToken) {
@@ -199,6 +200,10 @@ export class CtrlSymbols {
                 continue;
             }
             else if (token.symbol == '=') {
+                token = this.tokenizer.getNextToken();
+                continue;
+            }
+            else if (token.symbol.startsWith('/')) {
                 token = this.tokenizer.getNextToken();
                 continue;
             }
@@ -508,6 +513,26 @@ export class CtrlAllSymbols extends CtrlSymbols {
                             const rangeEnd = this.checkFunction();
                             if (rangeEnd) {
                                 symbolMember.selectionRange = new vscode.Range(memberName.token.range.start, rangeEnd);
+                            }
+                        }
+                        else {
+                            this.tokenizer.backToken();
+                            memberName = this.tokenizer.getNextToken();
+                            if (memberName) {
+                                if (this.tokenizer.getNextToken()?.symbol == '(') {
+                                    let symbolMember = new CtrlDocumentSymbol(memberName.symbol, typeMemberToken.token.symbol, vscode.SymbolKind.Method, memberName.range, memberName.range);
+                                    symbolMember.rangeType = typeMemberToken.token.range;
+                                    this.nodes[this.nodes.length - 1].push(symbolMember);
+                                    const rangeEnd = this.checkFunction();
+                                    if (rangeEnd) {
+                                        symbolMember.selectionRange = new vscode.Range(memberName.range.start, rangeEnd);
+                                    }
+
+                                }
+                                else {
+                                    this.tokenizer.backToken();
+                                    this.addVaribles(memberName, typeMemberToken);
+                                }
                             }
                         }
                     }
