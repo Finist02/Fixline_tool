@@ -78,6 +78,11 @@ export class CtrlSemanticTokensProvider implements vscode.DocumentSemanticTokens
 			}
 			else if (allSymbols[i].kind == vscode.SymbolKind.Class || allSymbols[i].kind == vscode.SymbolKind.Struct) {
 				let constMembers: string[] = [];
+				//проверка унаследованности
+				let classTokens = tokenizer.getTokens(allSymbols[i].selectionRange);
+				if (classTokens[2].symbol == ':') {
+					this.tokensBuilder.push(classTokens[3].range, 'class', ['declaration']);
+				}
 				for (let j = 0; j < allSymbols[i].children.length; j++) { // members
 					const children = allSymbols[i].children[j];
 					if (children.modifiers.indexOf(SymbolModifiers.Const) >= 0) {
@@ -98,7 +103,7 @@ export class CtrlSemanticTokensProvider implements vscode.DocumentSemanticTokens
 				this.highlightBodyFunctionConst(allSymbols[i].children, functionTokens, constantsInOtherFiles);
 
 			}
-			else { 
+			else {
 				let varTokens = tokenizer.getTokens(allSymbols[i].selectionRange);
 				this.highlightBodyFunctionConst([allSymbols[i]], varTokens, constantsInOtherFiles);
 			}

@@ -18,6 +18,7 @@ class CtrlDiagnostic {
     private userVarTypes: string[] = [];
     private diagnostics: vscode.Diagnostic[] = [];
     private tokenizer: CtrlTokenizer;
+    private checkDataTypes = true;
     public async startDiagnosticFile(document: vscode.TextDocument, collection: vscode.DiagnosticCollection) {
         if (document && document.languageId == "ctrlpp") {
             this.userVarTypes = [];
@@ -65,6 +66,7 @@ class CtrlDiagnostic {
                 const path1 = paths[j] + '/scripts/libs/' + findLibrary + '.ctl';
                 const path2 = paths[j] + '/scripts/libs/' + findLibrary;
                 const path3 = paths[j] + '/bin/' + findLibrary + extLib;
+                const path4 = paths[j] + '/scripts/libs/' + findLibrary + '.ctc';
 
                 if (fs.existsSync(path1)) {
                     this.appendUserVarTypesFromFile(path1);
@@ -77,6 +79,11 @@ class CtrlDiagnostic {
                     break;
                 }
                 else if (fs.existsSync(path3)) {
+                    pathCorrect = true;
+                    break;
+                }
+                else if (fs.existsSync(path4)) {
+                    this.checkDataTypes = false;
                     pathCorrect = true;
                     break;
                 }
@@ -162,7 +169,7 @@ class CtrlDiagnostic {
         let classNameToken = this.tokenizer.getNextToken();
         if (classNameToken) {
             let nextToken = this.tokenizer.getNextToken();
-            if (nextToken?.symbol != '::') {  //унаследован
+            if (nextToken?.symbol != ':') {  //унаследован
                 this.tokenizer.backToken();
             }
             else {
@@ -318,7 +325,7 @@ class CtrlDiagnostic {
             token = this.tokenizer.getNextToken();
         }
         if (token == null) return;
-        if (token?.symbol == '::' || token?.symbol == 'synchronized') {
+        if (token?.symbol == ':' || token?.symbol == 'synchronized') {
             token = this.tokenizer.getNextToken();
             while (token && token.symbol != '{') {
                 token = this.tokenizer.getNextToken();

@@ -44,6 +44,7 @@ export class CtrlCodeFormatter implements vscode.DocumentFormattingEditProvider 
                 case '=':
                 case '+':
                 case '*':
+                case ':':
                 case '/':
                 case '+=':
                 case '-=':
