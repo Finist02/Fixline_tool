@@ -93,7 +93,7 @@ export class CtrlSemanticTokensProvider implements vscode.DocumentSemanticTokens
 						let methodTokens = tokenizer.getTokens(children.selectionRange);
 						this.highlightBodyFunctionConst(children.children, methodTokens, constantsInOtherFiles, [], constMembers);
 					}
-					if (this.newObjects.indexOf(children.detail) >= 0 && children.rangeType) {
+					if ((this.newObjects.indexOf(children.detail) >= 0 || this.enums.indexOf(children.detail) >= 0) && children.rangeType) {
 						this.tokensBuilder.push(children.rangeType, 'class', ['declaration']);
 					}
 				}
