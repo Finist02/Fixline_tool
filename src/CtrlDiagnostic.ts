@@ -46,7 +46,44 @@ class CtrlDiagnostic {
             else if (token.symbol == 'enum') {
                 this.checkEnum(token);
             }
+            else {
+                this.checkFunctionOrVar(token);
+            }
             token = this.tokenizer.getNextToken();
+        }
+    }
+
+    private checkFunctionOrVar(token: Token) {
+        if (token.symbol.startsWith('/')) return;
+        if (token.symbol == 'main') {
+            this.tokenizer.getNextToken();
+            this.nodes[this.nodes.length - 1].push(new vscode.DocumentSymbol(token.symbol, 'void', vscode.SymbolKind.Variable, token.range, token.range));
+            this.checkFunction(token);
+        }
+        else {
+            this.tokenizer.backToken();
+            let typeMemberToken = this.getVarType();
+            if (typeMemberToken) {
+                let varName = this.tokenizer.getNextToken();
+                if (varName) {
+                    if (this.tokenizer.getNextToken()?.symbol == '(') {
+                        this.checkVaribles(varName, typeMemberToken.symbol);
+                        this.nodes[this.nodes.length - 1].push(new vscode.DocumentSymbol(token.symbol, 'void', vscode.SymbolKind.Variable, token.range, token.range));
+                        this.checkFunction(varName);
+                    }
+                    else {
+                        this.tokenizer.backToken();
+                        this.checkVaribles(varName, typeMemberToken.symbol);
+                        varName = this.tokenizer.getNextToken();
+                        while(varName?.symbol != ';'){
+                            varName = this.tokenizer.getNextToken();
+                        }
+                    }
+                }
+            }
+            else {
+                this.tokenizer.getNextToken();
+            }
         }
     }
 
@@ -311,6 +348,14 @@ class CtrlDiagnostic {
     private getVarType() {
         let nextToken = this.tokenizer.getNextToken();
         if (nextToken) {
+            if (nextToken.symbol == 'public') {
+                nextToken = this.tokenizer.getNextToken();
+                if (!nextToken) return;
+            }
+            if (nextToken.symbol == 'global') {
+                nextToken = this.tokenizer.getNextToken();
+                if (!nextToken) return;
+            }
             if (nextToken.symbol == 'static') {
                 nextToken = this.tokenizer.getNextToken();
                 if (!nextToken) return;
@@ -335,11 +380,10 @@ class CtrlDiagnostic {
     }
 
     private checkFunction(memberName: Token) {
-
         let token = this.tokenizer.getNextToken();
         let countScopes = 1;
         this.nodes.push(this.nodes[this.nodes.length - 1][this.nodes[this.nodes.length - 1].length - 1].children);
-        while (countScopes != 0) {
+        while (countScopes != 0 && token != null) {
             if (token?.symbol == ')') {
                 countScopes--;
             }

@@ -168,7 +168,7 @@ export class CtrlSymbols {
                 this.userVarTypes.push(libSymbols[i].name);
             }
         } catch (error) {
-            console.log(path);
+            console.log('CtrlSymbols appendUserVarTypesFromFile ' + path);
         }
     }
 
@@ -240,6 +240,7 @@ export class CtrlSymbols {
     }
 
     protected getTypeVariableAndModidfiers(token: Token | null) {
+        if (token?.symbol.startsWith('/')) return null;
         if (token == null) return null;
         let modifiers: SymbolModifiers[] = [];
 
@@ -280,6 +281,7 @@ export class CtrlSymbols {
         else if (varTypes.indexOf(nextToken.symbol) > -1 || this.userVarTypes.indexOf(nextToken.symbol) > -1) {
             const nextNextToken = this.tokenizer.getNextToken();
             if (nextNextToken?.symbol == ')' || nextNextToken?.symbol == ':') { //явное преобрахованиев в тип, например(bool) или вызов статичного метода
+                this.tokenizer.backToken();
                 return null;
             }
             this.tokenizer.backToken();
@@ -310,10 +312,9 @@ export class CtrlSymbols {
             const libSymbols = symbols.getNewTypesData(this.filesRead);
             for (let i = 0; i < libSymbols.length; i++) {
                 this.symbols.push(libSymbols[i]);
-
             }
         } catch (error) {
-            console.log(path);
+            console.log('CtrlSymbols getUserVarTypesFromFile ' + path);
         }
     }
 }
@@ -382,7 +383,7 @@ export class CtrlConstantsSymbols extends CtrlSymbols {
 
             }
         } catch (error) {
-            console.log('error read: ' + path);
+            console.log('CtrlConstantsSymbols appendNewVarsFromFile ' + path);
         }
     }
 }
@@ -479,20 +480,28 @@ export class CtrlAllSymbols extends CtrlSymbols {
         if (token.symbol.startsWith('/')) return;
         const varType = this.getTypeVariableAndModidfiers(token);
         if (varType) {
-            const memberName = this.tokenizer.getNextToken();
-            if (memberName) {
-                if (this.tokenizer.getNextToken()?.symbol == '(') {
-                    let symbolMember = new CtrlDocumentSymbol(memberName.symbol, varType.token.symbol, vscode.SymbolKind.Function, memberName.range, memberName.range);
-                    this.nodes[this.nodes.length - 1].push(symbolMember);
-                    const rangeEnd = this.checkFunction();
-                    if (rangeEnd) {
-                        symbolMember.selectionRange = new vscode.Range(memberName.range.start, rangeEnd);
-                    }
+            this.addFunctionOrVar(varType);
+        }
+        else if (token.symbol == 'main') {
+            const tokenVarType = new Token(token.range, 'void');
+            this.tokenizer.backToken();
+            this.addFunctionOrVar(new TokenProperty(tokenVarType, []));
+        }
+    }
 
+    private addFunctionOrVar(varType: TokenProperty) {
+        const memberName = this.tokenizer.getNextToken();
+        if (memberName) {
+            if (this.tokenizer.getNextToken()?.symbol == '(') {
+                let symbolMember = new CtrlDocumentSymbol(memberName.symbol, varType.token.symbol, vscode.SymbolKind.Function, memberName.range, memberName.range);
+                this.nodes[this.nodes.length - 1].push(symbolMember);
+                const rangeEnd = this.checkFunction();
+                if (rangeEnd) {
+                    symbolMember.selectionRange = new vscode.Range(memberName.range.start, rangeEnd);
                 }
-                else {
-                    this.addVaribles(memberName, varType);
-                }
+            }
+            else {
+                this.addVaribles(memberName, varType);
             }
         }
     }
@@ -608,6 +617,9 @@ export class CtrlAllSymbols extends CtrlSymbols {
                 }
             }
             token = this.tokenizer.getNextToken();
+            if (token?.symbol == 'synchronized') {
+                token = this.tokenizer.getNextToken(4);
+            }
         }
         if (token == null) return null;
         if (token?.symbol == ':') {
@@ -636,11 +648,18 @@ export class CtrlAllSymbols extends CtrlSymbols {
         const symbolKind = this.getSymbolKind(typeProperty.token);
         const newSymbol = this.addVariable(memberName, typeProperty, symbolKind);
         let nextToken = this.tokenizer.getNextToken();
-        while (nextToken?.symbol == ',') {
-            nextToken = this.tokenizer.getNextToken();
-            if (nextToken) {
-                this.addVariable(nextToken, typeProperty, symbolKind);
+        if (nextToken?.symbol == ',') {
+            while (nextToken?.symbol == ',') {
+                nextToken = this.tokenizer.getNextToken();
+                if (nextToken) {
+                    this.addVariable(nextToken, typeProperty, symbolKind);
+                }
+                nextToken = this.tokenizer.getNextToken();
             }
+        }
+        else {
+            this.tokenizer.backToken();
+            this.tokenizer.backToken();
             nextToken = this.tokenizer.getNextToken();
         }
         while (nextToken?.symbol != ';') {
@@ -675,7 +694,7 @@ export class CtrlAllSymbols extends CtrlSymbols {
         let countScopes = 1;
         let token = this.tokenizer.getNextToken();
         let rangeFunc = null;
-        while (countScopes != 0) {
+        while (token && countScopes != 0) {
             if (token?.symbol == '{') {
                 countScopes++;
                 let docSymbol = new CtrlDocumentSymbol(token.symbol, '{', vscode.SymbolKind.Operator, token.range, token.range);
@@ -718,7 +737,7 @@ export class CtrlAllSymbols extends CtrlSymbols {
         let docSymbol = new CtrlDocumentSymbol(forOperator.symbol, 'for', vscode.SymbolKind.Operator, forOperator.range, forOperator.range);
         this.nodes[this.nodes.length - 1].push(docSymbol);
         this.nodes.push(docSymbol.children);
-        while (countScopes != 0) {
+        while (token && countScopes != 0) {
             if (token?.symbol == ')') {
                 countScopes--;
             }

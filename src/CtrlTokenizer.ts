@@ -90,8 +90,8 @@ export class CtrlTokenizer {
         }
         this.createTokens();
     }
-    public getNextToken() {
-        this.currIdxToken++;
+    public getNextToken(step: number = 1) {
+        this.currIdxToken = this.currIdxToken + step;
         if (this.currIdxToken < this.allTokens.length) {
             return this.allTokens[this.currIdxToken];
         }
@@ -105,8 +105,8 @@ export class CtrlTokenizer {
         return null;
     }
 
-    public backToken() {
-        this.currIdxToken--;
+    public backToken(steps: number = 1) {
+        this.currIdxToken = this.currIdxToken - steps;
     }
 
     public resetIndexTokens() {
@@ -129,9 +129,17 @@ export class CtrlTokenizer {
     private createTokens() {
         let bufferToken = '';
         let isCommentString = false;
+        let isCommentMulti = false;
+        let j = 0;
         for (let i = 0; i < this.textSplitter.lineCount; i++) {
             const line = this.textSplitter.lineAt(i);
-            for (let j = 0; j < line.length; j++) {
+            if (isCommentMulti) {
+                isCommentMulti = false;
+            }
+            else {
+                j = 0;
+            }
+            for (j; j < line.length; j++) {
                 if (isCommentString) {
                     isCommentString = false;
                     break;
@@ -144,13 +152,15 @@ export class CtrlTokenizer {
                             if (nextChar == '*') {
                                 let rangeComment = this.findEndComment(i, j);
                                 bufferToken = this.textSplitter.getText(rangeComment);
-                                if (i != rangeComment.end.line) {
-                                    i = rangeComment.end.line;
-                                }
                                 j = rangeComment.end.character;
                                 this.token.push(new Token(rangeComment, bufferToken));
                                 this.commentTokens.push(new Token(rangeComment, bufferToken));
                                 bufferToken = '';
+                                if (i != rangeComment.end.line) {
+                                    isCommentMulti = true;
+                                    i = rangeComment.end.line - 1;
+                                    break;
+                                }
                                 continue;
                             }
                             if (nextChar == '/') {
@@ -165,7 +175,12 @@ export class CtrlTokenizer {
                         break;
                     case '"':
                         let rangeComment = this.findEndStringLiteral(i, j);
-                        bufferToken = this.textSplitter.getText(rangeComment);
+                        try {
+                            bufferToken = this.textSplitter.getText(rangeComment);
+
+                        } catch (error) {
+                            console.log('getText ' + rangeComment);
+                        }
                         i = rangeComment.end.line;
                         j = rangeComment.end.character - 1;
                         this.token.push(new Token(rangeComment, bufferToken));
@@ -230,6 +245,9 @@ export class CtrlTokenizer {
                     default:
                         break;
                 }
+                if (isCommentMulti) {
+                    break;
+                }
                 bufferToken += char;
                 if (bufferToken != '' && j == line.length - 1) {
                     this.token.push(new Token(this.craeteRange(i, j - bufferToken.length + 1, j + 1), bufferToken));
@@ -242,7 +260,8 @@ export class CtrlTokenizer {
     }
 
     private craeteRange(lineNumber: number, start: number, end: number) {
-        return new vscode.Range(new vscode.Position(lineNumber, start), new vscode.Position(lineNumber, end));
+        const range = new vscode.Range(new vscode.Position(lineNumber, start), new vscode.Position(lineNumber, end));
+        return range;
     }
 
     private findEndComment(lineNumber: number, position: number) {
@@ -271,7 +290,15 @@ export class CtrlTokenizer {
             }
             for (j; j < line.length; j++) {
                 let findToken = line.charAt(j);
-                if (findToken == '"' && line.charAt(j - 1) != '\\') {
+                if (findToken == '"') {
+                    if (line.length > j && line.charAt(j - 1) == '\\') {
+                        if (line.length > j - 1 && line.charAt(j - 2) == '\\') {
+                            return new vscode.Range(new vscode.Position(lineNumber, position), new vscode.Position(i, j + 1));
+                        }
+                        else {
+                            continue;
+                        }
+                    }
                     return new vscode.Range(new vscode.Position(lineNumber, position), new vscode.Position(i, j + 1));
                 }
             }
