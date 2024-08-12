@@ -12,7 +12,7 @@ import { CtrlReferenceProvider } from './CtrlReferenceProvider';
 import { CreateChildClass } from './CtrlCreateChildClass';
 import { CreateUMLDiagrams } from './CtrlUmlDiagramCreator';
 import { CtrlCodeFormatter } from './CtrlFormatCode';
-import { startDiagnosticFile } from './CtrlDiagnostic';
+import { COMMAND, CtrlCodeAction, startDiagnosticFile } from './CtrlDiagnostic';
 import { CtrlSemanticTokensProvider, legend } from './CtrlSemanticTokensProvider';
 import AuthSettings from "./CtrlSecretStorage"
 
@@ -20,6 +20,8 @@ import AuthSettings from "./CtrlSecretStorage"
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 	AuthSettings.init(context);
+	CtrlCodeAction.readFileExclude();
+	vscode.commands.registerCommand(COMMAND, commandHandler);
 	context.subscriptions.push(vscode.commands.registerCommand('extension.OpenProjectPanel', cmdCtrl.showQuickPick));
 	context.subscriptions.push(vscode.commands.registerCommand('extension.RunScript', cmdCtrl.RunScript));
 	context.subscriptions.push(vscode.commands.registerCommand('extension.OpenPanel', cmdCtrl.OpenPanel));
@@ -44,7 +46,11 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.languages.registerDocumentSemanticTokensProvider("ctrlpp", new CtrlSemanticTokensProvider(), legend));
 	context.subscriptions.push(vscode.languages.registerReferenceProvider("ctrlpp", new CtrlReferenceProvider()));
 	context.subscriptions.push(vscode.languages.registerRenameProvider("ctrlpp", new CtrlRenameProvider()));
-
+	context.subscriptions.push(
+		vscode.languages.registerCodeActionsProvider('ctrlpp', new CtrlCodeAction(), {
+			providedCodeActionKinds: CtrlCodeAction.providedCodeActionKinds
+		})
+	);
 	const collection = vscode.languages.createDiagnosticCollection('ctrlpp');
 	if (vscode.window.activeTextEditor) { startDiagnosticFile(vscode.window.activeTextEditor.document, collection); }
 	context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(editor => { if (editor) { startDiagnosticFile(editor.document, collection); } }));
@@ -104,4 +110,8 @@ class CtrlRenameProvider implements vscode.RenameProvider {
 		}
 		);
 	};
+
 }
+const commandHandler = (diagnostic: vscode.Diagnostic, path: string) => {
+	CtrlCodeAction.addExclude(diagnostic.message, diagnostic.range, path);
+};

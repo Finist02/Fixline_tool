@@ -1,9 +1,27 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import { CtrlTokenizer, Token } from './CtrlTokenizer';
-import { GetProjectsInConfigFile } from './CtrlComands';
+import { getPathInConfigFile, GetProjectsInConfigFile } from './CtrlComands';
 import { CtrlSymbols } from './CtrlSymbols';
 import { reservedWords, varTypes } from './CtrlVarTypes';
+
+export const COMMAND = 'code-actions-ctl.command';
+
+const Default_code = 'default';
+interface excludeType {
+    filePath: string;
+    errorProps: ErrorProps[];
+}
+interface ErrorProps {
+    message: string;
+    range: Range[];
+
+}
+interface Range {
+    line: number,
+    character: number
+}
+export let ruleExcludeErrors: excludeType[];
 
 export async function startDiagnosticFile(document: vscode.TextDocument, collection: vscode.DiagnosticCollection) {
     const checkSyntax = vscode.workspace.getConfiguration("FixLineTool.Syntax").get("CheckSyntax");
@@ -19,8 +37,10 @@ class CtrlDiagnostic {
     private diagnostics: vscode.Diagnostic[] = [];
     private tokenizer: CtrlTokenizer;
     private checkDataTypes = true;
+    private documentPath = '';
     public async startDiagnosticFile(document: vscode.TextDocument, collection: vscode.DiagnosticCollection) {
         if (document && document.languageId == "ctrlpp") {
+            this.documentPath = document.uri.fsPath;
             this.userVarTypes = [];
             this.updateCtrlDiagnostics(document);
         } else {
@@ -75,7 +95,7 @@ class CtrlDiagnostic {
                         this.tokenizer.backToken();
                         this.checkVaribles(varName, typeMemberToken.symbol);
                         varName = this.tokenizer.getNextToken();
-                        while(varName?.symbol != ';'){
+                        while (varName?.symbol != ';') {
                             varName = this.tokenizer.getNextToken();
                         }
                     }
@@ -352,6 +372,10 @@ class CtrlDiagnostic {
                 nextToken = this.tokenizer.getNextToken();
                 if (!nextToken) return;
             }
+            if (nextToken.symbol == 'private') {
+                nextToken = this.tokenizer.getNextToken();
+                if (!nextToken) return;
+            }
             if (nextToken.symbol == 'global') {
                 nextToken = this.tokenizer.getNextToken();
                 if (!nextToken) return;
@@ -600,7 +624,21 @@ class CtrlDiagnostic {
         return !(matchVarName == null || matchVarName?.[0] != matchVarName?.input);
     }
 
-    private pushErrorDiagnostic(message: string, range: vscode.Range, severity = vscode.DiagnosticSeverity.Error, code = '') {
+    private pushErrorDiagnostic(message: string, range: vscode.Range, severity = vscode.DiagnosticSeverity.Error, code = Default_code) {
+        for (let i = 0; i < ruleExcludeErrors.length; i++) {
+            if (ruleExcludeErrors[i].filePath == this.documentPath) {
+                for (let j = 0; j < ruleExcludeErrors[i].errorProps.length; j++) {
+                    const element = ruleExcludeErrors[i].errorProps[j];
+                    if (element.message == message
+                        && element.range[0].line == range.start.line && element.range[0].character == range.start.character
+                        && element.range[1].line == range.end.line && element.range[1].character == range.end.character
+                    ) {
+                        return;
+                    }
+                }
+            }
+
+        }
         this.diagnostics.push({
             code: code,
             message: message,
@@ -655,5 +693,61 @@ class CtrlDiagnostic {
             }
         }
 
+    }
+}
+
+/**
+ * Provides code actions corresponding to diagnostic problems.
+ */
+export class CtrlCodeAction implements vscode.CodeActionProvider {
+    static excludesFile = '';
+    public static readonly providedCodeActionKinds = [
+        vscode.CodeActionKind.QuickFix
+    ];
+
+    provideCodeActions(document: vscode.TextDocument, range: vscode.Range | vscode.Selection, context: vscode.CodeActionContext, token: vscode.CancellationToken): vscode.CodeAction[] {
+        // for each diagnostic entry that has the matching `code`, create a code action command
+        return context.diagnostics
+            .filter(diagnostic => diagnostic.code === Default_code)
+            .map(diagnostic => this.createCommandCodeAction(diagnostic, document.uri.fsPath));
+    }
+
+    private createCommandCodeAction(diagnostic: vscode.Diagnostic, path: string): vscode.CodeAction {
+        const action = new vscode.CodeAction('Exclude error', vscode.CodeActionKind.QuickFix);
+        action.command = { command: COMMAND, title: 'Exclude error tittle', tooltip: 'Exclude error tooltip', arguments: [diagnostic, path] };
+        action.diagnostics = [diagnostic];
+        action.isPreferred = true;
+        return action;
+    }
+    static addExclude(message: string, range: vscode.Range, path: string) {
+        if (this.excludesFile != '') {
+            let isFileFind = false;
+            for (let i = 0; i < ruleExcludeErrors.length; i++) {
+                if (ruleExcludeErrors[i].filePath == path) {
+                    ruleExcludeErrors[i].errorProps.push({ range: [{ line: range.start.line, character: range.start.character }, { line: range.end.line, character: range.end.character }], message: message });
+                    isFileFind = true;
+                    if (ruleExcludeErrors[i].errorProps.length > 100) {
+                        ruleExcludeErrors[i].errorProps.shift();
+                    }
+                    break;
+                }
+            }
+            if (!isFileFind) {
+                ruleExcludeErrors.push({ filePath: path, errorProps: [{ range: [{ line: range.start.line, character: range.start.character }, { line: range.end.line, character: range.end.character }], message: message }] });
+            }
+            if (ruleExcludeErrors.length > 100) {
+                ruleExcludeErrors.shift();
+            }
+            const json = JSON.stringify(ruleExcludeErrors);
+            fs.writeFileSync(this.excludesFile, json)
+        }
+    }
+    static readFileExclude() {
+        const extensionFixline = vscode.extensions.getExtension('Danil.fixline-tool');
+        if (extensionFixline == undefined) return;
+        const pathResourseFolder = extensionFixline.extensionPath + '/resources';
+        this.excludesFile = pathResourseFolder + '/exclude.json';
+        const fileData = fs.readFileSync(this.excludesFile, 'utf8');
+        ruleExcludeErrors = JSON.parse(fileData);
     }
 }

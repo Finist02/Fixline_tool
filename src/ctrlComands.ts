@@ -536,7 +536,7 @@ function delay(ms: number) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function getPathInConfigFile(what: string): string {
+export function getPathInConfigFile(what: string): string {
 	let path = '';
 	let regexp: RegExp;
 	if (what == 'proj_path') {
