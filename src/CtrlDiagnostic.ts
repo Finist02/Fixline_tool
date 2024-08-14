@@ -1,13 +1,15 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import { CtrlTokenizer, Token } from './CtrlTokenizer';
-import { getPathInConfigFile, GetProjectsInConfigFile } from './CtrlComands';
+import { GetProjectsInConfigFile } from './CtrlComands';
 import { CtrlSymbols } from './CtrlSymbols';
 import { reservedWords, varTypes } from './CtrlVarTypes';
 
-export const COMMAND = 'code-actions-ctl.command';
+export const COMMAND_EXCLUDE_ERROR = 'code-actions-ctl.commandExcludeError';
 
 const Default_code = 'default';
+const AddNew_code = 'add new';
+const VarNotUse_code = 'variable not use';
 interface excludeType {
     filePath: string;
     errorProps: ErrorProps[];
@@ -191,6 +193,9 @@ class CtrlDiagnostic {
 
     private checkEnumMembers() {
         let token = this.tokenizer.getNextToken();
+        if (token?.symbol.startsWith('/')) {
+            token = this.tokenizer.getNextToken();
+        }
         while (token != null) {
             if (this.checkVariable(token)) {
                 token = this.tokenizer.getNextToken();
@@ -343,6 +348,16 @@ class CtrlDiagnostic {
                 }
                 else {
                     this.pushErrorDiagnostic('Variable is not declared', member.range);
+                }
+            }
+            else if (member.symbol == '~' + classNameToken.symbol) { // desctrucor
+                let memberName = this.tokenizer.getNextToken();
+                if (memberName && memberName.symbol == '(') {
+                    this.nodes[this.nodes.length - 1].push(new vscode.DocumentSymbol(memberName.symbol, 'public', vscode.SymbolKind.Variable, memberName.range, memberName.range));
+                    this.checkFunction(memberName);
+                }
+                else {
+                    this.pushErrorDiagnostic('Error declared destructor', member.range);
                 }
             }
             else if (member.symbol == '}') {
@@ -510,9 +525,14 @@ class CtrlDiagnostic {
             }
             else if (token) {
                 if (this.isDeclarVariable(token)) {
-                    token = this.tokenizer.getNextToken();
-                    if (token) {
-                        this.checkVaribles(token);
+                    const varNameToken = this.tokenizer.getNextToken();
+                    if (varNameToken) {
+                        if (varNameToken.symbol == '(' && this.userVarTypes.indexOf(token.symbol) >= 0) { // QSql_Parameters(connectionString); - remind false
+                            this.pushErrorDiagnostic('Forgot the keyword new?', token.range, vscode.DiagnosticSeverity.Information, AddNew_code);
+                        }
+                        else {
+                            this.checkVaribles(varNameToken);
+                        }
                     }
                 }
                 else {
@@ -650,11 +670,12 @@ class CtrlDiagnostic {
 
     private popNodesFunction() {
         const docSymbols = this.nodes[this.nodes.length - 1];
-        docSymbols.forEach(symbol => {
+        for (let i = 0; i < docSymbols.length; i++) {
+            const symbol = docSymbols[i];
             if (symbol.name != 'for' && symbol.name != '{' && symbol.detail != 'readed') {
-                this.pushErrorDiagnostic('varible not use', symbol.range, vscode.DiagnosticSeverity.Warning);
+                this.pushErrorDiagnostic('variable not use', symbol.range, vscode.DiagnosticSeverity.Warning, VarNotUse_code);
             }
-        });
+        }
         this.nodes.pop();
     }
 
@@ -707,18 +728,43 @@ export class CtrlCodeAction implements vscode.CodeActionProvider {
 
     provideCodeActions(document: vscode.TextDocument, range: vscode.Range | vscode.Selection, context: vscode.CodeActionContext, token: vscode.CancellationToken): vscode.CodeAction[] {
         // for each diagnostic entry that has the matching `code`, create a code action command
-        return context.diagnostics
-            .filter(diagnostic => diagnostic.code === Default_code)
-            .map(diagnostic => this.createCommandCodeAction(diagnostic, document.uri.fsPath));
+        let arryaDiagnostics: vscode.CodeAction[] = [];
+        for (let i = 0; i < context.diagnostics.length; i++) {
+            if (context.diagnostics[i].code === AddNew_code) {
+                arryaDiagnostics.push(this.createCommandCodeActionAddNewKey(document, context.diagnostics[i].range));
+            }
+            if (context.diagnostics[i].code === VarNotUse_code) {
+                arryaDiagnostics.push(this.createCommandCodeActionDeleteVariable(document, context.diagnostics[i].range));
+            }
+            arryaDiagnostics.push(this.createCommandCodeActionExclude(context.diagnostics[i], document.uri.fsPath));
+        }
+        return arryaDiagnostics;
     }
 
-    private createCommandCodeAction(diagnostic: vscode.Diagnostic, path: string): vscode.CodeAction {
+    private createCommandCodeActionExclude(diagnostic: vscode.Diagnostic, path: string): vscode.CodeAction {
         const action = new vscode.CodeAction('Exclude error', vscode.CodeActionKind.QuickFix);
-        action.command = { command: COMMAND, title: 'Exclude error tittle', tooltip: 'Exclude error tooltip', arguments: [diagnostic, path] };
+        action.command = { command: COMMAND_EXCLUDE_ERROR, title: 'Exclude error tittle', tooltip: 'Exclude error tooltip', arguments: [diagnostic, path] };
         action.diagnostics = [diagnostic];
+        // action.isPreferred = true;
+        return action;
+    }
+
+    private createCommandCodeActionAddNewKey(document: vscode.TextDocument, range: vscode.Range): vscode.CodeAction {
+        const action = new vscode.CodeAction('Add key new', vscode.CodeActionKind.QuickFix);
+        action.edit = new vscode.WorkspaceEdit();
+        action.edit.insert(document.uri, range.start, 'new ');
         action.isPreferred = true;
         return action;
     }
+
+    private createCommandCodeActionDeleteVariable(document: vscode.TextDocument, range: vscode.Range): vscode.CodeAction {
+        const action = new vscode.CodeAction('Delete variable', vscode.CodeActionKind.QuickFix);
+        action.edit = new vscode.WorkspaceEdit();
+        action.edit.delete(document.uri, range);
+        action.isPreferred = true;
+        return action;
+    }
+
     static addExclude(message: string, range: vscode.Range, path: string) {
         if (this.excludesFile != '') {
             let isFileFind = false;
@@ -742,6 +788,7 @@ export class CtrlCodeAction implements vscode.CodeActionProvider {
             fs.writeFileSync(this.excludesFile, json)
         }
     }
+
     static readFileExclude() {
         const extensionFixline = vscode.extensions.getExtension('Danil.fixline-tool');
         if (extensionFixline == undefined) return;

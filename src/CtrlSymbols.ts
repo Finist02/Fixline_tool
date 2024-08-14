@@ -280,7 +280,7 @@ export class CtrlSymbols {
         }
         else if (varTypes.indexOf(nextToken.symbol) > -1 || this.userVarTypes.indexOf(nextToken.symbol) > -1) {
             const nextNextToken = this.tokenizer.getNextToken();
-            if (nextNextToken?.symbol == ')' || nextNextToken?.symbol == ':') { //явное преобрахованиев в тип, например(bool) или вызов статичного метода
+            if (nextNextToken?.symbol == ')' || nextNextToken?.symbol == '::') { //явное преобрахованиев в тип, например(bool) или вызов статичного метода
                 this.tokenizer.backToken();
                 return null;
             }
@@ -563,6 +563,17 @@ export class CtrlAllSymbols extends CtrlSymbols {
                                 this.addVaribles(memberName, typeMemberToken);
                             }
                         }
+                    }
+                }
+            }
+            else if ('~' + classNameToken.symbol == member.symbol) { // desctrucor
+                const nextToken = this.tokenizer.getNextToken();
+                if (nextToken?.symbol == '(') {
+                    let symbolMember = new CtrlDocumentSymbol(member.symbol, member.symbol, vscode.SymbolKind.Constructor, member.range, member.range);
+                    this.nodes[this.nodes.length - 1].push(symbolMember);
+                    const rangeEnd = this.checkFunction();
+                    if (rangeEnd) {
+                        symbolMember.selectionRange = new vscode.Range(member.range.start, rangeEnd);
                     }
                 }
             }

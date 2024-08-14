@@ -12,7 +12,7 @@ import { CtrlReferenceProvider } from './CtrlReferenceProvider';
 import { CreateChildClass } from './CtrlCreateChildClass';
 import { CreateUMLDiagrams } from './CtrlUmlDiagramCreator';
 import { CtrlCodeFormatter } from './CtrlFormatCode';
-import { COMMAND, CtrlCodeAction, startDiagnosticFile } from './CtrlDiagnostic';
+import { COMMAND_EXCLUDE_ERROR, CtrlCodeAction, startDiagnosticFile } from './CtrlDiagnostic';
 import { CtrlSemanticTokensProvider, legend } from './CtrlSemanticTokensProvider';
 import AuthSettings from "./CtrlSecretStorage"
 
@@ -21,7 +21,7 @@ import AuthSettings from "./CtrlSecretStorage"
 export function activate(context: vscode.ExtensionContext) {
 	AuthSettings.init(context);
 	CtrlCodeAction.readFileExclude();
-	vscode.commands.registerCommand(COMMAND, commandHandler);
+	vscode.commands.registerCommand(COMMAND_EXCLUDE_ERROR, commandHandlerExcludeError);
 	context.subscriptions.push(vscode.commands.registerCommand('extension.OpenProjectPanel', cmdCtrl.showQuickPick));
 	context.subscriptions.push(vscode.commands.registerCommand('extension.RunScript', cmdCtrl.RunScript));
 	context.subscriptions.push(vscode.commands.registerCommand('extension.OpenPanel', cmdCtrl.OpenPanel));
@@ -112,6 +112,6 @@ class CtrlRenameProvider implements vscode.RenameProvider {
 	};
 
 }
-const commandHandler = (diagnostic: vscode.Diagnostic, path: string) => {
+const commandHandlerExcludeError = (diagnostic: vscode.Diagnostic, path: string) => {
 	CtrlCodeAction.addExclude(diagnostic.message, diagnostic.range, path);
 };
