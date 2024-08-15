@@ -292,13 +292,14 @@ export class CtrlSymbols {
 
     private getTypeInScope() {
         let nextToken = this.tokenizer.getNextToken();
-        while (nextToken?.symbol == '<'
+        while (nextToken && 
+            (nextToken?.symbol == '<'
             || nextToken?.symbol == 'shared_ptr'
-            || nextToken?.symbol == 'vector') {
+            || nextToken?.symbol == 'vector')) {
             nextToken = this.tokenizer.getNextToken();
         }
         this.tokenizer.getNextToken();
-        while (nextToken?.symbol == '>') {
+        while (nextToken && nextToken?.symbol == '>') {
             this.tokenizer.getNextToken();
         }
         return nextToken;
@@ -393,6 +394,10 @@ export class CtrlAllSymbols extends CtrlSymbols {
         let token = this.tokenizer.getNextToken();
         while (token != null) {
             if (token) {
+                if (token.symbol.startsWith('//')){
+                    token = this.tokenizer.getNextToken();
+                    continue;
+                }
                 if (token.symbol == '#uses') {
                     const library = this.getUsesExistingPath(false);
                     if (library != '') {
@@ -477,7 +482,6 @@ export class CtrlAllSymbols extends CtrlSymbols {
     }
 
     private checkFunctionOrVar(token: Token) {
-        if (token.symbol.startsWith('/')) return;
         const varType = this.getTypeVariableAndModidfiers(token);
         if (varType) {
             this.addFunctionOrVar(varType);
@@ -611,7 +615,7 @@ export class CtrlAllSymbols extends CtrlSymbols {
         let token = this.tokenizer.getNextToken();
         let countScopes = 1;
         this.nodes.push(this.nodes[this.nodes.length - 1][this.nodes[this.nodes.length - 1].length - 1].children);
-        while (countScopes != 0) {
+        while (token && countScopes != 0) {
             if (token?.symbol == ')') {
                 countScopes--;
             }
@@ -660,7 +664,7 @@ export class CtrlAllSymbols extends CtrlSymbols {
         const newSymbol = this.addVariable(memberName, typeProperty, symbolKind);
         let nextToken = this.tokenizer.getNextToken();
         if (nextToken?.symbol == ',') {
-            while (nextToken?.symbol == ',') {
+            while (nextToken && nextToken?.symbol == ',') {
                 nextToken = this.tokenizer.getNextToken();
                 if (nextToken) {
                     this.addVariable(nextToken, typeProperty, symbolKind);
@@ -673,10 +677,12 @@ export class CtrlAllSymbols extends CtrlSymbols {
             this.tokenizer.backToken();
             nextToken = this.tokenizer.getNextToken();
         }
-        while (nextToken?.symbol != ';') {
+        while (nextToken && nextToken?.symbol != ';') {
             nextToken = this.tokenizer.getNextToken();
         }
-        newSymbol.selectionRange = new vscode.Range(memberName.range.start, nextToken.range.end);
+        if(nextToken){
+            newSymbol.selectionRange = new vscode.Range(memberName.range.start, nextToken.range.end);
+        }
     }
 
     private addVariable(variable: Token, typeProperty: TokenProperty, symbolKind: vscode.SymbolKind = vscode.SymbolKind.Variable) {
@@ -727,7 +733,7 @@ export class CtrlAllSymbols extends CtrlSymbols {
                 const varType = this.getTypeVariableAndModidfiers(token);
                 if (varType) {
                     token = this.tokenizer.getNextToken();
-                    if (token) {
+                if (token) {
                         const kind = varType.modifiers.indexOf(SymbolModifiers.Const) >= 0 ? vscode.SymbolKind.Constant : vscode.SymbolKind.Variable;
                         this.addVaribles(token, varType);
                     }

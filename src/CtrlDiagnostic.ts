@@ -97,7 +97,7 @@ class CtrlDiagnostic {
                         this.tokenizer.backToken();
                         this.checkVaribles(varName, typeMemberToken.symbol);
                         varName = this.tokenizer.getNextToken();
-                        while (varName?.symbol != ';') {
+                        while (varName && varName?.symbol != ';') {
                             varName = this.tokenizer.getNextToken();
                         }
                     }
@@ -389,7 +389,7 @@ class CtrlDiagnostic {
     private checkVaribles(memberName: Token, detial: string = 'var') {
         this.checkVariable(memberName, detial);
         let nextToken = this.tokenizer.getNextToken();
-        while (nextToken?.symbol == ',') {
+        while (nextToken && nextToken?.symbol == ',') {
             nextToken = this.tokenizer.getNextToken();
             if (nextToken) {
                 this.checkVariable(nextToken, detial);
@@ -403,7 +403,7 @@ class CtrlDiagnostic {
         this.checkVariable(memberName, detial);
         let nextToken = this.tokenizer.getNextToken();
         if (nextToken?.symbol == ',') {
-            while (nextToken?.symbol == ',') {
+            while (nextToken && nextToken?.symbol == ',') {
                 nextToken = this.tokenizer.getNextToken();
                 if (nextToken) {
                     this.checkVariable(nextToken, detial);
@@ -415,7 +415,7 @@ class CtrlDiagnostic {
             this.tokenizer.backToken(2);
             nextToken = this.tokenizer.getNextToken();
         }
-        while (nextToken?.symbol != ';') {
+        while (nextToken && nextToken?.symbol != ';') {
             nextToken = this.tokenizer.getNextToken();
         }
         this.tokenizer.backToken();
@@ -549,7 +549,7 @@ class CtrlDiagnostic {
     private checkBodyFunction() {
         let countScopes = 1;
         let token = this.tokenizer.getNextToken();
-        while (countScopes != 0) {
+        while (token && countScopes != 0) {
             if (token?.symbol == '{') {
                 countScopes++;
                 let docSymbol = new vscode.DocumentSymbol(token.symbol, '{', vscode.SymbolKind.Operator, token.range, token.range);
@@ -592,7 +592,7 @@ class CtrlDiagnostic {
         let docSymbol = new vscode.DocumentSymbol(forOperator.symbol, 'for', vscode.SymbolKind.Operator, forOperator.range, forOperator.range);
         this.nodes[this.nodes.length - 1].push(docSymbol);
         this.nodes.push(docSymbol.children);
-        while (countScopes != 0) {
+        while (token && countScopes != 0) {
             if (token?.symbol == ')') {
                 countScopes--;
             }
