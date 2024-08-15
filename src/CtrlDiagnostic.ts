@@ -732,8 +732,12 @@ class CtrlDiagnostic {
                     return;
                 }
                 if (this.nodes[j][i].name == token.symbol) {
-                    this.nodes[j][i].detail = 'readed';
-                    return;
+                    const prevToken = this.tokenizer.getPrevToken();
+                    const prevPrevToken = this.tokenizer.getPrevToken(2);
+                    if (!(prevPrevToken?.symbol == 'this' && prevToken?.symbol == '.')){
+                        this.nodes[j][i].detail = 'readed';
+                        return;
+                    }
                 }
             }
         }
@@ -772,33 +776,38 @@ class CtrlDiagnostic {
         }
     }
 
-    private checkUsingMemberInFunction(symbols: vscode.DocumentSymbol[], tokens: Token[], memberNameToFind: string) {
+    private checkUsingMemberInFunction(symbols: vscode.DocumentSymbol[], tokens: Token[], memberNameToFind: string, onlyThis: boolean = false) {
         let isMemberUse = false;
         for (let i = 0; i < symbols.length; i++) {
             const symbol = symbols[i];
             if (symbol == undefined) break;
-            isMemberUse = this.checkUsingMemberInScope(tokens, symbol.range, memberNameToFind);
+            isMemberUse = this.checkUsingMemberInScope(tokens, symbol.range, memberNameToFind, onlyThis);
             if (isMemberUse) return true;
             if (symbol.name == memberNameToFind) {
-                return false;
+                onlyThis = true;
             }
             if (symbol.children.length > 0) {
-                isMemberUse = this.checkUsingMemberInFunction(symbol.children, tokens, memberNameToFind);
+                isMemberUse = this.checkUsingMemberInFunction(symbol.children, tokens, memberNameToFind, onlyThis);
                 if (isMemberUse) return true;
             }
         }
-        isMemberUse = this.checkUsingMemberInScope(tokens, null, memberNameToFind);
+        isMemberUse = this.checkUsingMemberInScope(tokens, null, memberNameToFind, onlyThis);
         return isMemberUse;
     }
 
-    private checkUsingMemberInScope(tokens: Token[], stopRange: vscode.Range | null, memberNameToFind: string) {
+    private checkUsingMemberInScope(tokens: Token[], stopRange: vscode.Range | null, memberNameToFind: string, onlyThis: boolean) {
         let token = tokens.shift();
         let tokenPrev = token;
         let tokenPrevPrev = token;
         while (token) {
             if (stopRange && token.range.start.line >= stopRange.start.line) break;
             if (token.symbol == '}') return false;
-            if (token.symbol == memberNameToFind || token.symbol == '"' + memberNameToFind + '"') {
+            if (onlyThis) {
+                if ((token.symbol == memberNameToFind && tokenPrevPrev?.symbol == 'this') || (token.symbol == '"' + memberNameToFind + '"' && tokenPrevPrev?.symbol == 'this')) {
+                    return true;
+                }
+            }
+            else if (token.symbol == memberNameToFind || token.symbol == '"' + memberNameToFind + '"') {
                 return true;
             }
             tokenPrevPrev = tokenPrev;
