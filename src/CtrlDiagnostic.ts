@@ -271,6 +271,12 @@ class CtrlDiagnostic {
                 }
             }
             this.popNodesMembers();
+            let doc = this.nodes[this.nodes.length - 1][this.nodes[this.nodes.length - 1].length - 1];
+            let endToken = this.tokenizer.getNextToken();
+            if (endToken) {
+                doc.selectionRange = new vscode.Range(classNameToken.range.start, endToken.range.end);
+                this.tokenizer.backToken();
+            }
         }
         else {
             this.pushErrorDiagnostic('Class is not declared', token.range);
@@ -288,8 +294,9 @@ class CtrlDiagnostic {
                     if (classNameToken.symbol == typeMemberToken.symbol) { //type selfClass
                         memberName = typeMemberToken;
                         if (this.tokenizer.getNextToken()?.symbol == '(') { //constructor
-                            this.nodes[this.nodes.length - 1].push(new vscode.DocumentSymbol(memberName.symbol, 'public', vscode.SymbolKind.Variable, memberName.range, memberName.range));
+                            this.nodes[this.nodes.length - 1].push(new vscode.DocumentSymbol(memberName.symbol, 'public', vscode.SymbolKind.Constructor, memberName.range, memberName.range));
                             this.checkFunction(memberName);
+                            this.setSelectionRange(memberName);
                         }
                         else {//method selftype
                             this.tokenizer.backToken();
@@ -301,9 +308,9 @@ class CtrlDiagnostic {
                                 }
                                 else {
                                     this.tokenizer.backToken();
-                                    this.checkVaribles(memberName, member.symbol);
+                                    this.checkFieldMember(memberName, member.symbol);
                                 }
-
+                                this.setSelectionRange(memberName);
                             }
                             else {
                                 this.pushErrorDiagnostic('Variable is not declared', member.range);
@@ -320,9 +327,9 @@ class CtrlDiagnostic {
                             }
                             else {
                                 this.tokenizer.backToken();
-                                this.checkVaribles(memberName, member.symbol);
+                                this.checkFieldMember(memberName, member.symbol);
                             }
-
+                            this.setSelectionRange(memberName);
                         }
                         else {
                             this.pushErrorDiagnostic('Variable is not declared', member.range);
@@ -342,9 +349,9 @@ class CtrlDiagnostic {
                     }
                     else {
                         this.tokenizer.backToken();
-                        this.checkVaribles(memberName, defaultMembersType);
+                        this.checkFieldMember(memberName, defaultMembersType);
                     }
-
+                    this.setSelectionRange(memberName);
                 }
                 else {
                     this.pushErrorDiagnostic('Variable is not declared', member.range);
@@ -353,8 +360,9 @@ class CtrlDiagnostic {
             else if (member.symbol == '~' + classNameToken.symbol) { // desctrucor
                 let memberName = this.tokenizer.getNextToken();
                 if (memberName && memberName.symbol == '(') {
-                    this.nodes[this.nodes.length - 1].push(new vscode.DocumentSymbol(memberName.symbol, 'public', vscode.SymbolKind.Variable, memberName.range, memberName.range));
+                    this.nodes[this.nodes.length - 1].push(new vscode.DocumentSymbol(memberName.symbol, 'public', vscode.SymbolKind.Constructor, memberName.range, memberName.range));
                     this.checkFunction(memberName);
+                    this.setSelectionRange(memberName);
                 }
                 else {
                     this.pushErrorDiagnostic('Error declared destructor', member.range);
@@ -367,6 +375,17 @@ class CtrlDiagnostic {
         }
     }
 
+    private setSelectionRange(startToken: Token) {
+        this.tokenizer.backToken();
+        let doc = this.nodes[this.nodes.length - 1][this.nodes[this.nodes.length - 1].length - 1];
+        let endToken = this.tokenizer.getNextToken();
+        if (endToken) {
+            doc.selectionRange = new vscode.Range(startToken.range.start, endToken.range.end);
+            this.tokenizer.backToken();
+        }
+        this.tokenizer.getNextToken();
+    }
+
     private checkVaribles(memberName: Token, detial: string = 'var') {
         this.checkVariable(memberName, detial);
         let nextToken = this.tokenizer.getNextToken();
@@ -375,6 +394,28 @@ class CtrlDiagnostic {
             if (nextToken) {
                 this.checkVariable(nextToken, detial);
             }
+            nextToken = this.tokenizer.getNextToken();
+        }
+        this.tokenizer.backToken();
+    }
+
+    private checkFieldMember(memberName: Token, detial: string = 'var') {
+        this.checkVariable(memberName, detial);
+        let nextToken = this.tokenizer.getNextToken();
+        if (nextToken?.symbol == ',') {
+            while (nextToken?.symbol == ',') {
+                nextToken = this.tokenizer.getNextToken();
+                if (nextToken) {
+                    this.checkVariable(nextToken, detial);
+                }
+                nextToken = this.tokenizer.getNextToken();
+            }
+        }
+        else {
+            this.tokenizer.backToken(2);
+            nextToken = this.tokenizer.getNextToken();
+        }
+        while (nextToken?.symbol != ';') {
             nextToken = this.tokenizer.getNextToken();
         }
         this.tokenizer.backToken();
@@ -445,7 +486,7 @@ class CtrlDiagnostic {
             while (token && token.symbol != '{') {
                 token = this.tokenizer.getNextToken();
                 if (token) {
-                    this.checkUsingVars(token);
+                    this.markUsingVars(token);
                 }
             }
         }
@@ -536,7 +577,7 @@ class CtrlDiagnostic {
                     }
                 }
                 else {
-                    this.checkUsingVars(token);
+                    this.markUsingVars(token);
                 }
             }
             token = this.tokenizer.getNextToken();
@@ -566,7 +607,7 @@ class CtrlDiagnostic {
                     }
                 }
                 else {
-                    this.checkUsingVars(token);
+                    this.markUsingVars(token);
                 }
             }
             token = this.tokenizer.getNextToken();
@@ -657,7 +698,6 @@ class CtrlDiagnostic {
                     }
                 }
             }
-
         }
         this.diagnostics.push({
             code: code,
@@ -683,8 +723,9 @@ class CtrlDiagnostic {
         this.nodes.pop();
     }
 
-    private checkUsingVars(token: Token) {
+    private markUsingVars(token: Token) {
         if (token.symbol.charCodeAt(0) < 65) return; //  заглушка от множества токенов (символ A начинаются с 65)
+        if (token.symbol == "{") return;
         for (let j = this.nodes.length - 1; j > 0; j--) {
             for (let i = 0; i < this.nodes[j].length; i++) {
                 if (this.nodes[j][i].detail == 'public' || this.nodes[j][i].detail == 'private') { //если поднялись до методов
@@ -702,18 +743,70 @@ class CtrlDiagnostic {
         this.tokenizer.backToken();
         const endToken = this.tokenizer.getNextToken();
         if (endToken) {
-            const text = this.tokenizer.textSplitter.getTextWithoutComment(new vscode.Range(tokenStart.range.start, endToken.range.end));
+            let privateMembers: vscode.DocumentSymbol[] = [];
             for (let i = 0; i < this.symbols[this.symbols.length - 1].children.length; i++) {
                 if (this.symbols[this.symbols.length - 1].children[i].detail == 'private') {
-                    let regExp = new RegExp('(?:this.)?' + this.symbols[this.symbols.length - 1].children[i].name, 'gm');
-                    const matches = text.match(regExp);
-                    if (matches == null || matches.length < 2) {
-                        this.pushErrorDiagnostic('private member not use', this.symbols[this.symbols.length - 1].children[i].range, vscode.DiagnosticSeverity.Warning);
+                    privateMembers.push(this.symbols[this.symbols.length - 1].children[i]);
+                }
+            }
+            for (let i = 0; i < privateMembers.length; i++) {
+                const memberToFind = privateMembers[i];
+                let isMemberUse = false;
+                for (let j = 0; j < this.symbols[this.symbols.length - 1].children.length; j++) {
+                    let symbol = this.symbols[this.symbols.length - 1].children[j];
+                    if (symbol.name == memberToFind.name) continue;
+                    let varTokens = this.tokenizer.getTokens(symbol.selectionRange);
+                    if (symbol.children.length > 0) {
+                        isMemberUse = this.checkUsingMemberInFunction(symbol.children, varTokens, memberToFind.name);
                     }
+                    else {
+                        isMemberUse = this.checkUsingMemberInFunction([symbol], varTokens, memberToFind.name);
+                    }
+                    if (isMemberUse) break;
+                }
+                if (!isMemberUse) {
+                    this.pushErrorDiagnostic('private member not use', memberToFind.range, vscode.DiagnosticSeverity.Warning);
+
                 }
             }
         }
+    }
 
+    private checkUsingMemberInFunction(symbols: vscode.DocumentSymbol[], tokens: Token[], memberNameToFind: string) {
+        let isMemberUse = false;
+        for (let i = 0; i < symbols.length; i++) {
+            const symbol = symbols[i];
+            if (symbol == undefined) break;
+            isMemberUse = this.checkUsingMemberInScope(tokens, symbol.range, memberNameToFind);
+            if (isMemberUse) return true;
+            if (symbol.name == memberNameToFind) {
+                return false;
+            }
+            if (symbol.children.length > 0) {
+                isMemberUse = this.checkUsingMemberInFunction(symbol.children, tokens, memberNameToFind);
+                if (isMemberUse) return true;
+            }
+        }
+        isMemberUse = this.checkUsingMemberInScope(tokens, null, memberNameToFind);
+        return isMemberUse;
+    }
+
+    private checkUsingMemberInScope(tokens: Token[], stopRange: vscode.Range | null, memberNameToFind: string) {
+        let token = tokens.shift();
+        let tokenPrev = token;
+        let tokenPrevPrev = token;
+        while (token) {
+            if (stopRange && token.range.start.line >= stopRange.start.line) break;
+            if (token.symbol == '}') return false;
+            if (token.symbol == memberNameToFind || token.symbol == '"' + memberNameToFind + '"') {
+                return true;
+            }
+            tokenPrevPrev = tokenPrev;
+            tokenPrev = token;
+            token = tokens.shift();
+        }
+        if (token) tokens.splice(0, 0, token);
+        return false;
     }
 }
 
