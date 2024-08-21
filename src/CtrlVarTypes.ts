@@ -95,5 +95,10 @@ export function readFileFunctions() {
             ctrlDefinitions.push(parsedJson.defines[i].id);
         }
     });
-    // const fileToRead = extensionFixline.extensionPath + '/definitions/ctrl.functions.json';
+    const knownItems: string[] | undefined = vscode.workspace.getConfiguration("FixLineTool.Syntax").get("KnownItems");
+    if(knownItems == undefined) return;
+    for (let i = 0; i < knownItems.length; i++) {
+        ctrlDefinitions.push(knownItems[i]);
+
+    }
 }

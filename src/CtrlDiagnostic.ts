@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import { CtrlTokenizer, Token } from './CtrlTokenizer';
 import { GetProjectsInConfigFile } from './CtrlComands';
-import { CtrlDocumentSymbol, CtrlSymbols } from './CtrlSymbols';
+import { CtrlDocumentSymbol, CtrlPublicSymbols, CtrlSymbols } from './CtrlSymbols';
 import { ctrlDefinitions, ctrlUsesDlls, reservedWords, varTypes } from './CtrlVarTypes';
 
 export const COMMAND_EXCLUDE_ERROR = 'code-actions-ctl.commandExcludeError';
@@ -19,8 +19,12 @@ interface excludeType {
     }]
 }
 interface Range {
-    line: number,
-    character: number
+    line: number;
+    character: number;
+}
+interface mapClassesFile {
+    path: string;
+    symbol: string;
 }
 export let ruleExcludeErrors: excludeType[];
 
@@ -39,10 +43,12 @@ class CtrlDiagnostic {
     private diagnostics: vscode.Diagnostic[] = [];
     private tokenizer: CtrlTokenizer;
     private documentPath = '';
+    private mapClassesFiles: mapClassesFile[] = [];
     private unknownTokens: Token[] = [];
     public async startDiagnosticFile(document: vscode.TextDocument, collection: vscode.DiagnosticCollection) {
         if (document && document.languageId == "ctrlpp") {
             this.documentPath = document.uri.fsPath;
+            this.mapClassesFiles = [];
             this.userVarTypes = [];
             this.updateCtrlDiagnostics(document);
         } else {
@@ -295,6 +301,12 @@ class CtrlDiagnostic {
     private checkNewVarClass(token: Token, defaultMembersType: string = 'private') {
         let classNameToken = this.tokenizer.getNextToken();
         if (classNameToken) {
+
+            if (this.checkVariable(classNameToken, 'class', vscode.SymbolKind.Class)) {
+                let doc = this.nodes[this.nodes.length - 1][this.nodes[this.nodes.length - 1].length - 1].children;
+                this.nodes.push(doc);
+                this.userVarTypes.push(classNameToken.symbol);
+            }
             let nextToken = this.tokenizer.getNextToken();
             if (nextToken?.symbol != ':') {  //унаследован
                 this.tokenizer.backToken();
@@ -305,12 +317,28 @@ class CtrlDiagnostic {
                     if (this.userVarTypes.indexOf(nextToken.symbol) < 0) {
                         this.pushErrorDiagnostic('Unknow parent class', nextToken.range);
                     }
+                    else {
+                        for (let i = 0; i < this.mapClassesFiles.length; i++) {
+                            if (this.mapClassesFiles[i].symbol == nextToken.symbol) {
+                                let fileData = fs.readFileSync(this.mapClassesFiles[i].path, 'utf8');
+                                const symbolCreator = new CtrlPublicSymbols(fileData, 0);
+                                const symbols = symbolCreator.getPublicMembers([], true);
+                                for (let j = 0; j < symbols.length; j++) {
+                                    if (symbols[j].name == nextToken.symbol) {
+                                        for (let k = 0; k < symbols[j].children.length; k++) {
+                                            // const element = symbols[j].children[k];
+                                            this.nodes[this.nodes.length - 1].push(symbols[j].children[k]);
+                                        }
+                                        // this.nodes[this.nodes.length - 1] =  this.nodes[this.nodes.length - 1].concat(symbols[j].children);
+                                        // this.symbols[this.symbols.length - 1].children = this.symbols[this.symbols.length - 1].children.concat(symbols[j].children);
+                                    }
+                                    break;
+                                }
+                                break;
+                            }
+                        }
+                    }
                 }
-            }
-            if (this.checkVariable(classNameToken, 'class', vscode.SymbolKind.Class)) {
-                let doc = this.nodes[this.nodes.length - 1][this.nodes[this.nodes.length - 1].length - 1].children;
-                this.nodes.push(doc);
-                this.userVarTypes.push(classNameToken.symbol);
             }
             if (this.tokenizer.getNextToken()?.symbol == '{') {
                 try {
@@ -670,8 +698,12 @@ class CtrlDiagnostic {
         if (typeof innersReadFiles === 'number') deepFileRead = innersReadFiles;
         const symbols = new CtrlSymbols(fileData, deepFileRead);
         symbols.getNewTypesData().forEach(symbol => {
-            if (symbol.kind == vscode.SymbolKind.Class
-                || symbol.kind == vscode.SymbolKind.Struct
+            if (symbol.kind == vscode.SymbolKind.Class) {
+                this.mapClassesFiles.push(
+                    { symbol: symbol.name, path: path });
+                this.userVarTypes.push(symbol.name);
+            }
+            if (symbol.kind == vscode.SymbolKind.Struct
                 || symbol.kind == vscode.SymbolKind.Enum
             ) {
                 this.userVarTypes.push(symbol.name);

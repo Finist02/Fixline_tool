@@ -67,6 +67,20 @@
                 "Осуществляет запись нескольких графических атрибутов в переменные."
             ],
             "id": "getValue"
+        },
+        {
+            "definition": "string myModuleName();",
+            "description": [
+                "Возвращает имя текущего модуля."
+            ],
+            "id": "myModuleName"
+        },
+        {
+            "definition": "string myPanelName();",
+            "description": [
+                "Возвращает имя текущей панели."
+            ],
+            "id": "myPanelName"
         }
     ]
 }
