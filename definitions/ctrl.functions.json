@@ -12,6 +12,20 @@
       "id": "myManNum"
     },
     {
+      "definition": "anytype invokeMethod(string|shape object, string methodName, [...]);",
+      "description": [
+        "invokeMethod."
+      ],
+      "id": "invokeMethod"
+    },
+    {
+      "definition": "int getSystemId([string systemName]);",
+      "description": [
+        "Возвращает идентификатор системы.."
+      ],
+      "id": "getSystemId"
+    },
+    {
       "definition": "unsigned myManType()",
       "description": [
         "Returns the type of the current manager."
@@ -19,9 +33,16 @@
       "id": "myManType"
     },
     {
-      "definition": "int myManId()",
+      "definition": "unsigned myManType()",
       "description": [
-        "Returns the manager ID as a number. The number contains coded the system, replica, type and number."
+        "Returns the type of the current manager."
+      ],
+      "id": "httpConnect"
+    },
+    {
+      "definition": "int httpConnect(string|function_ptr callBackFunc, string resourceName [, string contentType = \"text/html\"]);",
+      "description": [
+        "Registers a CTRL function as a Web resource"
       ],
       "id": "myManId"
     },

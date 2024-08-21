@@ -1,0 +1,58 @@
+{
+    "hover": {
+        "format" : "```\n${definition}\n```\n\n-------\n\nPredefined WinCC OA postgres functions\n\n${description}"
+    },
+    "completionItemKind": "postgres",
+    "defines":[
+        
+        {
+            "definition": "closePgConnection(int connectionId);",
+            "description": [
+                "Close connection."
+            ],
+            "id": "closePgConnection"
+        },
+        {
+            "definition": "int execPgProcedure(int connectionId, string query);",
+            "description": [
+                "Execute query."
+            ],
+            "id": "execPgProcedure"
+        },
+        {
+            "definition": "int openAndExecPgProcedure(string host, int port, string database, string schema, string username, string password, string query);",
+            "description": [
+                "Execute query."
+            ],
+            "id": "openAndExecPgProcedure"
+        },
+        {
+            "definition": "int openAndExecPgSql(string host, int port, string database, string schema, string username, string password, string query, bool prep, dyn_dyn_anytype &table);",
+            "description": [
+                "Execute query."
+            ],
+            "id": "openAndExecPgSql"
+        },
+        {
+            "definition": "int execPgSql(string connectionId, string query, bool prep, dyn_dyn_anytype &table);",
+            "description": [
+                "Execute query."
+            ],
+            "id": "execPgSql"
+        },
+        {
+            "definition": "int closePgConnection(int connectionId);",
+            "description": [
+                "Close connection."
+            ],
+            "id": "closePgConnection"
+        },
+        {
+            "definition": "int openPgConnection(string host, int port, string database, string schema, string username, string password, int &connectionId);",
+            "description": [
+                "Open connection."
+            ],
+            "id": "openPgConnection"
+        }
+    ]
+}

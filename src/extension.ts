@@ -15,10 +15,12 @@ import { CtrlCodeFormatter } from './CtrlFormatCode';
 import { COMMAND_EXCLUDE_ERROR, CtrlCodeAction, startDiagnosticFile } from './CtrlDiagnostic';
 import { CtrlSemanticTokensProvider, legend } from './CtrlSemanticTokensProvider';
 import AuthSettings from "./CtrlSecretStorage"
+import { readFileFunctions } from './CtrlVarTypes';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+	readFileFunctions();
 	AuthSettings.init(context);
 	CtrlCodeAction.readFileExclude();
 	vscode.commands.registerCommand(COMMAND_EXCLUDE_ERROR, commandHandlerExcludeError);

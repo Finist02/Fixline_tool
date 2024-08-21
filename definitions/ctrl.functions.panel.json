@@ -1,0 +1,72 @@
+{
+    "hover": {
+        "format" : "```\n${definition}\n```\n\n-------\n\nPredefined WinCC OA panel functions\n\n${description}"
+    },
+    "completionItemKind": "panel",
+    "defines":[
+        
+        {
+            "definition": "void ChildPanelOnCentralModal(string FileName, string PanelName, dyn_string Parameter);",
+            "description": [
+                "Opens a modal child panel centered in the calling parent panel."
+            ],
+            "id": "ChildPanelOnCentralModal"
+        },
+        {
+            "definition": "int childPanel(dyn_anytype params [, dyn_anytype &results])",
+            "description": [
+                "Opens a child panel without connection to the Event Manager."
+            ],
+            "id": "childPanel"
+        },
+        {
+            "definition": "ChildPanelOn(string FileName, string PanelName, dyn_string Parameter, int x, int y);",
+            "description": [
+                "Opens a child panel."
+            ],
+            "id": "ChildPanelOn"
+        },
+        {
+            "definition": "ChildPanelOnCentral(string FileName, string PanelName, dyn_string Parameter);",
+            "description": [
+                "Opens a child panel centered in the calling parent panel."
+            ],
+            "id": "ChildPanelOnCentral"
+        },
+        {
+            "definition": "ChildPanelOnCentralModalReturn(string FileName, string PanelName, dyn_string Parameter);",
+            "description": [
+                "Opens a child panel centered in the calling parent panel."
+            ],
+            "id": "ChildPanelOnCentralModalReturn"
+        },
+        {
+            "definition": "int setMultiValue (string shapeA, string attributeA_1, <typeA_1_1> parA_1_1 [...] [,string shapeB, string attributeB_1, <typeB_1_1> parB_1_1]]);",
+            "description": [
+                "Устанавливает любое количество графических атрибутов любому количеству графических элементов."
+            ],
+            "id": "setMultiValue"
+        },
+        {
+            "definition": "int setValue (string shape, string attribute1, <type1_1> par1_1 [, <type1_2> par1_2 ...] [, string attribute2, <type2_1> par2_1 [, <type2_2> par2_2 ...]]);",
+            "description": [
+                "Функция \"setValue()\" присваивает любое количество графических атрибутов графическому объекту."
+            ],
+            "id": "setValue"
+        },
+        {
+            "definition": "int getMultiValue (string shapeA, string attributeA_1, <typeA_1_1> parA_1_1 [...] [,string shapeB, string attributeB_1, <typeB_1_1> parB_1_1]]);",
+            "description": [
+                "Осуществляет запись нескольких графических атрибутов в переменные."
+            ],
+            "id": "getMultiValue"
+        },
+        {
+            "definition": "int getValue (string shape, string attribute1, <type1_1> par1_1 [, <type1_2> par1_2 ...] [, string attribute2, <type2_1> par2_1 [, <type2_2> par2_2 ...]]);",
+            "description": [
+                "Осуществляет запись нескольких графических атрибутов в переменные."
+            ],
+            "id": "getValue"
+        }
+    ]
+}

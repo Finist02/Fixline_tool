@@ -17,6 +17,18 @@
             "id": "TRUE"
         },
         {
+            "definition": "const bool false = false",
+            "description": [
+            ],
+            "id": "false"
+        },
+        {
+            "definition": "const bool true = true",
+            "description": [
+            ],
+            "id": "true"
+        },
+        {
             "definition": "const float M_PI = 3.1415926535898",
             "description": [
             ],

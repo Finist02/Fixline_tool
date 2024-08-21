@@ -17,6 +17,8 @@ export enum SymbolModifiers {
 
 export class CtrlDocumentSymbol extends DocumentSymbol {
     modifiers: readonly SymbolModifiers[] = [];
+    filePath?: string;
+    parametersTypes: string[] = [];
     rangeType?: vscode.Range;
     children: CtrlDocumentSymbol[];
 }
@@ -96,6 +98,9 @@ export class CtrlSymbols {
                         docSymbol = new CtrlDocumentSymbol(nextToken.symbol, 'enum', vscode.SymbolKind.Enum, range, token.range);
                     }
                 }
+                else {
+                    docSymbol = this.addPublicFunctionOrVar(token);
+                }
                 if (docSymbol != undefined) {
                     this.symbols.push(docSymbol);
                 }
@@ -105,6 +110,37 @@ export class CtrlSymbols {
         return this.symbols;
     }
 
+    private addPublicFunctionOrVar(token: Token) {
+        const varType = this.getTypeVariableAndModidfiers(token);
+        if (varType) {
+            const memberName = this.tokenizer.getNextToken();
+            if (memberName) {
+                if (this.tokenizer.getNextToken()?.symbol == '(') {
+                    const range = this.createRange(token);
+                    const symbol =  new CtrlDocumentSymbol(memberName.symbol, 'enum', vscode.SymbolKind.Function, memberName.range, memberName.range);
+                    try {
+                        symbol.selectionRange = range;
+                    } catch (error) {
+                        debugger;
+                    }
+                    return symbol;
+                }
+                else {
+                    let nextToken = this.tokenizer.getNextToken();
+                    while (nextToken && nextToken.symbol != ';') {
+                        nextToken = this.tokenizer.getNextToken();
+                    }
+                    if(nextToken == undefined){
+                        nextToken = memberName;
+                    }
+                    return new CtrlDocumentSymbol(memberName.symbol, 'enum', vscode.SymbolKind.Variable, memberName.range, new vscode.Range(memberName.range.start, memberName.range.end));
+                }
+            }
+
+        }
+        return undefined;
+
+    }
     protected createRange(token: Token) {
         let endClassPos = this.getRangeContext();
         if (endClassPos == undefined) return token.range;
@@ -292,10 +328,10 @@ export class CtrlSymbols {
 
     private getTypeInScope() {
         let nextToken = this.tokenizer.getNextToken();
-        while (nextToken && 
+        while (nextToken &&
             (nextToken?.symbol == '<'
-            || nextToken?.symbol == 'shared_ptr'
-            || nextToken?.symbol == 'vector')) {
+                || nextToken?.symbol == 'shared_ptr'
+                || nextToken?.symbol == 'vector')) {
             nextToken = this.tokenizer.getNextToken();
         }
         this.tokenizer.getNextToken();
@@ -394,7 +430,7 @@ export class CtrlAllSymbols extends CtrlSymbols {
         let token = this.tokenizer.getNextToken();
         while (token != null) {
             if (token) {
-                if (token.symbol.startsWith('//')){
+                if (token.symbol.startsWith('//')) {
                     token = this.tokenizer.getNextToken();
                     continue;
                 }
@@ -680,7 +716,7 @@ export class CtrlAllSymbols extends CtrlSymbols {
         while (nextToken && nextToken?.symbol != ';') {
             nextToken = this.tokenizer.getNextToken();
         }
-        if(nextToken){
+        if (nextToken) {
             newSymbol.selectionRange = new vscode.Range(memberName.range.start, nextToken.range.end);
         }
     }
@@ -733,7 +769,7 @@ export class CtrlAllSymbols extends CtrlSymbols {
                 const varType = this.getTypeVariableAndModidfiers(token);
                 if (varType) {
                     token = this.tokenizer.getNextToken();
-                if (token) {
+                    if (token) {
                         const kind = varType.modifiers.indexOf(SymbolModifiers.Const) >= 0 ? vscode.SymbolKind.Constant : vscode.SymbolKind.Variable;
                         this.addVaribles(token, varType);
                     }
@@ -890,6 +926,7 @@ export class CtrlPublicSymbols extends CtrlSymbols {
             const publicSymbols = new CtrlPublicSymbols(fileData, this.innersFilesRead - 1);
             const libSymbols = publicSymbols.getPublicMembers(this.filesRead);
             for (let i = 0; i < libSymbols.length; i++) {
+                libSymbols[i].filePath = path;
                 this.symbols.push(libSymbols[i]);
 
             }

@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+import * as vscode from 'vscode';
 export const varTypes: string[] = [
     'blob'
     , 'bool'
@@ -6,6 +8,7 @@ export const varTypes: string[] = [
     , 'anytype'
     , 'mixed'
     , 'char'
+    , 'bit_32'
     , 'double'
     , 'file'
     , 'float'
@@ -45,6 +48,9 @@ export const varTypes: string[] = [
     , 'dyn_dyn_bool'
     , 'dyn_dyn_char'
     , 'dyn_langString'
+    , 'dyn_bit32'
+    , 'dyn_mixed'
+    , 'dyn_dyn_mixed'
     , 'shared_ptr'
     , 'vector'
     , 'void'
@@ -58,3 +64,36 @@ export const reservedWords: string[] = [
     , 'static'
     , 'const'
 ]
+
+export const ctrlUsesDlls: string[] = [
+    'CtrlPostgreSQLExtension'
+    , 'CtrlXml'
+];
+
+export let ctrlDefinitions: string[] = [];
+interface CtrlDefinitions {
+    hover: {
+        format: string;
+    }
+    completionItemKind: string;
+    defines: [
+        {
+            definition: string;
+            description: string[];
+            id: string;
+        }
+    ];
+}
+
+export function readFileFunctions() {
+    const extensionFixline = vscode.extensions.getExtension('Danil.fixline-tool');
+    if (extensionFixline == undefined) return;
+    fs.readdirSync(extensionFixline.extensionPath + '/definitions/').forEach(fileName => {
+        const fileData = fs.readFileSync(extensionFixline.extensionPath + '/definitions/' + fileName, 'utf8');
+        const parsedJson: CtrlDefinitions = JSON.parse(fileData);
+        for (let i = 0; i < parsedJson.defines.length; i++) {
+            ctrlDefinitions.push(parsedJson.defines[i].id);
+        }
+    });
+    // const fileToRead = extensionFixline.extensionPath + '/definitions/ctrl.functions.json';
+}

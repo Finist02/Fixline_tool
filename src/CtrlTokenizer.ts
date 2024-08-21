@@ -124,6 +124,15 @@ export class CtrlTokenizer {
         return tokens;
     }
 
+    public setTokensPosition(position: vscode.Position) {
+        for (let i = 0; i < this.allTokens.length; i++) {
+            this.currIdxToken = i;
+            if (this.allTokens[i].range.start.line >= position.line) {
+                return;
+            }
+        }
+    }
+
 
 
     private createTokens() {
@@ -171,7 +180,7 @@ export class CtrlTokenizer {
                                 isCommentString = true;
                                 continue;
                             }
-                            else{
+                            else {
                                 if (bufferToken != '') {
                                     this.token.push(new Token(this.craeteRange(i, j - bufferToken.length, j), bufferToken));
                                 }
@@ -210,13 +219,13 @@ export class CtrlTokenizer {
                             this.token.push(new Token(this.craeteRange(i, j - 1, j), char));
                             bufferToken = '';
                         }
-                        else if (j < line.length - 1 && line.charAt(j + 1).match(/\-|\+|\=|\<|\>|\*|\/|\%|\!|\&|\:/)) {
+                        else if (j < line.length - 1 && line.charAt(j + 1).match(/\-|\+|\=|\<|\>|\*|\/|\%|\!|\&|\:|\|/)) {
                             if (bufferToken != '') {
                                 this.token.push(new Token(this.craeteRange(i, j - bufferToken.length, j), bufferToken));
                             }
                             bufferToken = char + line.charAt(j + 1);
                             j++;
-                            this.token.push(new Token(this.craeteRange(i, j - bufferToken.length, j), bufferToken));
+                            this.token.push(new Token(this.craeteRange(i, j - bufferToken.length + 1, j + 1), bufferToken));
                             bufferToken = '';
                         }
                         else {
