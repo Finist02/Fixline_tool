@@ -67,6 +67,34 @@
                 "Осуществляет запись нескольких графических атрибутов в переменные."
             ],
             "id": "getValue"
+        },
+        {
+            "definition": "bool isPanelOpen(string panelname [,string moduleName]);",
+            "description": [
+                "Определяет, открыта ли та или иная панель."
+            ],
+            "id": "isPanelOpen"
+        },
+        {
+            "definition": "bool isPanelOpen(string panelname [,string moduleName]);",
+            "description": [
+                "Определяет, открыта ли та или иная панель."
+            ],
+            "id": "isPanelOpen"
+        },
+        {
+            "definition": "int panelSize(string PanelName, int &width, int &height, bool currentSize = FALSE);",
+            "description": [
+                "Возвращает информацию о ширине и высоте панели."
+            ],
+            "id": "panelSize"
+        },
+        {
+            "definition": "void ChildPanelOnModal(string FileName, string PanelName, dyn_string Parameter, int x, int y);",
+            "description": [
+                "Открывает модальную дочернюю панель в позиции х, у."
+            ],
+            "id": "ChildPanelOnModal"
         }
     ]
 }

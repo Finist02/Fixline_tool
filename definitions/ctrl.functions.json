@@ -939,6 +939,48 @@
       "definition": "int assignPtr(shared_ptr &target, shared_ptr source)",
       "description": [],
       "id": "assignPtr"
+    },
+    {
+        "definition": "int fontSelector(string | langString &fontstr);",
+        "description": [
+            "Открывает селектор типа шрифта и записывает выбор в переменную."
+        ],
+        "id": "fontSelector"
+    },
+    {
+      "definition": "string myModuleName();",
+      "description": [
+          "Возвращает имя текущей системы."
+      ],
+      "id": "myModuleName"
+    },
+    {
+      "definition": "string myPanelName();",
+      "description": [
+          "Возвращает имя текущей панели."
+      ],
+      "id": "myPanelName"
+    },
+    {
+      "definition": "shape object = getShape(string name);",
+      "description": [
+          "С помощью этой функции CTRL можно обращаться к графическим объектам (вместо setValue()) и устанавливать атрибуты."
+      ],
+      "id": "getShape"
+    },
+    {
+      "definition": "string myDisplayName();",
+      "description": [
+          "Возвращает информацию дисплея, используемого пользователем на данный момент."
+      ],
+      "id": "myDisplayName"
+    },
+    {
+      "definition": "int openURL(строковый URL);",
+      "description": [
+          "Функция openURL используется для открытия файлов, расположенных по произвольным URL-адресам во внешних приложениях."
+      ],
+      "id": "openUrl"
     }
   ]
 }

@@ -281,6 +281,13 @@
       "definition": "string tmpnam()",
       "description": [],
       "id": "tmpnam"
+    },
+    {
+      "definition": "int getStandardPath(тип строки);",
+      "description": [
+          "Функция getStandardPath() возвращает путь к каталогу (местоположение), в который должны быть записаны файлы."
+      ],
+      "id": "getStandardPath"
     }
   ]
 }
