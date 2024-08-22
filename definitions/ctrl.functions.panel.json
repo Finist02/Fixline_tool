@@ -95,6 +95,104 @@
                 "Открывает модальную дочернюю панель в позиции х, у."
             ],
             "id": "ChildPanelOnModal"
+        },
+        {
+            "definition": "ChildPanelOnReturn(string FileName, string PanelName, dyn_string Parameter, int x, int y, dyn_float &resultFloat, dyn_string &resultText );",
+            "description": [
+                "Открывает дочернюю панель с возвращаемыми значениями."
+            ],
+            "id": "ChildPanelOnReturn"
+        },
+        {
+            "definition": "PanelOffPanel ( string PanelName);",
+            "description": [
+                "Закрывает определенную панель"
+            ],
+            "id": "PanelOffPanel"
+        },
+        {
+            "definition": "PanelOffReturn(dyn_float resultFloat,dyn_string resultText);",
+            "description": [
+                "Требуется для закрытия дочерней панели с возвращаемым значением."
+            ],
+            "id": "PanelOffReturn"
+        },
+        {
+            "definition": "void ChildPanelOnModalReturn(string FileName, string PanelName, dyn_string Parameter, int x, int y, dyn_float &resultFloat, dyn_string &resultText);",
+            "description": [
+                "Открывает модальную дочернюю панель с возвращаемыми значениями в позиции x,y."
+            ],
+            "id": "ChildPanelOnModalReturn"
+        },
+        {
+            "definition": "string rootPanel( [string modulename] );",
+            "description": [
+                "Возвращает имя определенной корневой панели."
+            ],
+            "id": "rootPanel"
+        },
+        {
+            "definition": "int addSymbol(string moduleName, string panelName, string fileName, string refName, dyn_string subst, int x, int y, float angle, float scx, float scy[, string ewoName]);",
+            "description": [
+                "Служит для добавления панели panel references (панели-ссылки) на панели в процессе функционирования в дальнейшем."
+            ],
+            "id": "addSymbol"
+        },
+        {
+            "definition": "int addSymbol(string moduleName, string panelName, string fileName, string refName, dyn_string subst, int x, int y, float angle, float scx, float scy[, string ewoName]);",
+            "description": [
+                "Служит для добавления панели panel references (панели-ссылки) на панели в процессе функционирования в дальнейшем."
+            ],
+            "id": "addSymbol"
+        },
+        {
+            "definition": "int removeSymbol(string moduleName, string panelName, string refName);",
+            "description": [
+                "Данная функция используется для удаления панелей-ссылок."
+            ],
+            "id": "removeSymbol"
+        },
+        {
+            "definition": "dyn_string getShapes(string moduleName = myModuleName(),string panelName = myPanelName(),string attribute = \"selected\",anytype value = true);",
+            "description": [
+                "Эта функция возвращает список имен формы (или RefName.ShapeName), которые находятся в данных параметрах модуля/панели и соответствуют требуемой паре атрибут-значение."
+            ],
+            "id": "getShapes"
+        },
+        {
+            "definition": "shape getShapeStrict(string moduleName, string panelName, string objectName);",
+            "description": [
+                "Эта функция используется для адресации графических объектов и установки атрибутов. Она похожа на getShape(), но использует другой метод поиска."
+            ],
+            "id": "getShapeStrict"
+        },
+        {
+            "definition": "dyn_string getShapesStrict(string moduleName = myModuleName(), string panelName = myPanelName(), string attribute = \"selected\", anytype value = true);",
+            "description": [
+                "Эта функция возвращает список имен фигур (или RefName.ShapeName), которые находятся в заданных параметрах Module/Panel и соответствуют желаемой паре атрибута и значения. Она похожа на getShapes(), но использует другой метод поиска."
+            ],
+            "id": "getShapesStrict"
+        },
+        {
+            "definition": "int panelSelector(string &panelstr);",
+            "description": [
+                "Открывает диалоговое окно выбора файлов и записывает имя выбранного файла в переменную."
+            ],
+            "id": "panelSelector"
+        },
+        {
+            "definition": "RootPanelOnModule( string FileName, string PanelName, string ModuleName, dyn_string Parameter );",
+            "description": [
+                "Открывает панель в определенном модуле."
+            ],
+            "id": "RootPanelOnModule"
+        },
+        {
+            "definition": "void ChildPanelOnModule(string FileName, string PanelName, string ModuleName, dyn_string Parameter, int x, int y);",
+            "description": [
+                "Открывает дочернюю панель в произвольном модуле."
+            ],
+            "id": "ChildPanelOnModule"
         }
     ]
 }
