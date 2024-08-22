@@ -44,6 +44,27 @@
       "definition": "bool checkPassword(unsigned id, string passwd)",
       "description": [],
       "id": "checkPassword"
+    },
+    {
+      "definition": "void getUserPermissionForArea (bool &uPerm, unsigned level, string sAreaName, [string sUser, [string sManType, [string sManNum]]]);",
+      "description": [
+        "Функция getUserPermissionForArea() получает допуск пользователя для области."
+      ],
+      "id": "getUserPermissionForArea"
+    },
+    {
+      "definition": "mapping getUserDataPVSS(unsigned pvssUserID);",
+      "description": [
+        "Возвращает пользовательские данные в отношении пользователя \"КАСКАД Цифра\"."
+      ],
+      "id": "getUserDataPVSS"
+    },
+    {
+      "definition": "int myUiNumber();",
+      "description": [
+        "Возвращает номер менеджера интерфейса пользователя (как myManNum(); всегда меньше 256)."
+      ],
+      "id": "myUiNumber"
     }
   ]
 }

@@ -202,6 +202,13 @@
       "definition": "bool uniPatternMatch(string pattern, string s)\\ndyn_bool uniPatternMatch(string pattern, dyn_string ds)",
       "description": [],
       "id": "uniPatternMatch"
+    },
+    {
+      "definition": "int regexpSplit(string rexexp, строковая строка, dyn_string и результат, [параметры сопоставления];",
+      "description": [
+        "Функция “regexpSplit()” обеспечивает сопоставление с шаблоном с помощью регулярных выражений."
+      ],
+      "id": "regexpSplit"
     }
   ]
 }

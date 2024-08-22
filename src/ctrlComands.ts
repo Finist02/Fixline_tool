@@ -578,6 +578,40 @@ let prevSelectedItems: QuickPickItem[] = [{
 function onlyUnique(value: QuickPickItem, index: number, array: QuickPickItem[]) {
 	return array.indexOf(value) === index;
 }
+
+export async function LoadDPL() {
+    const result = await vscode.window.showQuickPick(GetDPLFiles());
+    if (result != undefined) {
+        prevSelectedItems.splice(1, 0, result);
+        let path = result.description;
+		if (path == undefined || path == '') return;
+		if (path.indexOf('\\dplist\\') !== -1) {
+			let user = vscode.workspace.getConfiguration("FixLineTool.OpenPanel").get("UserName");
+			let pass = vscode.workspace.getConfiguration("FixLineTool.OpenPanel").get("Password");
+			let command = getPathInConfigFile('pvss_path') + '/bin/WCCOAascii.exe -user ' + user + ':' + pass + '-in ' + path + ' -yes -proj ' + getPathInConfigFile('proj_name');
+			const output = execShell(command);
+		}
+    }
+}
+
+async function GetDPLFiles() {
+	prevSelectedItems = prevSelectedItems.filter(onlyUnique);
+	const files = await vscode.workspace.findFiles('**/dplist/**/*.dpl');
+	const items: QuickPickItem[] = [];
+	prevSelectedItems.forEach(item => {
+		items.push(item);
+	});
+	files.forEach(file => {
+		let path = file.fsPath;
+		let splittedPath = path.split('dplist\\');
+		items.push({
+			label: '$(notebook-open-as-text) ' + splittedPath[splittedPath.length - 1],
+			description: path
+		});
+	})
+    return items;
+}
+
 export async function showQuickPick() {
 	const result = await vscode.window.showQuickPick(GetPathsFiles());
 	if (result != undefined) {
