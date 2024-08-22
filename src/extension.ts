@@ -2,10 +2,10 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { CtrlDocumentSymbolProvider } from './ctrlSymbolsCreator';
-import { panelPreviewProvider } from './panelPreviewProvider';
+import { CtrlPanelPreviewProvider } from './CtrlPanelPreviewProvider';
 import { CtrlCompletionItemProvider, CtrlCompletionItemProviderStatic, providerFiles, providerUses } from './CtrlProvideCompletionItems';
 import { CtrlDefinitionProvider } from './CtrlDefinitionProvider';
-import * as cmdCtrl from './CtrlComands';
+import * as cmdCtrl from './СtrlComands';
 import { CtrlHoverProvider } from './CtrlHoverProvider';
 import { CtrlSignatureHelpProvider } from './CtrlSignatureHelpProvider';
 import { CtrlReferenceProvider } from './CtrlReferenceProvider';
@@ -38,7 +38,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("extension.CreateUMLDiagrams", CreateUMLDiagrams));
 
 	context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider({ language: "ctrlpp" }, new CtrlCodeFormatter()));
-	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider('ctl', panelPreviewProvider));
+	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider('ctl', CtrlPanelPreviewProvider));
 	context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider({ language: "ctrlpp" }, new CtrlDocumentSymbolProvider()));
 	context.subscriptions.push(vscode.languages.registerDefinitionProvider({ language: "ctrlpp" }, new CtrlDefinitionProvider()));
 	context.subscriptions.push(vscode.languages.registerCompletionItemProvider("ctrlpp", new CtrlCompletionItemProvider(), '.'));

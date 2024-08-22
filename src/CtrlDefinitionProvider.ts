@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import { CtrlSymbolsCreator, TypeQuery } from './ctrlSymbolsCreator';
-import { GetProjectsInConfigFile } from './CtrlComands';
+import { GetProjectsInConfigFile } from './СtrlComands';
 
 export class CtrlDefinitionProvider implements vscode.DefinitionProvider {
 	private GetUsesProvider(document: vscode.TextDocument, textUnderCursor: string, parentType: string): vscode.Location | undefined {

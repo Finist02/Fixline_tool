@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import { CtrlTokenizer, Token } from './CtrlTokenizer';
-import { GetProjectsInConfigFile } from './CtrlComands';
+import { GetProjectsInConfigFile } from './СtrlComands';
 import { CtrlDocumentSymbol, CtrlPublicSymbols, CtrlSymbols } from './CtrlSymbols';
 import { ctrlDefinitions, ctrlUsesDlls, reservedWords, varTypes } from './CtrlVarTypes';
 

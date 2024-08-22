@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-export const panelPreviewProvider = new class implements vscode.TextDocumentContentProvider {
+export const CtrlPanelPreviewProvider = new class implements vscode.TextDocumentContentProvider {
     onDidChangeEmitter = new vscode.EventEmitter<vscode.Uri>();
     onDidChange = this.onDidChangeEmitter.event;
     private GetTextScript(position: string, textBlock: string) {

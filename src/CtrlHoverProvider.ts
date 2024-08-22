@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import { CtrlSymbolsCreator, TextSplitter, TypeQuery } from './ctrlSymbolsCreator';
-import { GetProjectsInConfigFile } from './CtrlComands';
+import { GetProjectsInConfigFile } from './СtrlComands';
 
 export class CtrlHoverProvider  implements vscode.HoverProvider {
 	private GetUsesProvider(document: vscode.TextDocument, textUnderCursor: string, parentType: string): string[] | undefined {
