@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import { CtrlTokenizer, Token } from './CtrlTokenizer';
 import { GetProjectsInConfigFile } from './СtrlComands';
-import { CtrlDocumentSymbol, CtrlPublicSymbols, CtrlSymbols } from './CtrlSymbols';
+import { CtrlDocumentSymbol, CtrlPublicSymbols, CtrlSymbols, SymbolModifiers } from './CtrlSymbols';
 import { ctrlDefinitions, ctrlUsesDlls, reservedWords, varTypes } from './CtrlVarTypes';
 
 export const COMMAND_EXCLUDE_ERROR = 'code-actions-ctl.commandExcludeError';
@@ -321,18 +321,16 @@ class CtrlDiagnostic {
                         for (let i = 0; i < this.mapClassesFiles.length; i++) {
                             if (this.mapClassesFiles[i].symbol == nextToken.symbol) {
                                 let fileData = fs.readFileSync(this.mapClassesFiles[i].path, 'utf8');
-                                const symbolCreator = new CtrlPublicSymbols(fileData, 0);
-                                const symbols = symbolCreator.getPublicMembers([], true);
+                                const symbolCreator = new CtrlPublicSymbols(fileData, 2);
+                                const symbols = symbolCreator.getPublicMembers();
                                 for (let j = 0; j < symbols.length; j++) {
                                     if (symbols[j].name == nextToken.symbol) {
                                         for (let k = 0; k < symbols[j].children.length; k++) {
-                                            // const element = symbols[j].children[k];
+                                            symbols[j].children[k].modifiers = symbols[j].children[k].modifiers.concat(SymbolModifiers.Parent);
                                             this.nodes[this.nodes.length - 1].push(symbols[j].children[k]);
                                         }
-                                        // this.nodes[this.nodes.length - 1] =  this.nodes[this.nodes.length - 1].concat(symbols[j].children);
-                                        // this.symbols[this.symbols.length - 1].children = this.symbols[this.symbols.length - 1].children.concat(symbols[j].children);
+                                        break;
                                     }
-                                    break;
                                 }
                                 break;
                             }
@@ -765,7 +763,7 @@ class CtrlDiagnostic {
         let correctName = this.isVarNameCorrect(variable.symbol);
         if (correctName) {
             for (let i = 0; i < this.nodes[this.nodes.length - 1].length; i++) {
-                if (variable.symbol == this.nodes[this.nodes.length - 1][i].name) {
+                if (variable.symbol == this.nodes[this.nodes.length - 1][i].name && this.nodes[this.nodes.length - 1][i].modifiers.indexOf(SymbolModifiers.Parent) < 0) {
                     this.pushErrorDiagnostic('Duplicate naming variable', variable.range, vscode.DiagnosticSeverity.Warning);
                     return false;
                 }

@@ -12,7 +12,9 @@ export enum SymbolModifiers {
     Static = 4,
     Public = 5,
     Private = 6,
-    Global = 7
+    Global = 7,
+    Protected = 8,
+    Parent = 9
 }
 
 export class CtrlDocumentSymbol extends DocumentSymbol {
@@ -835,8 +837,7 @@ export class CtrlAllSymbols extends CtrlSymbols {
 
 export class CtrlPublicSymbols extends CtrlSymbols {
     private isIncludeProtected = false;
-    public getPublicMembers(filesRead: string[] = [], isIncludeProtected = false) {
-        this.isIncludeProtected = isIncludeProtected;
+    public getPublicMembers(filesRead: string[] = []) {
         this.filesRead = filesRead;
         let token = this.tokenizer.getNextToken();
         while (token != null) {
@@ -915,6 +916,17 @@ export class CtrlPublicSymbols extends CtrlSymbols {
                 this.tokenizer.backToken();
                 // проверить родительский
             }
+            else {
+                const baseClass = this.tokenizer.getNextToken();
+                for (let i = 0; i < this.symbols.length; i++) {
+                    if(this.symbols[i].name == baseClass?.symbol){
+                        for (let j = 0; j < this.symbols[i].children.length; j++) {
+                            this.symbols[i].children[j].modifiers = this.symbols[i].children[j].modifiers.concat(SymbolModifiers.Parent);
+                            this.nodes[this.nodes.length - 1].push(this.symbols[i].children[j]);                            
+                        }
+                    }
+                }
+            }
             try {
                 this.tokenizer.getNextToken();
                 this.addMembers(classNameToken);
@@ -936,7 +948,8 @@ export class CtrlPublicSymbols extends CtrlSymbols {
         let countScope = 1;
         let member = this.tokenizer.getNextToken();
         while (member != null) {
-            if (member.symbol == 'public' || (this.isIncludeProtected && member.symbol == 'protected')) {
+            if (member.symbol == 'public' || member.symbol == 'protected') {
+                const scope = member.symbol;
                 member = this.tokenizer.getNextToken();
                 const varType = this.getTypeVariableAndModidfiers(member);
                 if (varType) {
@@ -946,6 +959,9 @@ export class CtrlPublicSymbols extends CtrlSymbols {
                         const nextToken = this.tokenizer.getNextToken();
                         if (nextToken?.symbol == '(') {
                             let symbolMember = new CtrlDocumentSymbol(memberName.symbol, varType.token.symbol, vscode.SymbolKind.Constructor, memberName.range, memberName.range);
+                            if(scope == 'protected'){
+                                symbolMember.modifiers = symbolMember.modifiers.concat(SymbolModifiers.Protected);
+                            }
                             this.nodes[this.nodes.length - 1].push(symbolMember);
                             const rangeEnd = this.getRangeContext();
                             if (rangeEnd) {
@@ -958,6 +974,9 @@ export class CtrlPublicSymbols extends CtrlSymbols {
                         if (memberName) {
                             if (this.tokenizer.getNextToken()?.symbol == '(') {
                                 let symbolMember = new CtrlDocumentSymbol(memberName.symbol, varType.token.symbol, vscode.SymbolKind.Method, memberName.range, memberName.range);
+                                if(scope == 'protected'){
+                                    symbolMember.modifiers = symbolMember.modifiers.concat(SymbolModifiers.Protected);
+                                }
                                 this.nodes[this.nodes.length - 1].push(symbolMember);
                                 const rangeEnd = this.getRangeContext();
                                 if (rangeEnd) {
@@ -967,10 +986,16 @@ export class CtrlPublicSymbols extends CtrlSymbols {
                             else {
                                 if (varType.modifiers.indexOf(SymbolModifiers.Const) >= 0) {
                                     let symbolMember = new CtrlDocumentSymbol(memberName.symbol, varType.token.symbol, vscode.SymbolKind.Constant, memberName.range, memberName.range);
+                                    if(scope == 'protected'){
+                                        symbolMember.modifiers = symbolMember.modifiers.concat(SymbolModifiers.Protected);
+                                    }
                                     this.nodes[this.nodes.length - 1].push(symbolMember);
                                 }
                                 else {
                                     let symbolMember = new CtrlDocumentSymbol(memberName.symbol, varType.token.symbol, vscode.SymbolKind.Field, memberName.range, memberName.range);
+                                    if(scope == 'protected'){
+                                        symbolMember.modifiers = symbolMember.modifiers.concat(SymbolModifiers.Protected);
+                                    }
                                     this.nodes[this.nodes.length - 1].push(symbolMember);
                                 }
                             }
