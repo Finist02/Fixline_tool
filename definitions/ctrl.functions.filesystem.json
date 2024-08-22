@@ -281,6 +281,27 @@
       "definition": "string tmpnam()",
       "description": [],
       "id": "tmpnam"
+    },
+    {
+      "definition": "int getStandardPath(тип строки);",
+      "description": [
+          "Функция getStandardPath() возвращает путь к каталогу (местоположение), в который должны быть записаны файлы."
+      ],
+      "id": "getStandardPath"
+    },
+    {
+      "definition": "int fflush ( file f );",
+      "description": [
+          "Осуществляет запись данных в файл."
+      ],
+      "id": "fflush"
+    },
+    {
+      "definition": "int fileSelector(string &fileName[, string dirstr[, bool notUp[, string patternstr[, bool open[, string settingsId]]]]]);",
+      "description": [
+          "Открывает диалоговое окно выбора файла и записывает имя выбранного файла в строковую переменную filestr."
+      ],
+      "id": "fileSelector"
     }
   ]
 }

@@ -63,6 +63,11 @@ export async function CreateChildClass() {
                     fileData = fileData.replace('$methodsClass', GetMethods(newMembers));
                     fileData = fileData.replace(/\$childClassName/g, newNameClass);
                     fileData = fileData.replace(/\$origClass/g, selectedClass.label);
+                    let currentDate = new Date();
+                    fileData = fileData.replace(/\$relPath/g, newNameClass + '.ctl');
+                    fileData = fileData.replace(/\$CURRENT_YEAR/g, String(currentDate.getFullYear()));
+                    
+                    fileData = fileData.replace(/\$CURRENT_DATE/g, currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1) + '-' + currentDate.getDate());
 
                 }
                 const writeBytes = Buffer.from(fileData);
@@ -95,23 +100,30 @@ function GetMethods(items: QuickPickItem[]) {
 
 
 const fileTemplate = 
-`// $License: NOLICENSE
+`// License: NOLICENSE
 //----------------------------------------------------------------------------------------
 /**
-	@file $relPath
-	@copyright $copyright
-	@author $author
+ * @file $relPath
+ * @brief 
+ * @version 0.1
+ * @copyright Copyright (c) $CURRENT_YEAR
+ * @author $author
+ * @date $CURRENT_DATE
 */
 
 //----------------------------------------------------------------------------------------
 // Libraries used (#uses)
+//----------------------------------------------------------------------------------------
 #uses "$origLibRelPathWithoutExtension"
 
-//----------------------------------------------------------------------------------------
 // Variables and Constants
-
 //----------------------------------------------------------------------------------------
+
 /**
+    @brief 
+    @details
+    @version 0.1
+    @date $CURRENT_DATE
 */
 class $childClassName : $origClass
 {
@@ -125,12 +137,21 @@ class $childClassName : $origClass
 
 //----------------------------------------------------------------------------------------
 /**
-	@brief Конструктор
-	@param 
+    @brief Конструктор
+    @param 
 */
     public $childClassName() : $origClass()
     {
 
     }
-$methodsClass
+
+    $methodsClass
+//----------------------------------------------------------------------------------------
+//@protected members
+//----------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------
+//@private members
+//----------------------------------------------------------------------------------------
+
 };`

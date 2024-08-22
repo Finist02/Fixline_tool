@@ -939,6 +939,132 @@
       "definition": "int assignPtr(shared_ptr &target, shared_ptr source)",
       "description": [],
       "id": "assignPtr"
+    },
+    {
+        "definition": "int fontSelector(string | langString &fontstr);",
+        "description": [
+            "Открывает селектор типа шрифта и записывает выбор в переменную."
+        ],
+        "id": "fontSelector"
+    },
+    {
+      "definition": "string myModuleName();",
+      "description": [
+          "Возвращает имя текущей системы."
+      ],
+      "id": "myModuleName"
+    },
+    {
+      "definition": "string myPanelName();",
+      "description": [
+          "Возвращает имя текущей панели."
+      ],
+      "id": "myPanelName"
+    },
+    {
+      "definition": "shape object = getShape(string name);",
+      "description": [
+          "С помощью этой функции CTRL можно обращаться к графическим объектам (вместо setValue()) и устанавливать атрибуты."
+      ],
+      "id": "getShape"
+    },
+    {
+      "definition": "string myDisplayName();",
+      "description": [
+          "Возвращает информацию дисплея, используемого пользователем на данный момент."
+      ],
+      "id": "myDisplayName"
+    },
+    {
+      "definition": "int openURL(строковый URL);",
+      "description": [
+          "Функция openURL используется для открытия файлов, расположенных по произвольным URL-адресам во внешних приложениях."
+      ],
+      "id": "openUrl"
+    },
+    {
+      "definition": "int popupMenu(dyn_string text, int &answer);",
+      "description": [
+          "Активация контекстно-зависимого меню щелчком правой кнопки мыши."
+      ],
+      "id": "popupMenu"
+    },
+    {
+      "definition": "int getCursorPosition(int &x, int &y, [bool globalPos = FALSE]);",
+      "description": [
+          "Возвращает текущую позицию курсора мыши на панели или экране."
+      ],
+      "id": "getCursorPosition"
+    },
+    {
+      "definition": "int paCfgReadValueList(string filename, string section, string key, dyn_string &value[, string separator[, string host]]);",
+      "description": [
+          "Функция считывает все значения параметра конфигурации, которые встречаются в файле конфигурации более одного раза."
+      ],
+      "id": "paCfgReadValueList"
+    },
+    {
+      "definition": "isSplitModeActive(bool &bAnswer, string System = ;",
+      "description": [
+          "Возвращает информацию о том, активирован ли в системе разделенный режим."
+      ],
+      "id": "isSplitModeActive"
+    },
+    { 
+      "definition":"anytype getApplicationProperty(string property);",
+      "description":[ 
+        "Возвращает дополнительную информацию о клиенте (браузере), подключенном к HTTP-серверу, или проверяет использование таблицы стилей."
+      ],
+      "id":"getApplicationProperty"
+    },
+    { 
+      "definition":"int setApplicationProperty(string property, <type> value);",
+      "description":[ 
+        "Позволяет редактировать свойства приложения."
+      ],
+      "id":"setApplicationProperty"
+    },
+    { 
+      "definition":"isSplitModeActive(bool &bAnswer, string System = \"\");",
+      "description":[ 
+        "Возвращает информацию о том, активирован ли в системе разделенный режим."
+      ],
+      "id":"isSplitModeActive"
+    },
+    { 
+      "definition":"int reduActive(int &iAnswer, string sSystem = \"\")",
+      "description":[ 
+        "В резервированной системе возвращает данные об активном компьютере."
+      ],
+      "id":"reduActive"
+    },
+    { 
+      "definition":"int colorToRgb(string color, int &red, int &green, int &blue, int &alpha);",
+      "description":[ 
+        "Функция извлекает значения RGB из данного цвета."
+      ],
+      "id":"colorToRgb"
+    },
+    { 
+      "definition":"int printTable ([string shapeName, [bool showDialog, [dyn_string header, [dyn_string footer, [int columnsType,   [dyn_string | dyn_int columns, [bool fitToPage, [bool landscape, [bool gridLines, [bool gridBackground, [dyn_int margin, [string printerName, [string printFont]]]]...]);",
+      "description":[ 
+        "Выводит на печать таблицу."
+      ],
+      "id":"printTable"
+    },
+    { 
+      "definition":"int triggerGlobalEvent(строковое событие, ...);",
+      "description":[ 
+        "Функция запускает глобальное событие пользовательского интерфейса."
+      ],
+      "id":"triggerGlobalEvent"
+    },
+    { 
+      "definition":"int langEditor(langString &ls[, bool multiLine = FALSE]);",
+      "description":[ 
+        "Открывает языковой редактор (\"langEditor\")"
+      ],
+      "id":"langEditor"
     }
   ]
 }

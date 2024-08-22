@@ -36,6 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("extension.StartUnitTests", cmdCtrl.StartUnitTests));
 	context.subscriptions.push(vscode.commands.registerCommand("extension.GetHelpChatGpt", cmdCtrl.GetHelpChatGpt));
 	context.subscriptions.push(vscode.commands.registerCommand("extension.CreateUMLDiagrams", CreateUMLDiagrams));
+	context.subscriptions.push(vscode.commands.registerCommand('extension.LoadDPL', cmdCtrl.LoadDPL));
 
 	context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider({ language: "ctrlpp" }, new CtrlCodeFormatter()));
 	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider('ctl', CtrlPanelPreviewProvider));

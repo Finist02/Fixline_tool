@@ -103,7 +103,13 @@
                 "command": "extension.CreateUMLDiagrams",
                 "title": "Create UML diagrams",
                 "category": "Fixline"
-            }
+            },
+			{
+				"command": "extension.LoadDPL",
+				"title": "Load dpl",
+				"icon": "$(preview)",
+				"category": "Fixline"
+			}
         ],
         "menus": {
             "explorer/context": [
@@ -214,7 +220,7 @@
     "devDependencies": {
         "@types/glob": "^7.2.0",
         "@types/mocha": "^9.1.1",
-        "@types/node": "16.x",
+        "@types/node": "^16.18.105",
         "@types/vscode": "^1.71.0",
         "@typescript-eslint/eslint-plugin": "^5.31.0",
         "@typescript-eslint/parser": "^5.31.0",
@@ -225,11 +231,13 @@
         "typescript": "^4.7.4"
     },
     "dependencies": {
-        "axios": "^1.3.1",
+        "axios": "^1.7.4",
         "braces": "^3.0.3",
+        "fs": "^0.0.1-security",
         "fsp-xml-parser": "^1.0.0",
         "highlight.js": "^11.8.0",
-        "markdown-it": "^13.0.1",
+        "markdown-it": "^13.0.2",
+        "os": "^0.1.2",
         "xml2js": "^0.6.2"
     }
 }

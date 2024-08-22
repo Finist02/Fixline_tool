@@ -411,6 +411,27 @@
       "definition": "bool removeDoneCB()",
       "description": [],
       "id": "removeDoneCB"
+    },
+    {
+      "definition": "void dpCopyOriginal(string dpSource, string dpDestination, int &error);",
+      "description": [
+        "Копирует исходное значение точки данных в целевую точку данных."
+      ],
+      "id": "dpCopyOriginal"
+    },
+    {
+      "definition": "bool isReduDp(string dp);",
+      "description": [
+        "Функция \"isReduDp()\" проверяет, является ли указанная точка данных избыточной."
+      ],
+      "id": "isReduDp"
+    },
+    {
+      "definition": "void isRemoteSystemRedundant (int &iAnswer, string System);",
+      "description": [
+        "Функция возвращает информацию о том, сконфигурирован ли проект как резервированный."
+      ],
+      "id": "isRemoteSystemRedundant"
     }
   ]
 }
