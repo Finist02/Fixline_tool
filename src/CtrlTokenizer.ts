@@ -225,7 +225,8 @@ export class CtrlTokenizer {
                             }
                             bufferToken = char + line.charAt(j + 1);
                             j++;
-                            this.token.push(new Token(this.craeteRange(i, j - bufferToken.length + 1, j + 1), bufferToken));
+                            this.token.push(new Token(this.craeteRange(i, j - bufferToken.length, j), bufferToken));
+                            // this.token.push(new Token(this.craeteRange(i, j - bufferToken.length + 1, j + 1), bufferToken));
                             bufferToken = '';
                         }
                         else {

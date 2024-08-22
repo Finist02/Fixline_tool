@@ -28,12 +28,9 @@ export class CtrlCodeFormatter implements vscode.DocumentFormattingEditProvider 
                     }
                     break;
                 case '>':
-                    tokenizer.backToken();
-                    tokenizer.backToken();
-                    tokenizer.backToken();
+                    tokenizer.backToken(3);
                     const prevPrevToken = tokenizer.getNextToken();
-                    tokenizer.getNextToken();
-                    tokenizer.getNextToken();
+                    tokenizer.getNextToken(2);
                     if (prevPrevToken?.symbol != '<')
                         this.addSpacesBetweenOperator(token);
                     break;
