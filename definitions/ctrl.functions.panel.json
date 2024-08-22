@@ -193,20 +193,6 @@
                 "Открывает дочернюю панель в произвольном модуле."
             ],
             "id": "ChildPanelOnModule"
-        },
-        {
-            "definition": "string myModuleName();",
-            "description": [
-                "Возвращает имя текущего модуля."
-            ],
-            "id": "myModuleName"
-        },
-        {
-            "definition": "string myPanelName();",
-            "description": [
-                "Возвращает имя текущей панели."
-            ],
-            "id": "myPanelName"
         }
     ]
 }
