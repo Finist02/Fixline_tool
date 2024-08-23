@@ -17,6 +17,11 @@ export enum SymbolModifiers {
     Parent = 9
 }
 
+export interface mapClassesFile {
+    path: string;
+    symbol: string;
+}
+
 export class CtrlDocumentSymbol extends DocumentSymbol {
     modifiers: readonly SymbolModifiers[] = [];
     filePath?: string;
@@ -51,6 +56,7 @@ export function CtrlGetAllmembers() {
 export class CtrlSymbols {
     protected userVarTypes: string[] = [];
     protected symbols: CtrlDocumentSymbol[] = [];
+    protected mapClassesFiles: mapClassesFile[] = [];
     protected nodes: Array<CtrlDocumentSymbol[]> = [this.symbols];
     protected tokenizer: CtrlTokenizer;
     protected innersFilesRead: number;
@@ -203,6 +209,8 @@ export class CtrlSymbols {
             const symbols = new CtrlSymbols(fileData, this.innersFilesRead - 1);
             const libSymbols = symbols.getNewTypesData(this.filesRead);
             for (let i = 0; i < libSymbols.length; i++) {
+                this.mapClassesFiles.push(
+                    { symbol: libSymbols[i].name, path: path });
                 this.userVarTypes.push(libSymbols[i].name);
             }
         } catch (error) {
@@ -225,6 +233,40 @@ export class CtrlSymbols {
             }
             this.nodes.pop();
         }
+    }
+
+    protected addVaribles(memberName: Token, typeProperty: TokenProperty) {
+        const symbolKind = this.getSymbolKind(typeProperty.token);
+        const newSymbol = this.addVariable(memberName, typeProperty, symbolKind);
+        let nextToken = this.tokenizer.getNextToken();
+        if (nextToken?.symbol == ',') {
+            while (nextToken && nextToken?.symbol == ',') {
+                nextToken = this.tokenizer.getNextToken();
+                if (nextToken) {
+                    this.addVariable(nextToken, typeProperty, symbolKind);
+                }
+                nextToken = this.tokenizer.getNextToken();
+            }
+        }
+        else {
+            this.tokenizer.backToken();
+            this.tokenizer.backToken();
+            nextToken = this.tokenizer.getNextToken();
+        }
+        while (nextToken && nextToken?.symbol != ';') {
+            nextToken = this.tokenizer.getNextToken();
+        }
+        if (nextToken) {
+            newSymbol.selectionRange = new vscode.Range(memberName.range.start, nextToken.range.end);
+        }
+    }
+
+    protected addVariable(variable: Token, typeProperty: TokenProperty, symbolKind: vscode.SymbolKind = vscode.SymbolKind.Variable) {
+        let newSymbol = new CtrlDocumentSymbol(variable.symbol, typeProperty.token.symbol, symbolKind, variable.range, variable.range);
+        newSymbol.rangeType = typeProperty.token.range;
+        newSymbol.modifiers = typeProperty.modifiers;
+        this.nodes[this.nodes.length - 1].push(newSymbol);
+        return newSymbol;
     }
 
     private addEnumMembers() {
@@ -475,6 +517,28 @@ export class CtrlAllSymbols extends CtrlSymbols {
                 this.tokenizer.backToken();
                 // проверить родительский
             }
+            else {
+                nextToken = this.tokenizer.getNextToken();
+                if (nextToken) {
+                    for (let i = 0; i < this.mapClassesFiles.length; i++) {
+                        if (this.mapClassesFiles[i].symbol == nextToken.symbol) {
+                            let fileData = fs.readFileSync(this.mapClassesFiles[i].path, 'utf8');
+                            const symbolCreator = new CtrlPublicSymbols(fileData, this.innersFilesRead - 1);
+                            const symbols = symbolCreator.getPublicMembers();
+                            for (let j = 0; j < symbols.length; j++) {
+                                if (symbols[j].name == nextToken.symbol) {
+                                    for (let k = 0; k < symbols[j].children.length; k++) {
+                                        symbols[j].children[k].modifiers = symbols[j].children[k].modifiers.concat(SymbolModifiers.Parent);
+                                        this.nodes[this.nodes.length - 1].push(symbols[j].children[k]);
+                                    }
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
             try {
                 this.tokenizer.getNextToken();
                 this.addMembers(classNameToken);
@@ -699,39 +763,7 @@ export class CtrlAllSymbols extends CtrlSymbols {
         return null;
     }
 
-    private addVaribles(memberName: Token, typeProperty: TokenProperty) {
-        const symbolKind = this.getSymbolKind(typeProperty.token);
-        const newSymbol = this.addVariable(memberName, typeProperty, symbolKind);
-        let nextToken = this.tokenizer.getNextToken();
-        if (nextToken?.symbol == ',') {
-            while (nextToken && nextToken?.symbol == ',') {
-                nextToken = this.tokenizer.getNextToken();
-                if (nextToken) {
-                    this.addVariable(nextToken, typeProperty, symbolKind);
-                }
-                nextToken = this.tokenizer.getNextToken();
-            }
-        }
-        else {
-            this.tokenizer.backToken();
-            this.tokenizer.backToken();
-            nextToken = this.tokenizer.getNextToken();
-        }
-        while (nextToken && nextToken?.symbol != ';') {
-            nextToken = this.tokenizer.getNextToken();
-        }
-        if (nextToken) {
-            newSymbol.selectionRange = new vscode.Range(memberName.range.start, nextToken.range.end);
-        }
-    }
 
-    private addVariable(variable: Token, typeProperty: TokenProperty, symbolKind: vscode.SymbolKind = vscode.SymbolKind.Variable) {
-        let newSymbol = new CtrlDocumentSymbol(variable.symbol, typeProperty.token.symbol, symbolKind, variable.range, variable.range);
-        newSymbol.rangeType = typeProperty.token.range;
-        newSymbol.modifiers = typeProperty.modifiers;
-        this.nodes[this.nodes.length - 1].push(newSymbol);
-        return newSymbol;
-    }
 
     private checkParameters(token: Token, varType: TokenProperty) {
         if (token) {
@@ -964,6 +996,7 @@ export class CtrlPublicSymbols extends CtrlSymbols {
                             if (scope == 'protected') {
                                 symbolMember.modifiers = symbolMember.modifiers.concat(SymbolModifiers.Protected);
                             }
+                            varType.modifiers
                             this.nodes[this.nodes.length - 1].push(symbolMember);
                             const rangeEnd = this.getRangeContext();
                             if (rangeEnd) {
@@ -986,20 +1019,8 @@ export class CtrlPublicSymbols extends CtrlSymbols {
                                 }
                             }
                             else {
-                                if (varType.modifiers.indexOf(SymbolModifiers.Const) >= 0) {
-                                    let symbolMember = new CtrlDocumentSymbol(memberName.symbol, varType.token.symbol, vscode.SymbolKind.Constant, memberName.range, memberName.range);
-                                    if (scope == 'protected') {
-                                        symbolMember.modifiers = symbolMember.modifiers.concat(SymbolModifiers.Protected);
-                                    }
-                                    this.nodes[this.nodes.length - 1].push(symbolMember);
-                                }
-                                else {
-                                    let symbolMember = new CtrlDocumentSymbol(memberName.symbol, varType.token.symbol, vscode.SymbolKind.Field, memberName.range, memberName.range);
-                                    if (scope == 'protected') {
-                                        symbolMember.modifiers = symbolMember.modifiers.concat(SymbolModifiers.Protected);
-                                    }
-                                    this.nodes[this.nodes.length - 1].push(symbolMember);
-                                }
+                                this.tokenizer.backToken();
+                                this.addVaribles(memberName, varType);
                             }
                         }
                     }

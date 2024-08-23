@@ -209,6 +209,13 @@
         "Функция “regexpSplit()” обеспечивает сопоставление с шаблоном с помощью регулярных выражений."
       ],
       "id": "regexpSplit"
+    },
+    {
+      "definition": "string dynStringToString(dyn_string ds, string separator=\"|\");",
+      "description": [
+        "Convert a string array into a string."
+      ],
+      "id": "dynStringToString"
     }
   ]
 }

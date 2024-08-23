@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import { CtrlTokenizer, Token } from './CtrlTokenizer';
 import { GetProjectsInConfigFile } from './СtrlComands';
-import { CtrlDocumentSymbol, CtrlPublicSymbols, CtrlSymbols, SymbolModifiers } from './CtrlSymbols';
+import { CtrlDocumentSymbol, CtrlPublicSymbols, CtrlSymbols, mapClassesFile, SymbolModifiers } from './CtrlSymbols';
 import { ctrlDefinitions, ctrlUsesDlls, reservedWords, varTypes } from './CtrlVarTypes';
 
 export const COMMAND_EXCLUDE_ERROR = 'code-actions-ctl.commandExcludeError';
@@ -22,10 +22,7 @@ interface Range {
     line: number;
     character: number;
 }
-interface mapClassesFile {
-    path: string;
-    symbol: string;
-}
+
 export let ruleExcludeErrors: excludeType[];
 
 export async function startDiagnosticFile(document: vscode.TextDocument, collection: vscode.DiagnosticCollection) {
@@ -549,7 +546,13 @@ class CtrlDiagnostic {
                 if (this.isDeclarVariable(token)) {
                     token = this.tokenizer.getNextToken();
                     if (token) {
-                        this.checkParameters(token);
+                        if(memberName.symbol.startsWith('CB_')){
+                            this.checkParameters(token, 'readed');
+                        }
+                        else{
+                            this.checkParameters(token);
+                        }
+                        
                     }
                 }
             }
@@ -580,16 +583,16 @@ class CtrlDiagnostic {
         }
     }
 
-    private checkParameters(token: Token) {
+    private checkParameters(token: Token, detial: string = 'var') {
         if (token) {
             if (token.symbol == '&') {
                 let nextToken = this.tokenizer.getNextToken();
                 if (nextToken) {
-                    this.checkVariable(nextToken);
+                    this.checkVariable(nextToken, detial);
                 }
             }
             else {
-                this.checkVariable(token);
+                this.checkVariable(token, detial);
             }
         }
     }
@@ -674,6 +677,10 @@ class CtrlDiagnostic {
             }
         }
         else {
+            while (token && token.symbol != ';') {
+                this.CheckToken(token);
+                token = this.tokenizer.getNextToken();
+            }
             this.popNodesFunction();
         }
     }
