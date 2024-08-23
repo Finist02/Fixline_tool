@@ -847,6 +847,9 @@ export class CtrlAllSymbols extends CtrlSymbols {
             token = this.tokenizer.getNextToken();
         }
         if (token == null) return;
+        while (token && token.symbol.startsWith('/')) {
+            token = this.tokenizer.getNextToken();
+        }
         if (token?.symbol == '{') {
             try {
                 this.checkBodyFunction();

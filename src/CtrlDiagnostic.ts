@@ -546,13 +546,13 @@ class CtrlDiagnostic {
                 if (this.isDeclarVariable(token)) {
                     token = this.tokenizer.getNextToken();
                     if (token) {
-                        if(memberName.symbol.startsWith('CB_')){
+                        if (memberName.symbol.startsWith('CB_')) {
                             this.checkParameters(token, 'readed');
                         }
-                        else{
+                        else {
                             this.checkParameters(token);
                         }
-                        
+
                     }
                 }
             }
@@ -669,6 +669,9 @@ class CtrlDiagnostic {
             token = this.tokenizer.getNextToken();
         }
         if (token == null) return;
+        while (token && token.symbol.startsWith('/')) {
+            token = this.tokenizer.getNextToken();
+        }
         if (token?.symbol == '{') {
             try {
                 this.checkBodyFunction();
