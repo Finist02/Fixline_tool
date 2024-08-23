@@ -2,7 +2,7 @@
     "name": "fixline-tool",
     "displayName": "Fixline tool",
     "description": "Fixline tool",
-    "version": "1.0.41",
+    "version": "1.0.42",
     "publisher": "Danil",
     "icon": "images/fixline.png",
     "repository": {
@@ -104,12 +104,12 @@
                 "title": "Create UML diagrams",
                 "category": "Fixline"
             },
-			{
-				"command": "extension.LoadDPL",
-				"title": "Load dpl",
-				"icon": "$(preview)",
-				"category": "Fixline"
-			}
+            {
+                "command": "extension.LoadDPL",
+                "title": "Load dpl",
+                "icon": "$(preview)",
+                "category": "Fixline"
+            }
         ],
         "menus": {
             "explorer/context": [
