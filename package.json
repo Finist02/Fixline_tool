@@ -15,10 +15,6 @@
     "categories": [
         "Other"
     ],
-    "activationEvents": [
-        "onLanguage:ctrl",
-        "onLanguage:ctrlpp"
-    ],
     "main": "./out/extension.js",
     "contributes": {
         "languages": [
