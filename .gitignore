@@ -3,6 +3,5 @@ dist
 node_modules
 .vscode-test/
 *.vsix
-**/*.ts
 **/tsconfig.json
-!file.ts
+src
