@@ -2,7 +2,7 @@
     "name": "fixline-tool",
     "displayName": "Fixline tool",
     "description": "Fixline tool",
-    "version": "1.0.42",
+    "version": "1.0.43",
     "publisher": "Danil",
     "icon": "images/fixline.png",
     "repository": {
@@ -22,60 +22,60 @@
     "main": "./out/extension.js",
     "contributes": {
         "languages": [
-			{
-				"id": "ctrl",
-				"extensions": [
-					".ctl"
-				],
-				"aliases": [
-					"Ctrl",
-					"ctrl"
-				],
-				"configuration": "./language-configuration.json"
-			},
-			{
-				"id": "ctrlpp",
-				"extensions": [
-					".ctl"
-				],
-				"aliases": [
-					"Ctrl++",
-					"Ctrlpp",
-					"ctrlpp"
-				],
-				"configuration": "./language-configuration.json"
-			}
-		],
-		"grammars": [
-			{
-				"language": "ctrl",
-				"scopeName": "source.ctrl",
-				"path": "./syntaxes/ctrl.tmLanguage.json"
-			},
-			{
-				"language": "ctrlpp",
-				"scopeName": "source.ctrlpp",
-				"path": "./syntaxes/ctrlpp.tmLanguage.json"
-			}
-		],
-		"snippets": [
-			{
-				"language": "ctrl",
-				"path": "./snippets/ctrl.json"
-			},
-			{
-				"language": "ctrlpp",
-				"path": "./snippets/ctrl.json"
-			},
-			{
-				"language": "ctrlpp",
-				"path": "./snippets/ctrlpp.json"
-			},
-			{
-				"language": "ctrlpp",
-				"path": "./snippets/doxygen.json"
-			}
-		],
+            {
+                "id": "ctrl",
+                "extensions": [
+                    ".ctl"
+                ],
+                "aliases": [
+                    "Ctrl",
+                    "ctrl"
+                ],
+                "configuration": "./language-configuration.json"
+            },
+            {
+                "id": "ctrlpp",
+                "extensions": [
+                    ".ctl"
+                ],
+                "aliases": [
+                    "Ctrl++",
+                    "Ctrlpp",
+                    "ctrlpp"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "ctrl",
+                "scopeName": "source.ctrl",
+                "path": "./syntaxes/ctrl.tmLanguage.json"
+            },
+            {
+                "language": "ctrlpp",
+                "scopeName": "source.ctrlpp",
+                "path": "./syntaxes/ctrlpp.tmLanguage.json"
+            }
+        ],
+        "snippets": [
+            {
+                "language": "ctrl",
+                "path": "./snippets/ctrl.json"
+            },
+            {
+                "language": "ctrlpp",
+                "path": "./snippets/ctrl.json"
+            },
+            {
+                "language": "ctrlpp",
+                "path": "./snippets/ctrlpp.json"
+            },
+            {
+                "language": "ctrlpp",
+                "path": "./snippets/doxygen.json"
+            }
+        ],
         "commands": [
             {
                 "command": "extension.OpenUnitTest",
