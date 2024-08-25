@@ -1,0 +1,70 @@
+{ 
+    "hit":{ 
+      "property":"editor.quickSuggestions.comments = true",
+      "docu":"https://code.visualstudio.com/docs/getstarted/settings"
+    },
+    "fileHeader":{ 
+      "prefix":[ 
+        "file-header",
+        "@file-header"
+      ],
+      "body":[ 
+        "// \\$License: NOLICENSE",
+        "//--------------------------------------------------------------------------------",
+        "/**",
+        "\t@file \\$relPath",
+        "\t@copyright \\$copyright",
+        "\t@author \\$author",
+        "*/",
+        "//--------------------------------------------------------------------------------",
+        "// used libraries (#uses)",
+        "",
+        "//--------------------------------------------------------------------------------",
+        "// variables and constants",
+        ""
+      ],
+      "description":"File header"
+    },
+    "doxygen-codeblock":{ 
+      "prefix":"@codeblock",
+      "body":[ 
+        "@code{.ctl}\n...\n@endcode"
+      ],
+      "description":"Code block"
+    },
+    "doxygen-table":{ 
+      "prefix":"@table",
+      "body":[ 
+        "col1 | col2\n-----|------\nrc1  | rc2"
+      ],
+      "description":"Table"
+    },
+    "doxygen-snippetSection":{ 
+      "prefix":"@snippetSection",
+      "body":[ 
+        "//! [${1:snippetId}]\n...\n//! [${1:snippetId}]"
+      ],
+      "description":"snippetSection"
+    },
+    "doxygen-fret":{ 
+      "prefix":"@fret",
+      "body":[ 
+        "Function returns "
+      ],
+      "description":"Comment: Function returns"
+    },
+    "doxygen-fsets":{ 
+      "prefix":"@fsets",
+      "body":[ 
+        "Function sets "
+      ],
+      "description":"Comment: Function sets"
+    },
+    "doxygen-fcheck":{ 
+      "prefix":"@fcheck",
+      "body":[ 
+        "Function checks if "
+      ],
+      "description":"Comment: Function checks if"
+    }
+  }

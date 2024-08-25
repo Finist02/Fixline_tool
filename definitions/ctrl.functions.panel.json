@@ -2,7 +2,7 @@
     "hover": {
         "format" : "```\n${definition}\n```\n\n-------\n\nPredefined WinCC OA panel functions\n\n${description}"
     },
-    "completionItemKind": "panel",
+    "completionItemKind": "Function",
     "defines":[
         
         {

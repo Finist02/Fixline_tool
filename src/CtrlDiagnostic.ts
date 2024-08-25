@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import { CtrlTokenizer, Token } from './CtrlTokenizer';
 import { GetProjectsInConfigFile } from './СtrlComands';
 import { CtrlDocumentSymbol, CtrlPublicSymbols, CtrlSymbols, mapClassesFile, SymbolModifiers } from './CtrlSymbols';
-import { ctrlDefinitions, ctrlUsesDlls, reservedWords, varTypes } from './CtrlVarTypes';
+import { ctrlKnowItems, ctrlUsesDlls, reservedWords, varTypes } from './CtrlVarTypes';
 
 export const COMMAND_EXCLUDE_ERROR = 'code-actions-ctl.commandExcludeError';
 
@@ -690,7 +690,7 @@ class CtrlDiagnostic {
 
     private CheckToken(token: Token) {
         if (!this.markUsingVars(token)) {
-            if (ctrlDefinitions.indexOf(token.symbol) < 0
+            if (!ctrlKnowItems.hasItem(token.symbol)
                 && this.tokenizer.getPrevToken()?.symbol != '.'
                 && this.tokenizer.getPrevToken()?.symbol != '::'
                 && !token.symbol.startsWith('g_')
@@ -736,7 +736,7 @@ class CtrlDiagnostic {
         else if (token.symbol == 'vector') {
             return this.checkSharedPtr(token);
         }
-        else if (varTypes.indexOf(token.symbol) > -1 || this.userVarTypes.indexOf(token.symbol) > -1) {
+            else if (varTypes.indexOf(token.symbol) > -1 || this.userVarTypes.indexOf(token.symbol) > -1) {
             const nextToken = this.tokenizer.getNextToken();
             this.tokenizer.backToken();
             if (nextToken?.symbol == ')' || nextToken?.symbol == '::') {
@@ -786,7 +786,7 @@ class CtrlDiagnostic {
     }
 
     private isVarNameCorrect(varName: string) {
-        if (varTypes.indexOf(varName) > -1 || this.userVarTypes.indexOf(varName) > -1 || reservedWords.indexOf(varName) > -1) {
+            if (varTypes.indexOf(varName) > -1 || this.userVarTypes.indexOf(varName) > -1 || reservedWords.indexOf(varName) > -1) {
             return false;
         }
         const matchVarName = varName.match(/[A-Za-z_]+[A-Za-z\d\-_]*/);
@@ -927,13 +927,6 @@ class CtrlDiagnostic {
         return false;
     }
 }
-
-
-
-
-
-
-
 
 
 /**

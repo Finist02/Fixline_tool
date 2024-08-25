@@ -21,6 +21,61 @@
     ],
     "main": "./out/extension.js",
     "contributes": {
+        "languages": [
+			{
+				"id": "ctrl",
+				"extensions": [
+					".ctl"
+				],
+				"aliases": [
+					"Ctrl",
+					"ctrl"
+				],
+				"configuration": "./language-configuration.json"
+			},
+			{
+				"id": "ctrlpp",
+				"extensions": [
+					".ctl"
+				],
+				"aliases": [
+					"Ctrl++",
+					"Ctrlpp",
+					"ctrlpp"
+				],
+				"configuration": "./language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "ctrl",
+				"scopeName": "source.ctrl",
+				"path": "./syntaxes/ctrl.tmLanguage.json"
+			},
+			{
+				"language": "ctrlpp",
+				"scopeName": "source.ctrlpp",
+				"path": "./syntaxes/ctrlpp.tmLanguage.json"
+			}
+		],
+		"snippets": [
+			{
+				"language": "ctrl",
+				"path": "./snippets/ctrl.json"
+			},
+			{
+				"language": "ctrlpp",
+				"path": "./snippets/ctrl.json"
+			},
+			{
+				"language": "ctrlpp",
+				"path": "./snippets/ctrlpp.json"
+			},
+			{
+				"language": "ctrlpp",
+				"path": "./snippets/doxygen.json"
+			}
+		],
         "commands": [
             {
                 "command": "extension.OpenUnitTest",

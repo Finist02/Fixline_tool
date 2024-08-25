@@ -2,7 +2,7 @@
     "hover": {
         "format" : "```\n${definition}\n```\n\n-------\n\nPredefined WinCC OA mapping functions\n\n${description}"
     },
-    "completionItemKind": "mapping",
+    "completionItemKind": "Method",
     "defines":[
         
         {

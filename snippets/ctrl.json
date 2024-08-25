@@ -1,0 +1,227 @@
+{ 
+    "ctrlFunc_dpExists":{ 
+      "prefix":"dpExists",
+      "body":[ 
+        "dpExists(\"${1:dpe}\")"
+      ],
+      "description":"CTRL function dpExist()"
+    },
+    "ctrlFunc_DebugN":{ 
+      "prefix":"dbg-N",
+      "body":[ 
+        "DebugN(__FUNCTION__, \"$1\");"
+      ],
+      "description":"Log output to console"
+    },
+    "ctrlFunc_DebugFN":{ 
+      "prefix":"dbg-FN",
+      "body":[ 
+        "DebugFN(__FUNCTION__, \"$1\");"
+      ],
+      "description":"Log output to console"
+    },
+    "ctrlFunc_DebugTN":{ 
+      "prefix":"dbg-TN",
+      "body":[ 
+        "DebugTN(__FUNCTION__, \"$1\");"
+      ],
+      "description":"Log output to console"
+    },
+    "ctrlFunc_DebugFTN":{ 
+      "prefix":"dbg-FTN",
+      "body":[ 
+        "DebugFTN(__FUNCTION__, \"$1\");"
+      ],
+      "description":"Log output to console"
+    },
+    "Print variable to console":{ 
+      "prefix":"dbg-var",
+      "body":[ 
+        "DebugN(__FUNCTION__, \"${1:variable}\", ${1:variable});"
+      ],
+      "description":"Log variable to console"
+    },
+    "For mapping":{ 
+      "prefix":[ 
+        "forMapping",
+        "for-mapping"
+      ],
+      "body":[ 
+        "for (int i = 1; i <= mappinglen(${1:map}); i++) {",
+        "\tconst anytype key   = mappingGetKey(${1:map}, i);",
+        "\tconst anytype value = ${1:map}[key];",
+        "}"
+      ],
+      "description":"A for loop (mapping)."
+    },
+    "For Loop":{ 
+      "prefix":[ 
+        "forArray",
+        "for-array"
+      ],
+      "body":[ 
+        "for (int i = 1; i <= dynlen(${1:array}); i++) {",
+        "\tconst anytype element = array[i];",
+        "}"
+      ],
+      "description":"A for loop (array)."
+    },
+    "For Loop 2 dimension array":{ 
+      "prefix":[ 
+        "for2d",
+        "for-2d"
+      ],
+      "body":[ 
+        "for (int i = 1; i <= dynlen(${1:array}); i++) {",
+        "\tconst anytype ${2:line} = ${1:array}[i];",
+        "\tfor (int j = 1; j <= dynlen(${2:line}); j++) {",
+        "\t\tconst anytype element ${2:line}[j];",
+        "\t}",
+        "}"
+      ],
+      "description":"A 2 dymensional for loop."
+    },
+    "try-catch":{ 
+      "prefix":[ 
+        "try-catch",
+        "try-catch-finaly"
+      ],
+      "body":[ 
+        "try",
+        "{",
+        "  $0",
+        "}",
+        "catch",
+        "{",
+        "  // catch the error",
+        "  dyn_errClass err = getLastException();",
+        "  throwError(err);",
+        "}",
+        "finally",
+        "{",
+        "",
+        "}"
+      ],
+      "description":"Try catch block"
+    },
+    "voidFunction":{ 
+      "prefix":[ 
+        "void-function",
+        "function"
+      ],
+      "body":[ 
+        "//----------------------------------------------------------------------------",
+        "/**@brief ",
+        "*/",
+        "${2|public,private,protected|} void ${1:functionName}()",
+        "{",
+        "}"
+      ],
+      "description":"void function"
+    },
+    "returnFunction":{ 
+      "prefix":[ 
+        "return-function",
+        "function"
+      ],
+      "body":[ 
+        "//----------------------------------------------------------------------------",
+        "/**@brief ",
+        "\t@return Retunrs ...",
+        "\t@exception A empty (not initialized) ${3}.",
+        "*/",
+        "${2|public,private,protected|} ${3|int,string,float,mapping,anytype,dyn_...|} ${1:functionName}()",
+        "{",
+        "}"
+      ],
+      "description":"return function"
+    },
+    "Switch":{ 
+      "prefix":[ 
+        "switch-case"
+      ],
+      "body":[ 
+        "switch( ${1:expression} )",
+        "{",
+        "\tcase ${2:value} :",
+        "\t{",
+        "\t//do something;",
+        "\t\t${3|break,return|};",
+        "\t}",
+        "\tdefault:",
+        "\t{",
+        "\t//do something;",
+        "\t\t${3|break,return|};",
+        "\t}",
+        "}"                               
+      ],
+      "description":"A switch case construction."
+    },
+    "dpConnect":{ 
+      "prefix":[ 
+        "dpConnect"
+      ],
+      "body":[
+        "dpConnect(\"CB_${1:callBackName}\", ${2|TRUE,FALSE|}, \"${3:dpe}\");",
+        "",
+        "CB_${1:callBackName}(string dp, ${4|int,float,bool,string,...|} dpValue)",
+        "{",
+        "\t$0//do something;",
+        "}"                              
+      ],
+      "description":"CTRL function dpConnect() without error handling."
+    },
+    "dpConnect-Error":{ 
+      "prefix":[ 
+        "dpConnect-error"
+      ],
+      "body":[
+        "int retValue;",
+        "",
+        "retValue = dpConnect(\"CB_${1:callBackName}\", ${2|TRUE,FALSE|}, \"${3:dpe}\");",
+        "",
+        "if (retValue)",
+        "{",
+        "\tdyn_errClass errValue = getLastError();",
+        "\tthrowError(errValue);",
+        "}",
+        "",
+        "CB_${1:callBackName}(string dp1, ${4|int,float,bool,string,...|} dpValue)",
+        "{",
+        "\t$0//do something;",
+        "}"                              
+      ],
+      "description":"CTRL function dpConnect() with error handling."
+    }
+    ,
+    "dpGet+dpExists":{ 
+      "prefix":[ 
+        "dpGet-dpExists"
+      ],
+      "body":[
+        "if (dpExists(\"${1:dpe}\"))",
+        "{",
+        "\t${2|int,float,bool,string,...|} ${3:dpValue};",
+        "\tdpGet(\"${1:dpe}\", ${3:dpValue});",
+        "}"
+      ],
+      "description":"CTRL function dpGet() with dpExists()"
+    }
+    ,
+    "dpCopy":{ 
+      "prefix":[ 
+        "dpCopy"
+      ],
+      "body":[
+        "int err;",
+        "",
+        "dpCopy(\"${1:dpSource}\", \"${2:dpDestination}\", err);",
+        "",
+        "if (err)",
+        "{",
+        "\t$3//do something;",
+        "}"
+      ],
+      "description":"CTRL function dpCopy() with error handling."
+    }
+  }

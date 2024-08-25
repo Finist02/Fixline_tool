@@ -2,7 +2,7 @@
     "hover": {
         "format" : "```\n${definition}\n```\n\n-------\n\nPredefined WinCC OA postgres functions\n\n${description}"
     },
-    "completionItemKind": "postgres",
+    "completionItemKind": "Function",
     "defines":[
         
         {
