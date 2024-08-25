@@ -5,5 +5,3 @@ node_modules
 *.vsix
 **/tsconfig.json
 src
-resources
-syntaxes
