@@ -1,10 +1,7 @@
 out
 dist
 node_modules
-syntaxes/**
-test/**
-src/**
 .vscode-test/
 *.vsix
 **/tsconfig.json
-**/*.ts
+src
