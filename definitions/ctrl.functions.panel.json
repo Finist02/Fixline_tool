@@ -1,10 +1,9 @@
 {
     "hover": {
-        "format" : "```\n${definition}\n```\n\n-------\n\nPredefined WinCC OA panel functions\n\n${description}"
+        "format": "```\n${definition}\n```\n\n-------\n\nPredefined WinCC OA panel functions\n\n${description}"
     },
     "completionItemKind": "Function",
-    "defines":[
-        
+    "defines": [
         {
             "definition": "void ChildPanelOnCentralModal(string FileName, string PanelName, dyn_string Parameter);",
             "description": [
@@ -18,6 +17,20 @@
                 "Opens a child panel without connection to the Event Manager."
             ],
             "id": "childPanel"
+        },
+        {
+            "definition": "PanelOffModule(string PanelName, string ModuleName);",
+            "description": [
+                "Закрывает определенную панель PanelName, которая находится в модуле ModuleName"
+            ],
+            "id": "PanelOffModule"
+        },
+        {
+            "definition": "bool isModuleOpen(string moduleName);",
+            "description": [
+                "Определяет, открыт ли тот или иной модуль."
+            ],
+            "id": "isModuleOpen"
         },
         {
             "definition": "ChildPanelOn(string FileName, string PanelName, dyn_string Parameter, int x, int y);",
@@ -193,6 +206,20 @@
                 "Открывает дочернюю панель в произвольном модуле."
             ],
             "id": "ChildPanelOnModule"
+        },
+        {
+            "definition": "PanelOff();",
+            "description": [
+                "Закрывает открытую панель и модуль."
+            ],
+            "id": "PanelOff"
+        },
+        {
+            "definition": "shape.showToolTips(bool mode);",
+            "description": [
+                "Включает/выключает отображение всплывающих подсказок на экране иерархического списка для столбцов с обрезанным текстом."
+            ],
+            "id": "showToolTip"
         }
     ]
 }
