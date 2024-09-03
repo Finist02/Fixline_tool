@@ -1,0 +1,61 @@
+{
+    "hover": {
+        "format" : "```\n${definition}\n```\n\n-------\n\nPredefined WinCC OA constant\n\n${description}"
+    },
+    "completionItemKind": "Constant",
+    "defines":[
+        
+        {
+            "definition": "const string PVSS_BIN_PATH",
+            "description": [
+                "For example: \"C:/Siemens/Automation/WinCC_OA/3.15/bin/\""
+            ],
+            "id": "PVSS_BIN_PATH"
+        },
+        {
+            "definition": "const string WINCCOA_BIN_PATH",
+            "description": [
+                "For example: \"C:/Siemens/Automation/WinCC_OA/3.15/bin/\""
+            ],
+            "id": "WINCCOA_BIN_PATH"
+        },
+        {
+            "definition": "const string PVSS_PATH",
+            "description": [
+                "For example: \"C:/Siemens/Automation/WinCC_OA/3.15/\""
+            ],
+            "id": "PVSS_PATH"
+        },
+        {
+            "definition": "const string WINCCOA_PATH",
+            "description": [
+                "For example: \"C:/Siemens/Automation/WinCC_OA/3.15/\""
+            ],
+            "id": "WINCCOA_PATH"
+        },
+        {
+            "definition": "const string VERSION",
+            "description": [
+                "The constant VERSION contains the WinCC OA version as a string",
+                "For example: \"3.15\""
+            ],
+            "id": "VERSION"
+        },
+        {
+            "definition": "const string VERSION_DISP",
+            "description": [
+                "The new control constant VERSION_DISP shows not only the version but also the service pack number.",
+                "For example: \"3.15.6\""
+            ],
+            "id": "VERSION_DISP"
+        },
+        {
+            "definition": "const unsigned VERSION_NUMERIC",
+            "description": [
+                "Contains the WinCC OA version in numerical form",
+                "For example:  315600 for the WinCC OA version 3.15 service pack 6."
+            ],
+            "id": "VERSION_NUMERIC"
+        }
+    ]
+}

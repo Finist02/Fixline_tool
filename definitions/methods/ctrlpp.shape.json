@@ -1,0 +1,30 @@
+{
+    "typeSymbol": "shape",
+    "defines": [
+        {
+            "label": "moduleName",
+            "documentation": "Shape method",
+            "insertText": "moduleName"
+        },
+        {
+            "label": "name",
+            "documentation": "Shape method",
+            "insertText": "name"
+        },
+        {
+            "label": "stop",
+            "documentation": "Shape method",
+            "insertText": "stop"
+        },
+        {
+            "label": "start",
+            "documentation": "Shape method",
+            "insertText": "start"
+        },
+        {
+            "label": "refName",
+            "documentation": "Shape method",
+            "insertText": "refName"
+        }
+    ]
+}

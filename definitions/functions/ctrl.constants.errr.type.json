@@ -1,0 +1,38 @@
+{
+    "hover": {
+        "format" : "```\n${definition}\n```\n\n-------\n\nPredefined WinCC OA constant\n\n${description}"
+    },
+    "completionItemKind": "Constant",
+    "defines":[
+        {
+            "definition": "const int ERR_IMPL = 0",
+            "description": [
+            ],
+            "id": "ERR_IMPL"
+        },
+        {
+            "definition": "const int ERR_PARAM = 1",
+            "description": [
+            ],
+            "id": "ERR_PARAM"
+        },
+        {
+            "definition": "const int ERR_SYSTEM = 2",
+            "description": [
+            ],
+            "id": "ERR_SYSTEM"
+        },
+        {
+            "definition": "const int ERR_CONTROL = 3",
+            "description": [
+            ],
+            "id": "ERR_CONTROL"
+        },
+        {
+            "definition": "const int ERR_REDUNDANCY = 4",
+            "description": [
+            ],
+            "id": "ERR_REDUNDANCY"
+        }
+    ]
+}

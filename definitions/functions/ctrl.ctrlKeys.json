@@ -1,0 +1,176 @@
+{
+    "hover": {
+        "format" : ""
+    },
+    "completionItemKind": "Keyword",
+    "defines":[
+        {
+            "definition": "break",
+            "description": [
+            ],
+            "id": "break"
+        },
+        {
+            "definition": "case",
+            "description": [
+            ],
+            "id": "case"
+        },
+        {
+            "definition": "const",
+            "description": [
+            ],
+            "id": "const"
+        },
+        {
+            "definition": "global",
+            "description": [
+            ],
+            "id": "global"
+        },
+        {
+            "definition": "continue",
+            "description": [
+            ],
+            "id": "continue"
+        },
+        {
+            "definition": "default",
+            "description": [
+            ],
+            "id": "default"
+        },
+        {
+            "definition": "do",
+            "description": [
+            ],
+            "id": "do"
+        },
+        {
+            "definition": "else",
+            "description": [
+            ],
+            "id": "else"
+        },
+        {
+            "definition": "enum",
+            "description": [
+            ],
+            "id": "enum"
+        },
+        {
+            "definition": "for",
+            "description": [
+            ],
+            "id": "for"
+        },
+        {
+            "definition": "if",
+            "description": [
+            ],
+            "id": "if"
+        },
+        {
+            "definition": "return",
+            "description": [
+            ],
+            "id": "return"
+        },
+        {
+            "definition": "static",
+            "description": [
+            ],
+            "id": "static"
+        },
+        {
+            "definition": "struct",
+            "description": [
+            ],
+            "id": "struct"
+        },
+        {
+            "definition": "class",
+            "description": [
+            ],
+            "id": "class"
+        },
+        {
+            "definition": "switch",
+            "description": [
+            ],
+            "id": "switch"
+        },
+        {
+            "definition": "void",
+            "description": [
+            ],
+            "id": "void"
+        },
+        {
+            "definition": "while",
+            "description": [
+            ],
+            "id": "while"
+        },
+        {
+            "definition": "uses",
+            "description": [
+            ],
+            "id": "uses"
+        },
+        {
+            "definition": "synchronized",
+            "description": [
+            ],
+            "id": "synchronized"
+        },
+        {
+            "definition": "public",
+            "description": [
+            ],
+            "id": "public"
+        },
+        {
+            "definition": "private",
+            "description": [
+            ],
+            "id": "private"
+        },
+        {
+            "definition": "protected",
+            "description": [
+            ],
+            "id": "protected"
+        },
+        {
+            "definition": "new",
+            "description": [
+            ],
+            "id": "new"
+        },
+        {
+            "definition": "delete",
+            "description": [
+            ],
+            "id": "delete"
+        },
+        {
+            "definition": "try",
+            "description": [
+            ],
+            "id": "try"
+        },
+        {
+            "definition": "catch",
+            "description": [
+            ],
+            "id": "catch"
+        },
+        {
+            "definition": "finally",
+            "description": [
+            ],
+            "id": "finally"
+        }
+    ]
+}

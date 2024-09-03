@@ -1,0 +1,101 @@
+{
+    "typeSymbol": "array",
+    "defines": [
+        {
+            "label": "at",
+            "documentation": "Returns a reference to the element at the given index.  \n```\nT vector.at(uint idx);\n```\n| Parameter| Description    |\n| -------- | -------------- |\n| idx      | Index position |\n",
+            "insertText": "at($0)"
+        },
+        {
+            "label": "append",
+            "documentation": "Append the given value to the end of the vector/dyn_*.  \n```\nint vector.append(T value);\n```\n| Parameter| Description    |\n| -------- | -------------- |\n| value    | Value to be appended |\n",
+            "insertText": "append($0)"
+        },
+        {
+            "label": "clear",
+            "documentation": "Empties the vector/dyn_*.  \n```\nint vector.clear();\n```\n| Parameter| Description    |\n| -------- | -------------- |\n| -        | -              |\n",
+            "insertText": "clear($0)"
+        },
+        {
+            "label": "contains",
+            "documentation": "Returns true if an element is equal to the given value or false if not found.  \n```\nbool vector.contains(T key);\n```\n| Parameter| Description    |\n| -------- | -------------- |\n| -        | -              |\n",
+            "insertText": "contains($0)"
+        },
+        {
+            "label": "count",
+            "documentation": "Returns the number of elements in the vector / dyn_*.  \n```\nint vector.count([T key]);\n```\n| Parameter| Description    |\n| -------- | -------------- |\n| key      | Vector key     |\n",
+            "insertText": "count($0)"
+        },
+        {
+            "label": "first",
+            "documentation": "Returns a reference to the first element of the vector/dyn_*.  \n```\nT& vector.first()\n```\n| Parameter| Description    |\n| -------- | -------------- |\n| -        | -     |\n",
+            "insertText": "first()"
+        },
+        {
+            "label": "indexListOf",
+            "documentation": "Returns a list of indexes at which the given value was found.  \n```\nvector int vector.indexListOf(T value);\nvector int vector.indexListOf(string memberName, T value);\nvector int vector.indexListOf(function_ptr memberFunc, T value);\n```\n| Parameter  | Description    |\n| ---------- | -------------- |\n| value      | Value that is searched for  |\n| memberName | Class member used for comparison  |\n| memberFunc | Class member function used for comparison |\n",
+            "insertText": "indexListOf($0)"
+        },
+        {
+            "label": "indexOf",
+            "documentation": "Returns the index of the first element which is equal to the given value. The search starts at the given index.  \n```\nint vector.indexOf(T value, uint startIdx = 0);\n```\n| Parameter| Description    |\n| -------- | -------------- |\n| startIdx | Start index position     |\n| value | Value that is searched for  |\n",
+            "insertText": "indexOf($0)"
+        }
+        ,
+        {
+            "label": "insertAt",
+            "documentation": "Inserts the given value into the vector/dyn_* at the given position.  \n```\nint vector.insertAt(uint idx, T value);\n```\n| Parameter| Description    |\n| -------- | -------------- |\n| idx | Index position     |\n| value | Value to be added  |\n",
+            "insertText": "insertAt($0)"
+        },
+        {
+            "label": "isEmpty",
+            "documentation": "Returns true if the vector / dyn_* is empty.  \n```\nbool vector.isEmpty();\n```\n| Parameter| Description    |\n| -------- | -------------- |\n| -        | -     |\n",
+            "insertText": "isEmpty()"
+        },
+        {
+            "label": "last",
+            "documentation": "Returns a reference to the last element of the vector/dyn_*.  \n```\nT& vector.last();\n```\n| Parameter| Description    |\n| -------- | -------------- |\n| -        | -     |\n",
+            "insertText": "last()"
+        },
+        {
+            "label": "prepend",
+            "documentation": "Insets the given value as the first element of the vector/dyn_*.  \n```\nint vector.prepend(T value);\n```\n| Parameter| Description    |\n| -------- | -------------- |\n| value      | Value to be added |\n",
+            "insertText": "prepend($0)"
+        },
+        {
+            "label": "removeAt",
+            "documentation": "Removes the element at given index. The vector /dyn_* has one element less after this.  \n```\nint mapping.removeAt(uint idx);\n```\n| Parameter| Description    |\n| -------- | -------------- |\n| idx      | Index position that should be removed. |\n",
+            "insertText": "removeAt($0)"
+        },
+        {
+            "label": "replaceAt",
+            "documentation": "Replaces the value at the given idx position with the given value.  \n```\nint vector.insertAt(int idx, T value);\n```\n| Parameter| Description    |\n| -------- | -------------- |\n| idx      | Index position that should be removed. |\n",
+            "insertText": "replaceAt($0)"
+        },
+        {
+            "label": "sort",
+            "documentation": "Sorts the array.  \n```\nint vector.sort(bool ascending = true);\nint vector.sort(string memberName, bool ascending = true);\nint vector.sort(function_ptr memberFunc, bool ascending = true);\n```\n| Parameter  | Description    |\n| ---------- | -------------- |\n| ascending      | Sorting order  |\n| memberName | Class member used for sorting  |\n| memberFunc | Class member function used for sorting |\n",
+            "insertText": "sort($0)"
+        },
+        {
+            "label": "takeAt",
+            "documentation": "Takes the element at the given idx out of the vector/dyn_* and returns its value. The vector/dyn_* has one element less after this.  \n```\nT vector.takeAt(uint idx);\n```\n| Parameter| Description    |\n| -------- | -------------- |\n| idx      | Index positio  |\n",
+            "insertText": "takeAt($0)"
+        },
+        {
+            "label": "takeFirst",
+            "documentation": "Takes the first element out of the vector/dyn_* and returns its value. The vector/dyn_* has one element less after this.  \n```\nT vector.takeFirst();\n```\n| Parameter| Description    |\n| -------- | -------------- |\n| -        | -     |\n",
+            "insertText": "takeFirst()"
+        },
+        {
+            "label": "takeLast",
+            "documentation": "Takes the last element out of the vector/dyn_* and returns its value. The vector/dyn_* has one element less after this.  \n```\nT vector.takeLast();\n```\n| Parameter| Description    |\n| -------- | -------------- |\n| -        | -     |\n",
+            "insertText": "takeLast()"
+        },
+        {
+            "label": "unique",
+            "documentation": "Removes all duplicate elements in an array.  \n```\nint vector.unique();\nint vector.unique(string memberName);\nint vector.unique(function_ptr memberFunc);\n```\n| Parameter  | Description    |\n| ---------- | -------------- |\n| memberName | Class member used for comparing  |\n| memberFunc | Class member function used for comparing |\n",
+            "insertText": "unique($0)"
+        }
+    ]
+}

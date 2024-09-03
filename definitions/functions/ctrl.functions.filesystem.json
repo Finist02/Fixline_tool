@@ -1,0 +1,307 @@
+{
+  "hover": {
+    "format": "```\n${definition}\n```\n\n-------\n\nPredefined WinCC OA function\n\n${description}"
+  },
+  "completionItemKind": "Function",
+  "defines": [
+    {
+      "definition": "string getPath(string keyword[[[, string filename [,int langId = activeLang[, int level = 1]]])",
+      "description": [
+        "This function determines the absolute paths for panels, scripts etc."
+      ],
+      "id": "getPath"
+    },
+    {
+      "definition": "file fopen(string filename, string mode)",
+      "description": [
+        "Opens a file."
+      ],
+      "id": "fopen"
+    },
+    {
+      "definition": "int fclose(file f)",
+      "description": [
+        "Closes a file."
+      ],
+      "id": "fclose"
+    },
+    {
+      "definition": "int fflush (file f)",
+      "description": [],
+      "id": "fflush "
+    },
+    {
+      "definition": "int feof(file f)",
+      "description": [],
+      "id": "feof"
+    },
+    {
+      "definition": "int ferror(file f)",
+      "description": [],
+      "id": "ferror"
+    },
+    {
+      "definition": "int fprintf(file f, string format, [,<type1> var1 [,<type2> var2 ...]])",
+      "description": [],
+      "id": "fprintf"
+    },
+    {
+      "definition": "int fscanf(file f, string format, <type1> &var1 [,<type2> &var2...])",
+      "description": [
+        "Reads a file."
+      ],
+      "id": "fscanf"
+    },
+    {
+      "definition": "int fputs(string s, file f)",
+      "description": [
+        "Writes a string to a file."
+      ],
+      "id": "fputs"
+    },
+    {
+      "definition": "int access(string path, int amode)",
+      "description": [],
+      "id": "access"
+    },
+    {
+      "definition": "int fgets(string &s, int count, file f)",
+      "description": [],
+      "id": "fgets"
+    },
+    {
+      "definition": "int rewind(file FileDesc)",
+      "description": [],
+      "id": "rewind"
+    },
+    {
+      "definition": "int fseek(file f, int offset, int whence)",
+      "description": [],
+      "id": "fseek"
+    },
+    {
+      "definition": "int ftell(file f)",
+      "description": [],
+      "id": "ftell"
+    },
+    {
+      "definition": "int fread(file f, blob &b, int numBytes)",
+      "description": [
+        "Reads a number of bytes from a file to a blob variable."
+      ],
+      "id": "fread"
+    },
+    {
+      "definition": "int fwrite(file f, blob b, int numBytes)",
+      "description": [
+        "Writes a number of bytes from a blob variable to a file."
+      ],
+      "id": "fwrite"
+    },
+    {
+      "definition": "bool fileToString(string fileName, string &result [,string encoding])",
+      "description": [],
+      "id": "fileToString"
+    },
+    {
+      "definition": "string recode(string s, string sourceEncoding[, string targetEncoding])",
+      "description": [],
+      "id": "recode"
+    },
+    {
+      "definition": "int remove(string fileName)",
+      "description": [],
+      "id": "remove"
+    },
+    {
+      "definition": "int rename(string oldFileName, string newFileName)",
+      "description": [],
+      "id": "rename"
+    },
+    {
+      "definition": "int fprintfUL(file f, string format, [,<type1> var1 [,<type2> var2 ...]])",
+      "description": [],
+      "id": "fprintfUL"
+    },
+    {
+      "definition": "int fprintfPL(file f, string format, [,<type1> var1 [,<type2> var2 ...]])",
+      "description": [],
+      "id": "fprintfPL"
+    },
+    {
+      "definition": "int fscanfUL(file f, string format, <type1> &var1 [,<type2> &var2...])",
+      "description": [],
+      "id": "fscanfUL"
+    },
+    {
+      "definition": "int fscanfPL(file f, string format, <type1> &var1 [,<type2> &var2...])",
+      "description": [],
+      "id": "fscanfPL"
+    },
+    {
+      "definition": "int uniFPrintf(file f, string format, [,<type1> var1 [,<type2> var2 ...]])",
+      "description": [],
+      "id": "uniFPrintf"
+    },
+    {
+      "definition": "int uniFPrintfUL(file f, string format, [,<type1> var1 [,<type2> var2 ...]])",
+      "description": [],
+      "id": "uniFPrintfUL"
+    },
+    {
+      "definition": "int uniFPrintfPL(file f, string format, [,<type1> var1 [,<type2> var2 ...]])",
+      "description": [],
+      "id": "uniFPrintfPL"
+    },
+    {
+      "definition": "dyn_string getFileNames([string dir = \\\".\\\" [, string pattern = \\\"*\\\" [, int filter = FILTER_FILES] ])",
+      "description": [],
+      "id": "getFileNames"
+    },
+    {
+      "definition": "dyn_string getFileNamesRev([string dir = \\\".\\\" [, string pattern = \\\"*\\\" [, int filter = FILTER_FILES ]])",
+      "description": [],
+      "id": "getFileNamesRev"
+    },
+    {
+      "definition": "string recodeFileName(string fileName)",
+      "description": [],
+      "id": "recodeFileName"
+    },
+    {
+      "definition": "time getFileModificationTime(string sPathFilename)",
+      "description": [],
+      "id": "getFileModificationTime"
+    },
+    {
+      "definition": "int setFileModificationTime(string sPathFilename, time mtime)",
+      "description": [],
+      "id": "setFileModificationTime"
+    },
+    {
+      "definition": "int fswAddPath(string path)",
+      "description": [],
+      "id": "fswAddPath"
+    },
+    {
+      "definition": "int fswRemovePath(string path)",
+      "description": [],
+      "id": "fswRemovePath"
+    },
+    {
+      "definition": "bool copyFile(string from, string to, bool preserveTime = false)",
+      "description": [],
+      "id": "copyFile"
+    },
+    {
+      "definition": "bool copyAllFiles(string from, string to, bool preserveTime = false, time t = 0)",
+      "description": [],
+      "id": "copyAllFiles"
+    },
+    {
+      "definition": "bool copyAllFilesRecursive(string from, string to, bool preserveTime = false, time t = 0)",
+      "description": [],
+      "id": "copyAllFilesRecursive"
+    },
+    {
+      "definition": "dyn_string getYoungerFiles(string startDir, time startTime)",
+      "description": [],
+      "id": "getYoungerFiles"
+    },
+    {
+      "definition": "int getFileSize(string filename)",
+      "description": [],
+      "id": "getFileSize"
+    },
+    {
+      "definition": "string makeUnixPath(string path)",
+      "description": [],
+      "id": "makeUnixPath"
+    },
+    {
+      "definition": "string makeNativePath(string path)",
+      "description": [
+        "Converts a file path into a operating system specific file format."
+      ],
+      "id": "makeNativePath"
+    },
+    {
+      "definition": "bool mkdir(string dir[, string mode])",
+      "description": [],
+      "id": "mkdir"
+    },
+    {
+      "definition": "bool rmdir(string dir, bool recursive = false)",
+      "description": [],
+      "id": "rmdir"
+    },
+    {
+      "definition": "bool isdir(string path)",
+      "description": [],
+      "id": "isdir"
+    },
+    {
+      "definition": "bool isDirectory(string path)",
+      "description": [],
+      "id": "isDirectory"
+    },
+    {
+      "definition": "bool isfile(string path)",
+      "description": [],
+      "id": "isfile"
+    },
+    {
+      "definition": "bool moveFile(string from, string to)",
+      "description": [],
+      "id": "moveFile"
+    },
+    {
+      "definition": "string baseName(string path)",
+      "description": [],
+      "id": "baseName"
+    },
+    {
+      "definition": "string dirName(string path)",
+      "description": [
+        "The function returns the directory path for the specified directory."
+      ],
+      "id": "dirName"
+    },
+    {
+      "definition": "string getExt(string path)",
+      "description": [],
+      "id": "getExt"
+    },
+    {
+      "definition": "string delExt(string path)",
+      "description": [],
+      "id": "delExt"
+    },
+    {
+      "definition": "string tmpnam()",
+      "description": [],
+      "id": "tmpnam"
+    },
+    {
+      "definition": "int getStandardPath(тип строки);",
+      "description": [
+          "Функция getStandardPath() возвращает путь к каталогу (местоположение), в который должны быть записаны файлы."
+      ],
+      "id": "getStandardPath"
+    },
+    {
+      "definition": "int fflush ( file f );",
+      "description": [
+          "Осуществляет запись данных в файл."
+      ],
+      "id": "fflush"
+    },
+    {
+      "definition": "int fileSelector(string &fileName[, string dirstr[, bool notUp[, string patternstr[, bool open[, string settingsId]]]]]);",
+      "description": [
+          "Открывает диалоговое окно выбора файла и записывает имя выбранного файла в строковую переменную filestr."
+      ],
+      "id": "fileSelector"
+    }
+  ]
+}

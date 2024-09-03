@@ -2,7 +2,7 @@
     "name": "fixline-tool",
     "displayName": "Fixline tool",
     "description": "Fixline tool",
-    "version": "1.0.51",
+    "version": "1.0.48",
     "publisher": "Danil",
     "icon": "images/fixline.png",
     "repository": {
@@ -16,11 +16,31 @@
         "Other"
     ],
     "activationEvents": [
+        "onView:ctrlDpsTree",
         "onLanguage:ctrl",
         "onLanguage:ctrlpp"
     ],
     "main": "./out/extension.js",
     "contributes": {
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "dpes-explorer",
+                    "title": "Dpes Explorer",
+                    "icon": "media/dep.svg"
+                }
+            ]
+        },
+        "views": {
+            "dpes-explorer": [
+                {
+                    "id": "ctrlDpsTree",
+                    "name": "Dpes",
+                    "icon": "media/dep.svg",
+                    "contextualTitle": "Dpes explorer"
+                }
+            ]
+        },
         "languages": [
             {
                 "id": "ctrl",
@@ -77,6 +97,21 @@
             }
         ],
         "commands": [
+            {
+                "command": "ctrlDpsTree.refreshEntry",
+                "title": "Refresh",
+                "icon": "$(refresh)"
+            },
+            {
+                "command": "ctrlDpsTree.searchDpe",
+                "title": "Search dpe",
+                "icon": "$(search)"
+            },
+            {
+                "command": "ctrlDpsTree.view",
+                "title": "View",
+                "icon": "$(checklist)"
+            },
             {
                 "command": "extension.OpenUnitTest",
                 "title": "Open UnitTest",
@@ -167,6 +202,25 @@
             }
         ],
         "menus": {
+            "view/title": [
+                {
+                    "command": "ctrlDpsTree.refreshEntry",
+                    "when": "view == ctrlDpsTree",
+                    "group": "navigation"
+                },
+                {
+                    "command": "ctrlDpsTree.searchDpe",
+                    "when": "view == ctrlDpsTree",
+                    "group": "navigation"
+                }
+            ],
+            "view/item/context": [
+                {
+                    "command": "ctrlDpsTree.view",
+                    "when": "view == ctrlDpsTree && viewItem == dependency",
+                    "group": "inline"
+                }
+            ],
             "explorer/context": [
                 {
                     "command": "extension.OpenPanel",

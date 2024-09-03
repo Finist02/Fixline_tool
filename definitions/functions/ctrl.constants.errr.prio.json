@@ -1,0 +1,38 @@
+{
+    "hover": {
+        "format" : "```\n${definition}\n```\n\n-------\n\nPredefined WinCC OA constant\n\n${description}"
+    },
+    "completionItemKind": "Constant",
+    "defines":[
+        {
+            "definition": "const int PRIO_FATAL = 0",
+            "description": [
+            ],
+            "id": "PRIO_FATAL"
+        },
+        {
+            "definition": "const int PRIO_SEVERE = 1",
+            "description": [
+            ],
+            "id": "PRIO_SEVERE"
+        },
+        {
+            "definition": "const int PRIO_WARNING = 2",
+            "description": [
+            ],
+            "id": "PRIO_WARNING"
+        },
+        {
+            "definition": "const int PRIO_INFO = 3",
+            "description": [
+            ],
+            "id": "PRIO_INFO"
+        },
+        {
+            "definition": "const int PRIO_FATAL_NO_RESTART = 0",
+            "description": [
+            ],
+            "id": "PRIO_FATAL_NO_RESTART"
+        }
+    ]
+}

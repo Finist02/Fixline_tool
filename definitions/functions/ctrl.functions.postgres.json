@@ -1,0 +1,121 @@
+{
+    "hover": {
+        "format" : "```\n${definition}\n```\n\n-------\n\nPredefined WinCC OA postgres functions\n\n${description}"
+    },
+    "completionItemKind": "Function",
+    "defines":[
+        
+        {
+            "definition": "closePgConnection(int connectionId);",
+            "description": [
+                "Close connection."
+            ],
+            "id": "closePgConnection"
+        },
+        {
+            "definition": "int execPgProcedure(int connectionId, string query);",
+            "description": [
+                "Execute query."
+            ],
+            "id": "execPgProcedure"
+        },
+        {
+            "definition": "int openAndExecPgProcedure(string host, int port, string database, string schema, string username, string password, string query);",
+            "description": [
+                "Execute query."
+            ],
+            "id": "openAndExecPgProcedure"
+        },
+        {
+            "definition": "int openAndExecPgSql(string host, int port, string database, string schema, string username, string password, string query, bool prep, dyn_dyn_anytype &table);",
+            "description": [
+                "Execute query."
+            ],
+            "id": "openAndExecPgSql"
+        },
+        {
+            "definition": "int execPgSql(string connectionId, string query, bool prep, dyn_dyn_anytype &table);",
+            "description": [
+                "Execute query."
+            ],
+            "id": "execPgSql"
+        },
+        {
+            "definition": "int closePgConnection(int connectionId);",
+            "description": [
+                "Close connection."
+            ],
+            "id": "closePgConnection"
+        },
+        {
+            "definition": "int openPgConnection(string host, int port, string database, string schema, string username, string password, int &connectionId);",
+            "description": [
+                "Open connection."
+            ],
+            "id": "openPgConnection"
+        },
+        {
+            "definition": "int dbOpenConnection(string connectStr, dbConnection &connection);",
+            "description": [
+                "Функция базы данных для открытия соединения с источником данных."
+            ],
+            "id": "dbOpenConnection"
+        },
+        {
+            "definition": "int dbCloseConnection(dbConnection connection);",
+            "description": [
+                "Функция для закрытия соединения с источником данных."
+            ],
+            "id": "dbOpenConnection"
+        },
+        {
+            "definition": "int dbOpenRecordset(dbConnection connection, string cmdStr, dbRecordset &recordset [, int cursorType]);",
+            "description": [
+                "Функция базы данных для открытия табличного подмножества данных источника данных."
+            ],
+            "id": "dbOpenRecordset"
+        },
+        {
+            "definition": "int dbCloseRecordset(dbRecordset recordset);",
+            "description": [
+                "Функция базы данных для закрытия табличного подмножества данных источника данных."
+            ],
+            "id": "dbCloseRecordset"
+        },
+        {
+            "definition": "int dbGetResult(dbRecordset recordset, dyn_dyn_anytype &result, dyn_string &colNames[, int maxRows]);",
+            "description": [
+                "Возвращает все результаты SQL-запроса."
+            ],
+            "id": "dbGetResult"
+        },
+        {
+            "definition": "bool dbEOF(dbRecordset recordset);",
+            "description": [
+                "Функция базы данных, которая определяет, достиг ли указатель записи данных конца набора записей."
+            ],
+            "id": "dbEOF"
+        },
+        {
+            "definition": "int dbGetRecord(dbRecordset recordset, dyn_anytype &rowContent);",
+            "description": [
+                "Читает записи из строки."
+            ],
+            "id": "dbGetRecord"
+        },
+        {
+            "definition": "int dbMoveNext(dbRecordset recordset);",
+            "description": [
+                "Функция базы данных, которая перемещает указатель записи данных на следующую запись в наборе записей."
+            ],
+            "id": "dbMoveNext"
+        },
+        {
+            "definition": "int dbBulkCommand(dbConnection connection, string cmdStr [, dym_dyn_anytype paramValues]);",
+            "description": [
+                "Подводит итог функций ADO dbStartCommand() (готовит команду манипулирования данными), dbExecuteCommand() (выполняет команду манипулирования данными) и dbFinishCommand() (закрывает команду манипулирования данными)."
+            ],
+            "id": "dbBulkCommand"
+        }
+    ]
+}

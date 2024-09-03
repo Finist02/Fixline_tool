@@ -1,0 +1,119 @@
+{
+  "hover": {
+    "format": "```\n${definition}\n```\n\n-------\n\nPredefined WinCC OA function\n\n${description}"
+  },
+  "completionItemKind": "Function",
+  "defines": [
+    {
+      "definition": "int tcpOpen(string host, unsigned port [,time timeout = 5])",
+      "description": [
+        "Opens the connection to a TCP/IP server socket."
+      ],
+      "id": "tcpOpen"
+    },
+    {
+      "definition": "int tcpRead(int socket, string|blob &data, time maxTimeout)",
+      "description": [
+        "Reads the data of a defined socket, which was opened with tcpOpen()."
+      ],
+      "id": "tcpRead"
+    },
+    {
+      "definition": "int tcpWrite(int socket, string|blob data)",
+      "description": [
+        "Writes data to the defined socket."
+      ],
+      "id": "tcpWrite"
+    },
+    {
+      "definition": "int tcpClose(int socket)",
+      "description": [
+        "Closes a  TCP/IP socket connection."
+      ],
+      "id": "tcpClose"
+    },
+    {
+      "definition": "int tcpShutdownOutput(int socket)",
+      "description": [
+        "Closes the write direction of a TCP socket."
+      ],
+      "id": "tcpShutdownOutput"
+    },
+    {
+      "definition": "int netGet(string url, mapping|string|blob &result [, mapping options])",
+      "description": [
+        "The function netGet allows to download data."
+      ],
+      "id": "netGet"
+    },
+    {
+      "definition": "int netHead(string url, mapping &result [, mapping options])",
+      "description": [],
+      "id": "netHead"
+    },
+    {
+      "definition": "int netDelete(string url, mapping|string|blob &result [, mapping options])",
+      "description": [],
+      "id": "netDelete"
+    },
+    {
+      "definition": "int netPost(string url, mapping|string|blob data [, mapping &result])",
+      "description": [
+        "The function netPost allows to upload data to a server."
+      ],
+      "id": "netPost"
+    },
+    {
+      "definition": "int netPut(string url, mapping|string|blob data [, mapping &result])",
+      "description": [
+        "The function netPut allows to upload data to a server."
+      ],
+      "id": "netPut"
+    },
+    {
+      "definition": "time httpParseDate(string timeString)",
+      "description": [],
+      "id": "httpParseDate"
+    },
+    {
+      "definition": "int udpOpen(string host, unsigned port [,time timeout = 5])",
+      "description": [],
+      "id": "udpOpen"
+    },
+    {
+      "definition": "int udpRead(int socket, string|blob &data, string &host, unsigned &port, time maxTimeout)",
+      "description": [],
+      "id": "udpRead"
+    },
+    {
+      "definition": "int udpWrite(int socket, string|blob data, string host, unsigned port)",
+      "description": [],
+      "id": "udpWrite"
+    },
+    {
+      "definition": "int udpClose(int socket)",
+      "description": [],
+      "id": "udpClose"
+    },
+    {
+      "definition": "int v24Open(string port, int baudrate, string options)",
+      "description": [],
+      "id": "v24Open"
+    },
+    {
+      "definition": "int v24Read(int handle, string|blob &data, time maxTimeout)",
+      "description": [],
+      "id": "v24Read"
+    },
+    {
+      "definition": "int v24Write(int handle, string|blob data)",
+      "description": [],
+      "id": "v24Write"
+    },
+    {
+      "definition": "int v24Close(int handle)",
+      "description": [],
+      "id": "v24Close"
+    }
+  ]
+}

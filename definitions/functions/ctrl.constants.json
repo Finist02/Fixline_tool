@@ -1,0 +1,491 @@
+{
+    "hover": {
+        "format" : "```\n${definition}\n```\n\n-------\n\nPredefined WinCC OA constant\n\n${description}"
+    },
+    "completionItemKind": "Constant",
+    "defines":[
+        {
+            "definition": "const bool FALSE = false",
+            "description": [
+            ],
+            "id": "FALSE"
+        },
+        {
+            "definition": "const bool TRUE = true",
+            "description": [
+            ],
+            "id": "TRUE"
+        },
+        {
+            "definition": "const bool false = false",
+            "description": [
+            ],
+            "id": "false"
+        },
+        {
+            "definition": "const bool true = true",
+            "description": [
+            ],
+            "id": "true"
+        },
+        {
+            "definition": "const float M_PI = 3.1415926535898",
+            "description": [
+            ],
+            "id": "M_PI"
+        },
+        {
+            "definition": "const int EOF = -1",
+            "description": [
+            ],
+            "id": "EOF"
+        },
+        {
+            "definition": "const int R_OK = 4",
+            "description": [
+            ],
+            "id": "R_OK"
+        },
+        {
+            "definition": "const int W_OK = 2",
+            "description": [
+            ],
+            "id": "W_OK"
+        },
+        {
+            "definition": "const int X_OK = 1",
+            "description": [
+            ],
+            "id": "X_OK"
+        },
+        {
+            "definition": "const int F_OK = 0",
+            "description": [
+            ],
+            "id": "F_OK"
+        },
+        {
+            "definition": "const int SEEK_SET = 0",
+            "description": [
+            ],
+            "id": "SEEK_SET"
+        },
+        {
+            "definition": "const int SEEK_CUR = 1",
+            "description": [
+            ],
+            "id": "SEEK_CUR"
+        },
+        {
+            "definition": "const int SEEK_END = 2",
+            "description": [
+            ],
+            "id": "SEEK_END"
+        },
+        {
+            "definition": "const int FILTER_FILES = 1",
+            "description": [
+            ],
+            "id": "FILTER_FILES"
+        },
+        {
+            "definition": "const int FILTER_DIRS = 2",
+            "description": [
+            ],
+            "id": "FILTER_DIRS"
+        },
+        {
+            "definition": "const stdin",
+            "description": [
+            "Standard input"
+            ],
+            "id": "stdin"
+        },
+        {
+            "definition": "const stdout",
+            "description": [
+            "Standard output"
+            ],
+            "id": "stdout"
+        },
+        {
+            "definition": "const stderr",
+            "description": [
+            "Standard error output"
+            ],
+            "id": "stderr"
+        },
+        {
+            "definition": "const int SEARCH_PATH_LEN = 5",
+            "description": [
+            ],
+            "id": "SEARCH_PATH_LEN"
+        },
+        {
+            "definition": "const unsigned DB_PARAM_IN = 0",
+            "description": [
+            ],
+            "id": "DB_PARAM_IN"
+        },
+        {
+            "definition": "const unsigned DB_PARAM_OUT = 1",
+            "description": [
+            ],
+            "id": "DB_PARAM_OUT"
+        },
+        {
+            "definition": "const unsigned DB_PARAM_INOUT = 2",
+            "description": [
+            ],
+            "id": "DB_PARAM_INOUT"
+        },
+        {
+            "definition": "const int EVENT = 0",
+            "description": [
+            ],
+            "id": "EVENT"
+        },
+        {
+            "definition": "const int INTERVAL_START = 1",
+            "description": [
+            ],
+            "id": "INTERVAL_START"
+        },
+        {
+            "definition": "const int BREAK_START = 2",
+            "description": [
+            ],
+            "id": "BREAK_START"
+        },
+        {
+            "definition": "const int INTERVAL_AND_BREAK_START = 3",
+            "description": [
+            ],
+            "id": "INTERVAL_AND_BREAK_START"
+        },
+        {
+            "definition": "const int BAR_BOTTOM = 0",
+            "description": [
+            ],
+            "id": "BAR_BOTTOM"
+        },
+        {
+            "definition": "const int BAR_TOP = 1",
+            "description": [
+            ],
+            "id": "BAR_TOP"
+        },
+        {
+            "definition": "const int BAR_LEFT = 2",
+            "description": [
+            ],
+            "id": "BAR_LEFT"
+        },
+        {
+            "definition": "const int BAR_RIGHT = 3",
+            "description": [
+            ],
+            "id": "BAR_RIGHT"
+        },
+        {
+            "definition": "const int BAR_CENTER = 4",
+            "description": [
+            ],
+            "id": "BAR_CENTER"
+        },
+        {
+            "definition": "const int BAR_AVERAGE = 5",
+            "description": [
+            ],
+            "id": "BAR_AVERAGE"
+        },
+        {
+            "definition": "const int BAR_NONE = 0",
+            "description": [
+            ],
+            "id": "BAR_NONE"
+        },
+        {
+            "definition": "const int BAR_MINMAX = 1",
+            "description": [
+            ],
+            "id": "BAR_MINMAX"
+        },
+        {
+            "definition": "const int BAR_S = 2",
+            "description": [
+            ],
+            "id": "BAR_S"
+        },
+        {
+            "definition": "const int BAR_STEPS = 0",
+            "description": [
+            ],
+            "id": "BAR_STEPS"
+        },
+        {
+            "definition": "const int BAR_LINEAR = 1",
+            "description": [
+            ],
+            "id": "BAR_LINEAR"
+        },
+        {
+            "definition": "const int BAR_SPLINE = 2",
+            "description": [
+            ],
+            "id": "BAR_SPLINE"
+        },
+        {
+            "definition": "const int BAR_FRACTION = 0",
+            "description": [
+            ],
+            "id": "BAR_FRACTION"
+        },
+        {
+            "definition": "const int BAR_ELEMENT = 1",
+            "description": [
+            ],
+            "id": "BAR_ELEMENT"
+        },
+        {
+            "definition": "const int BAR_SECTION = 1",
+            "description": [
+            ],
+            "id": "BAR_SECTION"
+        },
+        {
+            "definition": "const int BT_TEXT = 0",
+            "description": [
+            ],
+            "id": "BT_TEXT"
+        },
+        {
+            "definition": "const int BT_PIXMAP = 1",
+            "description": [
+            ],
+            "id": "BT_PIXMAP"
+        },
+        {
+            "definition": "const int BT_PIXMAP_TEXT = 2",
+            "description": [
+            ],
+            "id": "BT_PIXMAP_TEXT"
+        },
+        {
+            "definition": "const int CB_ITEM = 0",
+            "description": [
+            ],
+            "id": "CB_ITEM"
+        },
+        {
+            "definition": "const int CB_POPUP = 1",
+            "description": [
+            ],
+            "id": "CB_POPUP"
+        },
+        {
+            "definition": "const int CB_SEPARATOR = 2",
+            "description": [
+            ],
+            "id": "CB_SEPARATOR"
+        },
+        {
+            "definition": "const int PAPER_FORMAT_A4 = 1",
+            "description": [
+            ],
+            "id": "PAPER_FORMAT_A4"
+        },
+        {
+            "definition": "const int PAPER_FORMAT_A5 = 2",
+            "description": [
+            ],
+            "id": "PAPER_FORMAT_A5"
+        },
+        {
+            "definition": "const int PAPER_FORMAT_A3 = 3",
+            "description": [
+            ],
+            "id": "PAPER_FORMAT_A3"
+        },
+        {
+            "definition": "const int PAPER_FORMAT_LETTER = 4",
+            "description": [
+            ],
+            "id": "PAPER_FORMAT_LETTER"
+        },
+        {
+            "definition": "const int PAPER_FORMAT_ENDLESS_8 = 5",
+            "description": [
+            ],
+            "id": "PAPER_FORMAT_ENDLESS_8"
+        },
+        {
+            "definition": "const int PAPER_FORMAT_ENDLESS_14 = 6",
+            "description": [
+            ],
+            "id": "PAPER_FORMAT_ENDLESS_14"
+        },
+        {
+            "definition": "const int PAPER_FORMAT_A4_COND = 7",
+            "description": [
+            ],
+            "id": "PAPER_FORMAT_A4_COND"
+        },
+        {
+            "definition": "const int PAPER_FORMAT_ENDLESS_8_COND = 8",
+            "description": [
+            ],
+            "id": "PAPER_FORMAT_ENDLESS_8_COND"
+        },
+        {
+            "definition": "const int DEFAULT_USERID = 65535",
+            "description": [
+            ],
+            "id": "DEFAULT_USERID"
+        },
+        {
+            "definition": "const int NO_TRACE = 0",
+            "description": [
+            ],
+            "id": "NO_TRACE"
+        },
+        {
+            "definition": "const int VERIFY_TRACE = 1",
+            "description": [
+            ],
+            "id": "VERIFY_TRACE"
+        },
+        {
+            "definition": "const int EXECUTION_TRACE = 2",
+            "description": [
+            ],
+            "id": "EXECUTION_TRACE"
+        },
+        {
+            "definition": "const int MOUSE_LBUTTON = 1",
+            "description": [
+            ],
+            "id": "MOUSE_LBUTTON"
+        },
+        {
+            "definition": "const int MOUSE_RBUTTON = 2",
+            "description": [
+            ],
+            "id": "MOUSE_RBUTTON"
+        },
+        {
+            "definition": "const int MOUSE_MBUTTON = 4",
+            "description": [
+            ],
+            "id": "MOUSE_MBUTTON"
+        },
+        {
+            "definition": "const int SOUND_CLICK = 1",
+            "description": [
+            ],
+            "id": "SOUND_CLICK"
+        },
+        {
+            "definition": "const int SOUND_RIGHTCLICK = 2",
+            "description": [
+            ],
+            "id": "SOUND_RIGHTCLICK"
+        },
+        {
+            "definition": "const int SOUND_DBLCLICK = 3",
+            "description": [
+            ],
+            "id": "SOUND_DBLCLICK"
+        },
+        {
+            "definition": "const int PMON_STATE_NOT_RUNNING = 0",
+            "description": [
+            ],
+            "id": "PMON_STATE_NOT_RUNNING"
+        },
+        {
+            "definition": "const int PMON_STATE_INIT = 1",
+            "description": [
+            ],
+            "id": "PMON_STATE_INIT"
+        },
+        {
+            "definition": "const int PMON_STATE_RUNNING = 2",
+            "description": [
+            ],
+            "id": "PMON_STATE_RUNNING"
+        },
+        {
+            "definition": "const int PMON_STATE_BLOCKED = 3",
+            "description": [
+            ],
+            "id": "PMON_STATE_BLOCKED"
+        },
+        {
+            "definition": "const int PMON_START_MANUAL = 0",
+            "description": [
+            ],
+            "id": "PMON_START_MANUAL"
+        },
+        {
+            "definition": "const int PMON_START_ALWAYS = 2",
+            "description": [
+            ],
+            "id": "PMON_START_ALWAYS"
+        },
+        {
+            "definition": "const int PMON_START_ONCE = 1",
+            "description": [
+            ],
+            "id": "PMON_START_ONCE"
+        },
+        {
+            "definition": "const int iNULL = 0",
+            "description": [
+            ],
+            "id": "iNULL"
+        },
+        {
+            "definition": "const int PT_VISIBLECOLUMNS = 0",
+            "description": [
+            ],
+            "id": "PT_VISIBLECOLUMNS"
+        },
+        {
+            "definition": "const int PT_ALLCOLUMNS = 1",
+            "description": [
+            ],
+            "id": "PT_ALLCOLUMNS"
+        },
+        {
+            "definition": "const int PT_NAMEDCOLUMNS = 2",
+            "description": [
+            ],
+            "id": "PT_NAMEDCOLUMNS"
+        },
+        {
+            "definition": "const int PT_INDEXEDCOLUMNS = 3",
+            "description": [
+            ],
+            "id": "PT_INDEXEDCOLUMNS"
+        },
+        {
+            "definition": "const int NAMETYPE_DP = 1",
+            "description": [
+            ],
+            "id": "NAMETYPE_DP"
+        },
+        {
+            "definition": "const int NAMETYPE_PROJ = 2",
+            "description": [
+            ],
+            "id": "NAMETYPE_PROJ"
+        },
+        {
+            "definition": "const int NAMETYPE_PATH = 3",
+            "description": [
+            ],
+            "id": "NAMETYPE_PATH"
+        }
+    ]
+}

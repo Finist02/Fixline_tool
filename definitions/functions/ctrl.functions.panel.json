@@ -1,0 +1,225 @@
+{
+    "hover": {
+        "format": "```\n${definition}\n```\n\n-------\n\nPredefined WinCC OA panel functions\n\n${description}"
+    },
+    "completionItemKind": "Function",
+    "defines": [
+        {
+            "definition": "void ChildPanelOnCentralModal(string FileName, string PanelName, dyn_string Parameter);",
+            "description": [
+                "Opens a modal child panel centered in the calling parent panel."
+            ],
+            "id": "ChildPanelOnCentralModal"
+        },
+        {
+            "definition": "int childPanel(dyn_anytype params [, dyn_anytype &results])",
+            "description": [
+                "Opens a child panel without connection to the Event Manager."
+            ],
+            "id": "childPanel"
+        },
+        {
+            "definition": "PanelOffModule(string PanelName, string ModuleName);",
+            "description": [
+                "Закрывает определенную панель PanelName, которая находится в модуле ModuleName"
+            ],
+            "id": "PanelOffModule"
+        },
+        {
+            "definition": "bool isModuleOpen(string moduleName);",
+            "description": [
+                "Определяет, открыт ли тот или иной модуль."
+            ],
+            "id": "isModuleOpen"
+        },
+        {
+            "definition": "ChildPanelOn(string FileName, string PanelName, dyn_string Parameter, int x, int y);",
+            "description": [
+                "Opens a child panel."
+            ],
+            "id": "ChildPanelOn"
+        },
+        {
+            "definition": "ChildPanelOnCentral(string FileName, string PanelName, dyn_string Parameter);",
+            "description": [
+                "Opens a child panel centered in the calling parent panel."
+            ],
+            "id": "ChildPanelOnCentral"
+        },
+        {
+            "definition": "ChildPanelOnCentralModalReturn(string FileName, string PanelName, dyn_string Parameter, dyn_float &resultFloat, dyn_string &resultText);",
+            "description": [
+                "Opens a child panel centered in the calling parent panel."
+            ],
+            "id": "ChildPanelOnCentralModalReturn"
+        },
+        {
+            "definition": "int setMultiValue (string shapeA, string attributeA_1, <typeA_1_1> parA_1_1 [...] [,string shapeB, string attributeB_1, <typeB_1_1> parB_1_1]]);",
+            "description": [
+                "Устанавливает любое количество графических атрибутов любому количеству графических элементов."
+            ],
+            "id": "setMultiValue"
+        },
+        {
+            "definition": "int setValue (string shape, string attribute1, <type1_1> par1_1 [, <type1_2> par1_2 ...] [, string attribute2, <type2_1> par2_1 [, <type2_2> par2_2 ...]]);",
+            "description": [
+                "Функция \"setValue()\" присваивает любое количество графических атрибутов графическому объекту."
+            ],
+            "id": "setValue"
+        },
+        {
+            "definition": "int getMultiValue (string shapeA, string attributeA_1, <typeA_1_1> parA_1_1 [...] [,string shapeB, string attributeB_1, <typeB_1_1> parB_1_1]]);",
+            "description": [
+                "Осуществляет запись нескольких графических атрибутов в переменные."
+            ],
+            "id": "getMultiValue"
+        },
+        {
+            "definition": "int getValue (string shape, string attribute1, <type1_1> par1_1 [, <type1_2> par1_2 ...] [, string attribute2, <type2_1> par2_1 [, <type2_2> par2_2 ...]]);",
+            "description": [
+                "Осуществляет запись нескольких графических атрибутов в переменные."
+            ],
+            "id": "getValue"
+        },
+        {
+            "definition": "bool isPanelOpen(string panelname [,string moduleName]);",
+            "description": [
+                "Определяет, открыта ли та или иная панель."
+            ],
+            "id": "isPanelOpen"
+        },
+        {
+            "definition": "bool isPanelOpen(string panelname [,string moduleName]);",
+            "description": [
+                "Определяет, открыта ли та или иная панель."
+            ],
+            "id": "isPanelOpen"
+        },
+        {
+            "definition": "int panelSize(string PanelName, int &width, int &height, bool currentSize = FALSE);",
+            "description": [
+                "Возвращает информацию о ширине и высоте панели."
+            ],
+            "id": "panelSize"
+        },
+        {
+            "definition": "void ChildPanelOnModal(string FileName, string PanelName, dyn_string Parameter, int x, int y);",
+            "description": [
+                "Открывает модальную дочернюю панель в позиции х, у."
+            ],
+            "id": "ChildPanelOnModal"
+        },
+        {
+            "definition": "ChildPanelOnReturn(string FileName, string PanelName, dyn_string Parameter, int x, int y, dyn_float &resultFloat, dyn_string &resultText );",
+            "description": [
+                "Открывает дочернюю панель с возвращаемыми значениями."
+            ],
+            "id": "ChildPanelOnReturn"
+        },
+        {
+            "definition": "PanelOffPanel ( string PanelName);",
+            "description": [
+                "Закрывает определенную панель"
+            ],
+            "id": "PanelOffPanel"
+        },
+        {
+            "definition": "PanelOffReturn(dyn_float resultFloat,dyn_string resultText);",
+            "description": [
+                "Требуется для закрытия дочерней панели с возвращаемым значением."
+            ],
+            "id": "PanelOffReturn"
+        },
+        {
+            "definition": "void ChildPanelOnModalReturn(string FileName, string PanelName, dyn_string Parameter, int x, int y, dyn_float &resultFloat, dyn_string &resultText);",
+            "description": [
+                "Открывает модальную дочернюю панель с возвращаемыми значениями в позиции x,y."
+            ],
+            "id": "ChildPanelOnModalReturn"
+        },
+        {
+            "definition": "string rootPanel( [string modulename] );",
+            "description": [
+                "Возвращает имя определенной корневой панели."
+            ],
+            "id": "rootPanel"
+        },
+        {
+            "definition": "int addSymbol(string moduleName, string panelName, string fileName, string refName, dyn_string subst, int x, int y, float angle, float scx, float scy[, string ewoName]);",
+            "description": [
+                "Служит для добавления панели panel references (панели-ссылки) на панели в процессе функционирования в дальнейшем."
+            ],
+            "id": "addSymbol"
+        },
+        {
+            "definition": "int addSymbol(string moduleName, string panelName, string fileName, string refName, dyn_string subst, int x, int y, float angle, float scx, float scy[, string ewoName]);",
+            "description": [
+                "Служит для добавления панели panel references (панели-ссылки) на панели в процессе функционирования в дальнейшем."
+            ],
+            "id": "addSymbol"
+        },
+        {
+            "definition": "int removeSymbol(string moduleName, string panelName, string refName);",
+            "description": [
+                "Данная функция используется для удаления панелей-ссылок."
+            ],
+            "id": "removeSymbol"
+        },
+        {
+            "definition": "dyn_string getShapes(string moduleName = myModuleName(),string panelName = myPanelName(),string attribute = \"selected\",anytype value = true);",
+            "description": [
+                "Эта функция возвращает список имен формы (или RefName.ShapeName), которые находятся в данных параметрах модуля/панели и соответствуют требуемой паре атрибут-значение."
+            ],
+            "id": "getShapes"
+        },
+        {
+            "definition": "shape getShapeStrict(string moduleName, string panelName, string objectName);",
+            "description": [
+                "Эта функция используется для адресации графических объектов и установки атрибутов. Она похожа на getShape(), но использует другой метод поиска."
+            ],
+            "id": "getShapeStrict"
+        },
+        {
+            "definition": "dyn_string getShapesStrict(string moduleName = myModuleName(), string panelName = myPanelName(), string attribute = \"selected\", anytype value = true);",
+            "description": [
+                "Эта функция возвращает список имен фигур (или RefName.ShapeName), которые находятся в заданных параметрах Module/Panel и соответствуют желаемой паре атрибута и значения. Она похожа на getShapes(), но использует другой метод поиска."
+            ],
+            "id": "getShapesStrict"
+        },
+        {
+            "definition": "int panelSelector(string &panelstr);",
+            "description": [
+                "Открывает диалоговое окно выбора файлов и записывает имя выбранного файла в переменную."
+            ],
+            "id": "panelSelector"
+        },
+        {
+            "definition": "RootPanelOnModule( string FileName, string PanelName, string ModuleName, dyn_string Parameter );",
+            "description": [
+                "Открывает панель в определенном модуле."
+            ],
+            "id": "RootPanelOnModule"
+        },
+        {
+            "definition": "void ChildPanelOnModule(string FileName, string PanelName, string ModuleName, dyn_string Parameter, int x, int y);",
+            "description": [
+                "Открывает дочернюю панель в произвольном модуле."
+            ],
+            "id": "ChildPanelOnModule"
+        },
+        {
+            "definition": "PanelOff();",
+            "description": [
+                "Закрывает открытую панель и модуль."
+            ],
+            "id": "PanelOff"
+        },
+        {
+            "definition": "shape.showToolTips(bool mode);",
+            "description": [
+                "Включает/выключает отображение всплывающих подсказок на экране иерархического списка для столбцов с обрезанным текстом."
+            ],
+            "id": "showToolTip"
+        }
+    ]
+}

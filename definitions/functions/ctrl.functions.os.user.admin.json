@@ -1,0 +1,149 @@
+{ 
+    "hover":{ 
+      "format":"```\n${definition}\n```\n\n-------\n\nPredefined WinCC OA function\n\n${description}"
+    },
+    "completionItemKind":"Function",
+    "defines":[
+      
+      { 
+        "definition":"mapping getOSUser()",
+        "description":[ 
+  
+        ],
+        "id":"getOSUser"
+      },
+      { 
+        "definition":"int getCurrentOSUserLocal(string &username, string &fullname, string &description, dyn_string &groups[, string password])",
+        "description":[ 
+  
+        ],
+        "id":"getCurrentOSUserLocal"
+      },
+      { 
+        "definition":"int verifyOSUser(string password, bool &result[, string username] [, int level])",
+        "description":[ 
+  
+        ],
+        "id":"verifyOSUser"
+      },
+      { 
+        "definition":"int getAllOSGroups(dyn_string &groups, [string domain])",
+        "description":[ 
+  
+        ],
+        "id":"getAllOSGroups"
+      },
+      { 
+        "definition":"int getAllOSUsers(dyn_string &users [, string domain][, bool showAll])",
+        "description":[ 
+  
+        ],
+        "id":"getAllOSUsers"
+      },
+      { 
+        "definition":"dyn_mapping getOSUsers([string domain])",
+        "description":[ 
+  
+        ],
+        "id":"getOSUsers"
+      },
+      { 
+        "definition":"dyn_mapping getOSGroups([string domain])",
+        "description":[ 
+  
+        ],
+        "id":"getOSGroups"
+      },
+      { 
+        "definition":"dyn_mapping getOSUserGroups(string userName)",
+        "description":[ 
+  
+        ],
+        "id":"getOSUserGroups"
+      },
+      { 
+        "definition":"dyn_mapping getOSUserGroupsMembership(string userName, dyn_string filterGroupOSIDs [, string domain])",
+        "description":[ 
+  
+        ],
+        "id":"getOSUserGroupsMembership"
+      },
+      { 
+        "definition":"dyn_mapping getOSGroupUsers(string groupName [, string domain])",
+        "description":[ 
+  
+        ],
+        "id":"getOSGroupUsers"
+      },
+      { 
+        "definition":"string getOSGroupName(string osid)",
+        "description":[ 
+  
+        ],
+        "id":"getOSGroupName"
+      },
+      { 
+        "definition":"string getOSUserName(string osid)",
+        "description":[ 
+  
+        ],
+        "id":"getOSUserName"
+      },
+      { 
+        "definition":"mapping getOSGroupInfo(string name [, string domain])",
+        "description":[ 
+  
+        ],
+        "id":"getOSGroupInfo"
+      },
+      { 
+        "definition":"mapping getOSUserInfo(string name [, string domain])",
+        "description":[ 
+  
+        ],
+        "id":"getOSUserInfo"
+      },
+      { 
+        "definition":"string getOSUserID(string name [, string domain])",
+        "description":[ 
+  
+        ],
+        "id":"getOSUserID"
+      },
+      { 
+        "definition":"string getOSGroupID(string name [, string domain])",
+        "description":[ 
+  
+        ],
+        "id":"getOSGroupID"
+      },
+      { 
+        "definition":"string getOSDomainName()",
+        "description":[ 
+  
+        ],
+        "id":"getOSDomainName"
+      },
+      { 
+        "definition":"int getCurrentDomainName(string &domain)",
+        "description":[ 
+  
+        ],
+        "id":"getCurrentDomainName"
+      },
+      { 
+        "definition":"int getWindowsEvents(time start, time end, int category, dyn_dyn_string &actions)",
+        "description":[ 
+  
+        ],
+        "id":"getWindowsEvents"
+      },
+      { 
+        "definition":"bool setUserNameSSO(string user)",
+        "description":[ 
+  
+        ],
+        "id":"setUserNameSSO"
+      }
+    ]
+  }

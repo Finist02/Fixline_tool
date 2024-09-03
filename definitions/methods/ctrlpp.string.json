@@ -1,0 +1,55 @@
+{
+    "typeSymbol": "string",
+    "defines": [
+        {
+            "label": "clear",
+            "documentation": "Empties the mapping.",
+            "insertText": "clear()"
+        },
+        {
+            "label": "contains",
+            "documentation": "Returns true if the key is already in the mapping.",
+            "insertText": "contains($0)"
+        },
+        {
+            "label": "count",
+            "documentation": "Returns the number of keys.",
+            "insertText": "count()"
+        },
+        {
+            "label": "insert",
+            "documentation": "Insert a key/value pair.",
+            "insertText": "insert($0)"
+        },
+        {
+            "label": "isEmpty",
+            "documentation": "Returns true if the mapping is empty.",
+            "insertText": "isEmpty()"
+        },
+        {
+            "label": "merge",
+            "documentation": "Merges two mappings.",
+            "insertText": "merge($0)"
+        },
+        {
+            "label": "keyAt",
+            "documentation": "Returns the key at the given mapping index.",
+            "insertText": "keyAt($0)"
+        },
+        {
+            "label": "merged",
+            "documentation": "Creates a new instance from merging two mappings",
+            "insertText": "merged($0)"
+        },
+        {
+            "label": "value",
+            "documentation": "Returns the value at given key.",
+            "insertText": "value($0)"
+        },
+        {
+            "label": "valueAt",
+            "documentation": "Returns the value at the given mapping index.",
+            "insertText": "valueAt($0)"
+        }
+    ]
+}

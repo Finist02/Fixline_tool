@@ -1,0 +1,87 @@
+{
+    "hover": {
+        "format" : "\n${definition}\n```\n\n-------\n\nPredefined WinCC OA constant\n\n${description}"
+    },
+    "completionItemKind": "Constant",
+    "defines":[
+        
+        {
+            "definition": "const int NO_MAN = 0",
+            "description": [
+            ],
+            "id": "NO_MAN"
+        },
+        {
+            "definition": "const int EVENT_MAN = 1",
+            "description": [
+            ],
+            "id": "EVENT_MAN"
+        },
+        {
+            "definition": "const int DRIVER_MAN = 2",
+            "description": [
+            ],
+            "id": "DRIVER_MAN"
+        },
+        {
+            "definition": "const int DB_MAN = 3",
+            "description": [
+            ],
+            "id": "DB_MAN"
+        },
+        {
+            "definition": "const int UI_MAN = 4",
+            "description": [
+            ],
+            "id": "UI_MAN"
+        },
+        {
+            "definition": "const int CTRL_MAN = 5",
+            "description": [
+            ],
+            "id": "CTRL_MAN"
+        },
+        {
+            "definition": "const int ASCII_MAN = 6",
+            "description": [
+            ],
+            "id": "ASCII_MAN"
+        },
+        {
+            "definition": "const int API_MAN = 7",
+            "description": [
+            ],
+            "id": "API_MAN"
+        },
+        {
+            "definition": "const int REPORT_MAN = 10",
+            "description": [
+            ],
+            "id": "REPORT_MAN"
+        },
+        {
+            "definition": "const int DDE_MAN_OBSOLETE = 0",
+            "description": [
+            ],
+            "id": "DDE_MAN_OBSOLETE"
+        },
+        {
+            "definition": "const int DEVICE_MAN = 8",
+            "description": [
+            ],
+            "id": "DEVICE_MAN"
+        },
+        {
+            "definition": "const int REDU_MAN = 9",
+            "description": [
+            ],
+            "id": "REDU_MAN"
+        },
+        {
+            "definition": "const int DIST_MAN = 12",
+            "description": [
+            ],
+            "id": "DIST_MAN"
+        }
+    ]
+}

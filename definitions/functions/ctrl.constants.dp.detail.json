@@ -1,0 +1,104 @@
+{
+    "hover": {
+        "format" : "```\n${definition}\n```\n\n-------\n\nPredefined WinCC OA constant\n\n${description}"
+    },
+    "completionItemKind": "Constant",
+    "defines":[
+        {
+            "definition": "const int DPDETAIL_CONV_NONE = 0",
+            "description": [
+            ],
+            "id": "DPDETAIL_CONV_NONE"
+        },
+        {
+            "definition": "const int DPDETAIL_CONV_LIN_INT = 3",
+            "description": [
+            ],
+            "id": "DPDETAIL_CONV_LIN_INT"
+        },
+        {
+            "definition": "const int DPDETAIL_CONV_LOG = 1",
+            "description": [
+            ],
+            "id": "DPDETAIL_CONV_LOG"
+        },
+        {
+            "definition": "const int DPDETAIL_CONV_POLY = 2",
+            "description": [
+            ],
+            "id": "DPDETAIL_CONV_POLY"
+        },
+        {
+            "definition": "const int DPDETAIL_CONV_PREC = 8",
+            "description": [
+            ],
+            "id": "DPDETAIL_CONV_PREC"
+        },
+        {
+            "definition": "const int DPDETAIL_CONV_NULL_SUPP = 4",
+            "description": [
+            ],
+            "id": "DPDETAIL_CONV_NULL_SUPP"
+        },
+        {
+            "definition": "const int DPDETAIL_CONV_TRIGGER = 7",
+            "description": [
+            ],
+            "id": "DPDETAIL_CONV_TRIGGER"
+        },
+        {
+            "definition": "const int DPDETAIL_CONV_COUNTER = 9",
+            "description": [
+            ],
+            "id": "DPDETAIL_CONV_COUNTER"
+        },
+        {
+            "definition": "const int DPDETAIL_CONV_INVERT = 5",
+            "description": [
+            ],
+            "id": "DPDETAIL_CONV_INVERT"
+        },
+        {
+            "definition": "const int DPDETAIL_RANGETYPE_NONE = 0",
+            "description": [
+            ],
+            "id": "DPDETAIL_RANGETYPE_NONE"
+        },
+        {
+            "definition": "const int DPDETAIL_RANGETYPE_MIN = 6",
+            "description": [
+            ],
+            "id": "DPDETAIL_RANGETYPE_MIN"
+        },
+        {
+            "definition": "const int DPDETAIL_RANGETYPE_MAX = 7",
+            "description": [
+            ],
+            "id": "DPDETAIL_RANGETYPE_MAX"
+        },
+        {
+            "definition": "const int DPDETAIL_RANGETYPE_MINMAX = 4",
+            "description": [
+            ],
+            "id": "DPDETAIL_RANGETYPE_MINMAX"
+        },
+        {
+            "definition": "const int DPDETAIL_RANGETYPE_SET = 3",
+            "description": [
+            ],
+            "id": "DPDETAIL_RANGETYPE_SET"
+        },
+        {
+            "definition": "const int DPDETAIL_RANGETYPE_MATCH = 5",
+            "description": [
+            ],
+            "id": "DPDETAIL_RANGETYPE_MATCH"
+        },
+        {
+            "definition": "const int DPDETAIL_RANGETYPE_RANGE_ALL = 2",
+            "description": [
+            ],
+            "id": "DPDETAIL_RANGETYPE_RANGE_ALL"
+        }
+    ]
+}

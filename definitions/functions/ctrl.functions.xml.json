@@ -1,0 +1,141 @@
+{
+    "hover": {
+        "format": "```\n${definition}\n```\n\n-------\n\nPredefined WinCC OA xml functions\n\n${description}"
+    },
+    "completionItemKind": "Function",
+    "defines": [
+        {
+            "definition": "",
+            "description": [
+                ""
+            ],
+            "id": "xmlAppendChild"
+        },
+        {
+            "definition": "",
+            "description": [
+                ""
+            ],
+            "id": "xmlChildNodes"
+        },
+        {
+            "definition": "",
+            "description": [
+                ""
+            ],
+            "id": "xmlCloseDocument"
+        },
+        {
+            "definition": "",
+            "description": [
+                ""
+            ],
+            "id": "xmlDocumentFromFile"
+        },
+        {
+            "definition": "",
+            "description": [
+                ""
+            ],
+            "id": "xmlDocumentFromString"
+        },
+        {
+            "definition": "",
+            "description": [
+                ""
+            ],
+            "id": "xmlDocumentToFile"
+        },
+        {
+            "definition": "",
+            "description": [
+                ""
+            ],
+            "id": "xmlDocumentToString"
+        },
+        {
+            "definition": "",
+            "description": [
+                ""
+            ],
+            "id": "xmlElementAttributes"
+        },
+        {
+            "definition": "",
+            "description": [
+                ""
+            ],
+            "id": "xmlGetElementAttribute"
+        },
+        {
+            "definition": "",
+            "description": [
+                ""
+            ],
+            "id": "xmlNodeValue"
+        },
+        {
+            "definition": "",
+            "description": [
+                ""
+            ],
+            "id": "xmlParentNode"
+        },
+        {
+            "definition": "",
+            "description": [
+                ""
+            ],
+            "id": "xmlRemoveElementAttribute"
+        },
+        {
+            "definition": "",
+            "description": [
+                ""
+            ],
+            "id": "xmlRemoveNode"
+        },
+        {
+            "definition": "",
+            "description": [
+                ""
+            ],
+            "id": "xmlSetElementAttribute"
+        },
+        {
+            "definition": "",
+            "description": [
+                ""
+            ],
+            "id": "xmlSetNodeValue"
+        },
+        {
+            "definition": "",
+            "description": [
+                ""
+            ],
+            "id": "xmlNewDocument"
+        },
+        {
+            "definition": "",
+            "description": [
+                ""
+            ],
+            "id": "xmlFirstChild"
+        },
+        {
+            "definition": "",
+            "description": [
+                ""
+            ],
+            "id": "xmlNextSibling"
+        },
+        {
+            "definition": "",
+            "description": [
+                ""
+            ],
+            "id": "xmlNodeName"
+        }
+    ]
+}

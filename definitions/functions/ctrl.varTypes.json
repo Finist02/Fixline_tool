@@ -1,0 +1,352 @@
+{
+    "hover": {
+        "format" : ""
+    },
+    "completionItemKind": "Keyword",
+    "defines":[
+        
+        {
+            "definition": "blob",
+            "description": [
+                "Binary large objects"
+            ],
+            "id": "blob"
+        },
+        {
+            "definition": "bool",
+            "description": [
+                "Binary value (1 bit)",
+                "### Value range:",
+                "0, 1 or true, false"
+            ],
+            "id": "bool"
+        },
+        {
+            "definition": "char",
+            "description": [
+                "Character (1 byte).  This can also represent a numerical data type that takes the values 0 to 255.",
+                "An example for this is the _lock.._man_type data point config attribute.",
+                "### Value range:",
+                "0 to 255"
+            ],
+            "id": "char"
+        },
+        {
+            "definition": "double",
+            "description": [
+                "Floating point value (64 bit)",
+                "### Value range:",
+                "-1.79769e+308 to +1.79769e+308"
+            ],
+            "id": "double"
+        },
+        {
+            "definition": "enum",
+            "description": [
+                "All enum elements are of type 'int' and can be defined with or without an initialize value. Duplicate names are not allowed, duplicate values are allowed.",
+                "### Syntax:",
+                "```",
+                "enum EngineState",
+                "{",
+                "  Startup,",
+                "  Off = 2,",
+                "  On = 4,",
+                "  Error",
+                "};",
+                "```"
+            ],
+            "id": "enum"
+        },
+        {
+            "definition": "file",
+            "description": [
+                "File pointer"
+            ],
+            "id": "file"
+        },
+        {
+            "definition": "float",
+            "description": [
+                "Floating point value.",
+                "float in WinCC OA == double (64 bit), independent whether on a data point element or in a CTRL script.",
+                "### Value range:",
+                "-1.79769e+308 to +1.79769e+308"
+            ],
+            "id": "float"
+        },
+        {
+            "definition": "int",
+            "description": [
+                "Integer value (32 bit)",
+                "An int constant has to be entered with the suffix  'L'.",
+                "For example: -2147483648L",
+                "@note Please note that the number 2147483648  can be used as a constant but cannot be stored as a value!",
+                "### Value range:",
+                "-2147483648 to +2147483647"
+            ],
+            "id": "int"
+        },
+        {
+            "definition": "uint",
+            "description": [
+                "Positive integer value (32 bit)",
+                "An uint constant has to be entered with the suffix 'U'.",
+                "For example: +4294967295U",
+                "### Value range:",
+                "0 to +4294967295"
+            ],
+            "id": "uint"
+        },
+        {
+            "definition": "long",
+            "description": [
+                "Integer value (64 bit)",
+                "A *long* constant has to be entered with the suffix 'L'",
+                "For example 0x7FFFFFFFFFFFFFFFL.",
+                "### Value range:",
+                "-9223372036854775808 to +9223372036854775807"
+            ],
+            "id": "long"
+        },
+        {
+            "definition": "ulong",
+            "description": [
+                "Positive integer value (64 bit)",
+                "A *ulong* constant has to be entered with the suffix 'UL'",
+                "For example 0x7FFFFFFFFFFFFFFFUL.",
+                "### Value range:",
+                "0 to +18446744073709551615"
+            ],
+            "id": "ulong"
+        },
+        {
+            "definition": "string",
+            "description": [
+                "Character string",
+                "### Value range:",
+                "any number of characters",
+                "",
+                "The individual bits of a bit pattern and the characters of a character string are read in the form \"pattern[i]\" or \"string[i]\".",
+                "The smallest index is zero. Bit patterns and strings cannot be written or overwritten directly on a character-by-character basis.",
+                "Bit patterns must be changed using bit32 variables in Control.",
+                "@warning Whereas pattern is of data type bit32, pattern[i] is of type bool; if string is of data type string, string[i] is of type char."
+            ],
+            "id": "string"
+        },
+        {
+            "definition": "time",
+            "description": [
+                "Internal time format",
+                "",
+                "Time is the **Unix time since 1.1.1970**. 32Bits are used for the seconds.",
+                "The milliseconds are saved in an additional unsigned short.",
+                "",
+                "Windows is not able to deal with negative times, e.g. in calculations.",
+                "Thus, an integer value which specifies the seconds must be converted into 'time' beforehand.",
+                "@code",
+                "int  i = -86400;",
+                "time c = getCurrentTime();",
+                "DebugN((time)(period(c) + i));",
+                "@endcode",
+                "Example 2 (time in milliseconds):",
+                "@code",
+                "int  i = -86400;",
+                "time c = getCurrentTime();",
+                "DebugN((time)((float)c + i));",
+                "@endcode"
+            ],
+            "id": "time"
+        },
+        {
+            "definition": "unsigned",
+            "description": [
+                "Positive integer value",
+                "",
+                "@note that when the value 4294967295 is assigned to an unsigned variable, a syntax error is shown. The error is shown because all numbers are handled as integers per default. To assign the value 4294967295 to the unsigned variable, the character 'u' (unsigned) has to be used:",
+                "@code",
+                "unsigned f = 4294967295u;",
+                "@endcode",
+                "Use the sign also in case of hexadecimal variables and the value 4294967295.",
+                "### Value range:",
+                "0 to 4,294,967,295"
+            ],
+            "id": "unsigned"
+        },
+        {
+            "definition": "dyn_blob",
+            "description": [
+                "Dynamic blob"
+            ],
+            "id": "dyn_blob"
+        },
+        {
+            "definition": "dyn_bool",
+            "description": [
+                "Dynamic array of binary values"
+            ],
+            "id": "dyn_bool"
+        },
+        {
+            "definition": "dyn_char",
+            "description": [
+                "Dynamic character array"
+            ],
+            "id": "dyn_char"
+        },
+        {
+            "definition": "dyn_errClass",
+            "description": [
+                "Dynamic array of WinCC OA internal error class"
+            ],
+            "id": "dyn_errClass"
+        },
+        {
+            "definition": "auto",
+            "description": [
+            ],
+            "id": "auto"
+        },
+        {
+            "definition": "short",
+            "description": [
+            ],
+            "id": "short"
+        },
+        {
+            "definition": "signed",
+            "description": [
+            ],
+            "id": "signed"
+        },
+        {
+            "definition": "nullptr",
+            "description": [
+            ],
+            "id": "nullptr"
+        },
+        {
+            "definition": "vector",
+            "description": [
+            ],
+            "id": "vector"
+        },
+        {
+            "definition": "using",
+            "description": [
+            ],
+            "id": "using"
+        },
+        {
+            "definition": "dyn_int",
+            "description": [
+                "Dynamic array of integer values (32 bit)"
+            ],
+            "id": "dyn_int"
+        },
+        {
+            "definition": "dyn_uint",
+            "description": [
+                "Dynamic array of positive integer values  (32 bit)"
+            ],
+            "id": "dyn_uint"
+        },
+        {
+            "definition": "dyn_long",
+            "description": [
+                "Dynamic array of integer values (64 bit)"
+            ],
+            "id": "dyn_long"
+        },
+        {
+            "definition": "dyn_ulong",
+            "description": [
+                "Dynamic array of positive integer values (64 bit)"
+            ],
+            "id": "dyn_ulong"
+        },
+        {
+            "definition": "dyn_float",
+            "description": [
+                "Dynamic array of floating point values"
+            ],
+            "id": "dyn_float"
+        },
+        {
+            "definition": "dyn_time",
+            "description": [
+                "Dynamic array of values in the internal time format"
+            ],
+            "id": "dyn_time"
+        },
+        {
+            "definition": "dyn_string",
+            "description": [
+                "Dynamic array of character strings"
+            ],
+            "id": "dyn_string"
+        },
+        {
+            "definition": "dyn_dyn_int",
+            "description": [
+                "Dynamic array of dynamic arrays of integer values (32 bit)"
+            ],
+            "id": "dyn_dyn_int"
+        },
+        {
+            "definition": "dyn_dyn_uint",
+            "description": [
+                "Dynamic array of dynamic arrays of positive integer values (32 bit)"
+            ],
+            "id": "dyn_dyn_uint"
+        },
+        {
+            "definition": "dyn_dyn_long",
+            "description": [
+                "Dynamic array of dynamic arrays of integer values (64 bit)"
+            ],
+            "id": "dyn_dyn_long"
+        },
+        {
+            "definition": "dyn_dyn_ulong",
+            "description": [
+                "Dynamic array of dynamic arrays of positive integer values (64 bit)"
+            ],
+            "id": "dyn_dyn_ulong"
+        },
+        {
+            "definition": "dyn_dyn_float",
+            "description": [
+                "Dynamic array of dynamic arrays of floating point values"
+            ],
+            "id": "dyn_dyn_float"
+        },
+        {
+            "definition": "dyn_dyn_time",
+            "description": [
+                "Dynamic array of arrays of values in the internal time format"
+            ],
+            "id": "dyn_dyn_time"
+        },
+        {
+            "definition": "dyn_dyn_string",
+            "description": [
+                "Dynamic array of dynamic arrays of character strings"
+            ],
+            "id": "dyn_dyn_string"
+        },
+        {
+            "definition": "dyn_dyn_bool",
+            "description": [
+                "Dynamic array of dynamic arrays of binary values"
+            ],
+            "id": "dyn_dyn_bool"
+        },
+        {
+            "definition": "dyn_dyn_char",
+            "description": [
+                "Dynamic array of dynamic character arrays"
+            ],
+            "id": "dyn_dyn_char"
+        }
+    ]
+}
