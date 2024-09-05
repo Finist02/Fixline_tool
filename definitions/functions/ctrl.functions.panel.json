@@ -220,6 +220,34 @@
                 "Включает/выключает отображение всплывающих подсказок на экране иерархического списка для столбцов с обрезанным текстом."
             ],
             "id": "showToolTip"
+        },
+        {
+            "definition": "void ZoomModule(string module, float factor, int x, int y);",
+            "description": [
+                "Выполняет масштабирование модулей пользовательского интерфейса и сбрасывает положение панели в модуле."
+            ],
+            "id": "ZoomModule"
+        },
+        {
+            "definition": "int setScaleStyle (int style [, string moduleName]);",
+            "description": [
+                "Устанавливает стиль масштабирования модуля для выполнения масштабирования."
+            ],
+            "id": "setScaleStyle"
+        },
+        {
+            "definition": "dyn_int getPanelSize (string path);",
+            "description": [
+                "Получение размера панели."
+            ],
+            "id": "getPanelSize"
+        },
+        {
+            "definition": "void fillSelector ();",
+            "description": [
+                "Получение образца заполнения."
+            ],
+            "id": "fillSelector"
         }
     ]
 }

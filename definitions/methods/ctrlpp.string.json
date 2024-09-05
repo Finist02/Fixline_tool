@@ -2,54 +2,114 @@
     "typeSymbol": "string",
     "defines": [
         {
+            "label": "at",
+            "documentation": "Returns the character at the given index idx in the string.",
+            "insertText": "at($0)"
+        },
+        {
+            "label": "chop",
+            "documentation": "Removes n characters from the end of the string.",
+            "insertText": "chop($0)"
+        },
+        {
             "label": "clear",
-            "documentation": "Empties the mapping.",
+            "documentation": "Empties the string.",
             "insertText": "clear()"
         },
         {
             "label": "contains",
-            "documentation": "Returns true if the key is already in the mapping.",
+            "documentation": "Returns true if this string contains an occurrence of the string s, otherwise false.",
             "insertText": "contains($0)"
         },
         {
             "label": "count",
-            "documentation": "Returns the number of keys.",
-            "insertText": "count()"
+            "documentation": "Returns the number of (potentially overlapping) occurrences of the string s in this string.",
+            "insertText": "count($0)"
+        },
+        {
+            "label": "endsWith",
+            "documentation": "Returns true if the string ends with s, otherwise false.",
+            "insertText": "endsWith($0)"
+        },
+        {
+            "label": "indexOf",
+            "documentation": "Returns the index position of the first occurrence of the string s in this string.",
+            "insertText": "indexOf($0)"
         },
         {
             "label": "insert",
-            "documentation": "Insert a key/value pair.",
+            "documentation": "Inserts the string s at the given index pos.",
             "insertText": "insert($0)"
         },
         {
             "label": "isEmpty",
-            "documentation": "Returns true if the mapping is empty.",
+            "documentation": "Returns true if the string is empty.",
             "insertText": "isEmpty()"
         },
         {
-            "label": "merge",
-            "documentation": "Merges two mappings.",
-            "insertText": "merge($0)"
+            "label": "lastIndexOf",
+            "documentation": "Returns the index position of the last occurrence of the string s in this string.",
+            "insertText": "lastIndexOf($0)"
         },
         {
-            "label": "keyAt",
-            "documentation": "Returns the key at the given mapping index.",
-            "insertText": "keyAt($0)"
+            "label": "left",
+            "documentation": "Returns a substring that contains the n leftmost characters of the string.",
+            "insertText": "left($0)"
         },
         {
-            "label": "merged",
-            "documentation": "Creates a new instance from merging two mappings",
-            "insertText": "merged($0)"
+            "label": "length",
+            "documentation": "Returns the number of Unicode characters.",
+            "insertText": "length()"
         },
         {
-            "label": "value",
-            "documentation": "Returns the value at given key.",
-            "insertText": "value($0)"
+            "label": "mid",
+            "documentation": "Returns a string that contains n characters of this string, starting at the specified pos index.",
+            "insertText": "mid($0)"
         },
         {
-            "label": "valueAt",
-            "documentation": "Returns the value at the given mapping index.",
-            "insertText": "valueAt($0)"
+            "label": "remove",
+            "documentation": "Removes n characters from the string, starting at the given pos index.",
+            "insertText": "remove($0)"
+        },
+        {
+            "label": "replace",
+            "documentation": "Replaces n characters beginning at index pos with the string after.",
+            "insertText": "replace($0)"
+        },
+        {
+            "label": "right",
+            "documentation": "Returns a substring that contains the n rightmost characters of the string.",
+            "insertText": "right($0)"
+        },
+        {
+            "label": "split",
+            "documentation": "Splits the string into substrings wherever a separator occurs, and returns the list of those strings.",
+            "insertText": "split($0)"
+        },
+        {
+            "label": "startsWith",
+            "documentation": "Returns true if the string starts with s, otherwise false.",
+            "insertText": "startsWith($0)"
+        },
+        {
+            "label": "toLower",
+            "documentation": "Returns a lowercase copy of the string.",
+            "insertText": "toLower()"
+        },
+        {
+            "label": "toUpper",
+            "documentation": "Returns an uppercase copy of the string.",
+            "insertText": "toUpper()"
+        },
+        {
+            "label": "trim",
+            "documentation": "Removes whitespace from the start and the end.",
+            "insertText": "trim()"
+        },
+        {
+            "label": "trimmed",
+            "documentation": "Produces a trimmed, new instance of the string.",
+            "insertText": "trimmed()"
         }
     ]
 }

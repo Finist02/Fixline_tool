@@ -18,6 +18,42 @@
             "id": "MIXED_VAR"
         },
         {
+            "definition": "const int SCALE_NONE = 0",
+            "description": [
+            ],
+            "id": "SCALE_NONE"
+        },
+        {
+            "definition": "const int SCALE_FIT_TO_SHORTEST = 1",
+            "description": [
+            ],
+            "id": "SCALE_FIT_TO_SHORTEST"
+        },
+        {
+            "definition": "const int SCALE_SCALE = 1",
+            "description": [
+            ],
+            "id": "SCALE_SCALE"
+        },
+        {
+            "definition": "const int SCALE_ZOOM = 2",
+            "description": [
+            ],
+            "id": "SCALE_ZOOM"
+        },
+        {
+            "definition": "const int SCALE_FIT_SMALL_PANEL = 4",
+            "description": [
+            ],
+            "id": "SCALE_FIT_SMALL_PANEL"
+        },
+        {
+            "definition": "const int SCALE_FIT_TO_MODULE = 3",
+            "description": [
+            ],
+            "id": "SCALE_FIT_TO_MODULE"
+        },
+        {
             "definition": "const int TIME_VAR = 196608",
             "description": [
             ],
