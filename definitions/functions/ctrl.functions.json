@@ -89,6 +89,41 @@
       "id": "httpConnect"
     },
     {
+      "definition": "mapping httpGetAllHeaders(int idx);",
+      "description": [
+        "The function returns a mapping of all HTTP headers."
+      ],
+      "id": "httpGetAllHeaders"
+    },
+    {
+      "definition": "string httpGetMethod(int idx);",
+      "description": [
+        "The function returns the HTTP method of the last HTTP message."
+      ],
+      "id": "httpGetMethod"
+    },
+    {
+      "definition": "string httpGetURI(int idx);",
+      "description": [
+        "Returns the last from the Client (index) requested URI from the HTTP server."
+      ],
+      "id": "httpGetURI"
+    },
+    {
+      "definition": "mapping httpGetQuery(int idx);",
+      "description": [
+        "Returns the HTTP query elements as key/value pairs"
+      ],
+      "id": "httpGetQuery"
+    },
+    {
+      "definition": "string httpGetHeader(int idx, string key);",
+      "description": [
+        "Returns the value of the header (== key) of the last HTTP message."
+      ],
+      "id": "httpGetHeader"
+    },
+    {
       "definition": "int convManIdToInt(char manType, char manNum [, int sysNum [, char replica]])",
       "description": [],
       "id": "convManIdToInt"
