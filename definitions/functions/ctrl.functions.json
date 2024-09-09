@@ -75,18 +75,18 @@
       "id": "myManType"
     },
     {
-      "definition": "unsigned myManType()",
+      "definition": "int httpServer([bool authRequired = true | string authMethod | dyn_string authmethod[, беззнаковый portNr = 80 [, беззнаковый SecurePortNr = 443]]]])",
       "description": [
-        "Returns the type of the current manager."
+        "Устанавливает и активирует HTTP-сервер."
       ],
-      "id": "httpConnect"
+      "id": "httpServer"
     },
     {
       "definition": "int httpConnect(string|function_ptr callBackFunc, string resourceName [, string contentType = \"text/html\"]);",
       "description": [
         "Registers a CTRL function as a Web resource"
       ],
-      "id": "myManId"
+      "id": "httpConnect"
     },
     {
       "definition": "int convManIdToInt(char manType, char manNum [, int sysNum [, char replica]])",

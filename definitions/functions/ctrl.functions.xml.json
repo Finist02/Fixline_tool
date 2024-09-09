@@ -136,6 +136,27 @@
                 ""
             ],
             "id": "xmlNodeName"
+        },
+        {
+            "definition": "",
+            "description": [
+                ""
+            ],
+            "id": "xmlNodeType"
+        },
+        {
+            "definition": "",
+            "description": [
+                ""
+            ],
+            "id": "XML_ELEMENT_NODE"
+        },
+        {
+            "definition": "",
+            "description": [
+                ""
+            ],
+            "id": "XML_TEXT_NODE"
         }
     ]
 }

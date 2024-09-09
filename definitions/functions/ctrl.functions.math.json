@@ -65,14 +65,14 @@
         "description":[ 
   
         ],
-        "id":"atan "
+        "id":"atan"
       },
       { 
         "definition":"float atan2 (float y, float x)",
         "description":[ 
   
         ],
-        "id":"atan2 "
+        "id":"atan2"
       },
       { 
         "definition":"float rad2deg(float x)",
