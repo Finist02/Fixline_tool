@@ -2,7 +2,7 @@
     "name": "fixline-tool",
     "displayName": "Fixline tool",
     "description": "Fixline tool",
-    "version": "1.1.4",
+    "version": "1.0.48",
     "publisher": "Danil",
     "icon": "images/fixline.png",
     "repository": {
@@ -217,7 +217,7 @@
             "view/item/context": [
                 {
                     "command": "ctrlDpsTree.view",
-                    "when": "view == ctrlDpsTree && viewItem == dependency",
+                    "when": "view == ctrlDpsTree && viewItem == dpel",
                     "group": "inline"
                 }
             ],
