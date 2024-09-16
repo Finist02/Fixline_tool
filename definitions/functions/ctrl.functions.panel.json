@@ -248,6 +248,20 @@
                 "Получение образца заполнения."
             ],
             "id": "fillSelector"
+        },
+        {
+            "definition": "bool hasMethod(string|shape object[,string methodName);",
+            "description": [
+                "Функция возвращает значение TRUE, когда указанный метод существует."
+            ],
+            "id": "hasMethod"
+        },
+        {
+            "definition": "int removeShape(shape shapePointer);",
+            "description": [
+                "The function removes a shape from the panel."
+            ],
+            "id": "removeShape"
         }
     ]
 }
