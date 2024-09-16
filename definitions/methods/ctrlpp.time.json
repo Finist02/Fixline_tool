@@ -1,0 +1,70 @@
+{
+    "typeSymbol": "time",
+    "defines": [
+        {
+            "label": "day",
+            "documentation": "Returns a number of the day",
+            "insertText": "day()"
+        },
+        {
+            "label": "daysInMonth",
+            "documentation": "Returns a count of days in the month",
+            "insertText": "daysInMonth()"
+        },
+        {
+            "label": "daysInYear",
+            "documentation": "Returns a count of days in the year",
+            "insertText": "daysInYear()"
+        },
+        {
+            "label": "hour",
+            "documentation": "Returns an hour of the time",
+            "insertText": "hour()"
+        },
+        {
+            "label": "isLeapYear",
+            "documentation": "Returns true if the year is leap.",
+            "insertText": "isLeapYear()"
+        },
+        {
+            "label": "minute",
+            "documentation": "Returns a minute of the time",
+            "insertText": "minute()"
+        },
+        {
+            "label": "month",
+            "documentation": "Returns a month of the date.",
+            "insertText": "month()"
+        },
+        {
+            "label": "second",
+            "documentation": "Returns a second of the time.",
+            "insertText": "second()"
+        },
+        {
+            "label": "setDate",
+            "documentation": "Sets the date.",
+            "insertText": "setDate($0)"
+        },
+        {
+            "label": "setTime",
+            "documentation": "Sets the time.",
+            "insertText": "setTime($0)"
+        },
+        {
+            "label": "weekDay",
+            "documentation": "Return a number of the day in the week.",
+            "insertText": "weekDay()"
+        },
+        {
+            "label": "year",
+            "documentation": "Returns the year of the date.",
+            "insertText": "year()"
+        },
+        {
+            "label": "yearDay",
+            "documentation": "Return a number of the day in the year.",
+            "insertText": "yearDay()"
+        }
+    ]
+}
