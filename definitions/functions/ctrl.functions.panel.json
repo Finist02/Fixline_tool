@@ -262,6 +262,34 @@
                 "The function removes a shape from the panel."
             ],
             "id": "removeShape"
+        },
+        {
+            "definition": "int getPanelPreview(anytype &image, string panelFileName, float scaleFactor[[, bool onlyShapeBounding = false], bool showInvisibleShapes = true]]);",
+            "description": [
+                "Creates a preview (image) of the available panel references for Drag & Drop of DPTs and DPs."
+            ],
+            "id": "getPanelPreview"
+        },
+        {
+            "definition": "int imageToFile(const anytype &image, string fileName);",
+            "description": [
+                "Stores an images which was created using getPanelPreview() (or using QVarPicture) to a file on the disk."
+            ],
+            "id": "imageToFile"
+        },
+        {
+            "definition": "bool isUltralight();",
+            "description": [
+                "The function returns a boolean value depending if the function is called inside a Ultralight Client application (TRUE) or in a Control application (FALSE)."
+            ],
+            "id": "isUltralight"
+        },
+        {
+            "definition": "int getDollarList(string panelFileName, dyn_string &dollars);",
+            "description": [
+                "The function getDollarList() returns the dollar parameters of a panel."
+            ],
+            "id": "getDollarList"
         }
     ]
 }

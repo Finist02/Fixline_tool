@@ -1,0 +1,25 @@
+{
+    "typeSymbol": "langString",
+    "defines": [
+        {
+            "label": "contains",
+            "documentation": "Identifies if the langString contains the language.",
+            "insertText": "contains($0)"
+        },
+        {
+            "label": "count",
+            "documentation": "Returns the number of languages in the langString.",
+            "insertText": "count()"
+        },
+        {
+            "label": "setText",
+            "documentation": "Sets a text of a langString to the given string.",
+            "insertText": "setText($0)"
+        },
+        {
+            "label": "text",
+            "documentation": "Returns the text of a langString.",
+            "insertText": "text()"
+        }
+    ]
+}
