@@ -466,6 +466,24 @@
             "description": [
             ],
             "id": "DYN_DYN_SHAPE_VAR"
+        },
+        {
+            "definition": "const int KEY_SHIFT",
+            "description": [
+            ],
+            "id": "KEY_SHIFT"
+        },
+        {
+            "definition": "const int KEY_CONTROL",
+            "description": [
+            ],
+            "id": "KEY_CONTROL"
+        },
+        {
+            "definition": "const int KEY_ALT",
+            "description": [
+            ],
+            "id": "KEY_ALT"
         }
     ]
 }
