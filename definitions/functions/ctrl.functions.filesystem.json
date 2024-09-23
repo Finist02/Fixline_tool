@@ -302,6 +302,13 @@
           "Открывает диалоговое окно выбора файла и записывает имя выбранного файла в строковую переменную filestr."
       ],
       "id": "fileSelector"
+    },
+    {
+      "definition": "string getFileNameFromPath(string path);",
+      "description": [
+          "The function returns the file name and extension from the given path. This function does not check if the path/file exists."
+      ],
+      "id": "getFileNameFromPath"
     }
   ]
 }
