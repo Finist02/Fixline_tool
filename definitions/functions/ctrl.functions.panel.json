@@ -290,6 +290,27 @@
                 "The function getDollarList() returns the dollar parameters of a panel."
             ],
             "id": "getDollarList"
+        },
+        {
+            "definition": "int getDollarParamsFromPanel(string panelName);",
+            "description": [
+                "The function getDollarParamsFromPanel is a CTRL function used to query the dollar parameters of a specified panel"
+            ],
+            "id": "getDollarParamsFromPanel"
+        },
+        {
+            "definition": "mapping  getInputState();",
+            "description": [
+                "The function getInputState is used to return the current input state."
+            ],
+            "id": "getInputState"
+        },
+        {
+            "definition": "int dragStart(string information[, string pixmap =\"\"[, int dragType = DRAG_COPY[, string mimeType = \"text/plain\"]]]);",
+            "description": [
+                "The function dragStart is used to initiate a drag operation."
+            ],
+            "id": "dragStart"
         }
     ]
 }

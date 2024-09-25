@@ -484,6 +484,24 @@
             "description": [
             ],
             "id": "KEY_ALT"
+        },
+        {
+            "definition": "const int DRAG_COPY",
+            "description": [
+            ],
+            "id": "DRAG_COPY"
+        },
+        {
+            "definition": "const int DRAG_MOVE",
+            "description": [
+            ],
+            "id": "DRAG_MOVE"
+        },
+        {
+            "definition": "const int DRAG_LINK",
+            "description": [
+            ],
+            "id": "DRAG_LINK"
         }
     ]
 }
