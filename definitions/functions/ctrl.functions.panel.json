@@ -311,6 +311,13 @@
                 "The function dragStart is used to initiate a drag operation."
             ],
             "id": "dragStart"
+        },
+        {
+            "definition": "void ModuleOff(string moduleName);",
+            "description": [
+                "Closes a module."
+            ],
+            "id": "ModuleOff"
         }
     ]
 }
