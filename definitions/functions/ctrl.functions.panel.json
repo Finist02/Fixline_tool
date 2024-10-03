@@ -318,6 +318,20 @@
                 "Closes a module."
             ],
             "id": "ModuleOff"
+        },
+        {
+            "definition": "int createSymbol(string moduleName, string panelName, string fileName, string refName, dyn_string subst, int x, int y, float angle, float scx, float scy[, string ewoName]);",
+            "description": [
+                "Adds a panel references in a panel or layout at a later time during run time. The function is identical to addSymbol() but prevents the triggering of the added objects initialize scripts."
+            ],
+            "id": "createSymbol"
+        },
+        {
+            "definition": "int startSymbol(shape panel | (string moduleName, string panelName), string refName);",
+            "description": [
+                "Starts a panel reference in a panel after creating a reference via createSymbol(). The function is identical to the function addSymbol() but does not execute the initialize script."
+            ],
+            "id": "startSymbol"
         }
     ]
 }
