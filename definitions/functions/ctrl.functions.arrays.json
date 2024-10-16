@@ -183,19 +183,19 @@
       "id": "getDynATime"
     },
     {
-      "definition": "int dynMin(dyn_int x [, dyn_bool mask])\\r\\nuint dynMin(dyn_uint x [, dyn_bool mask])\\r\\nfloat dynMin(dyn_float x [, dyn_bool mask])",
+      "definition": "int dynMin(dyn_int x [, dyn_bool mask])\n\ruint dynMin(dyn_uint x [, dyn_bool mask])\n\rfloat dynMin(dyn_float x [, dyn_bool mask])",
       "description": [],
       "id": "dynMin"
     },
     {
-      "definition": "int dynMax(dyn_int x [, dyn_bool mask])\\r\\nuint dynMax(dyn_uint x [, dyn_bool mask])\\r\\nfloat dynMax(dyn_float x [, dyn_bool mask])",
+      "definition": "int dynMax(dyn_int x [, dyn_bool mask])\n\ruint dynMax(dyn_uint x [, dyn_bool mask])\n\rfloat dynMax(dyn_float x [, dyn_bool mask])",
       "description": [
         "Outputs the largest field element."
       ],
       "id": "dynMax"
     },
     {
-      "definition": "int dynSum(dyn_int x [, dyn_bool mask])\\r\\nuint dynSum (dyn_uint x [, dyn_bool mask])\\r\\nfloat dynSum(dyn_float x [, dyn_bool mask])",
+      "definition": "int dynSum(dyn_int x [, dyn_bool mask])\n\ruint dynSum (dyn_uint x [, dyn_bool mask])\n\rfloat dynSum(dyn_float x [, dyn_bool mask])",
       "description": [],
       "id": "dynSum"
     },
@@ -210,14 +210,14 @@
       "id": "dynAvgWT"
     },
     {
-      "definition": "int dynAppend(<dyn_type> &x, <type> y)\\nint dynAppend(<dyn_type> &x, <dyn_type> y)",
+      "definition": "int dynAppend(<dyn_type> &x, <type> y)\n\rint dynAppend(<dyn_type> &x, <dyn_type> y)",
       "description": [
         "Appends y to the field x."
       ],
       "id": "dynAppend"
     },
     {
-      "definition": "int dynAppendConst(<dyn_type> &x, <type> y)\\nint dynAppendConst(<dyn_type> &x, <dyn_type> y)",
+      "definition": "int dynAppendConst(<dyn_type> &x, <type> y)\n\rint dynAppendConst(<dyn_type> &x, <dyn_type> y)",
       "description": [],
       "id": "dynAppendConst"
     },

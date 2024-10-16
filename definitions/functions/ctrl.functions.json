@@ -1142,6 +1142,20 @@
         "Открывает языковой редактор (\"langEditor\")"
       ],
       "id": "langEditor"
+    },
+    {
+      "definition": "OaLanguage getActiveLang();",
+      "description": [
+        "Returns the active language as an OaLanguage Enum. This function is the same as getActiveLang() but uses the OaLanguage Enum as return value."
+      ],
+      "id": "getActiveLangId"
+    },
+    {
+      "definition": "int getNoOfLangs();",
+      "description": [
+        "Gets the number of languages currently available."
+      ],
+      "id": "getNoOfLangs"
     }
   ]
 }
