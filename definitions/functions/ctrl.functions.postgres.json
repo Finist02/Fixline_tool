@@ -62,11 +62,18 @@
             "id": "dbOpenConnection"
         },
         {
+            "definition": "int dbGetError(dbConnection connection, int &errorCount, int &errorNumber, int &errorNative, string &errorDescription, string &SQLState);",
+            "description": [
+                "The dbGetError function in WinCC OA is used to retrieve detailed error information related to database operations."
+            ],
+            "id": "dbGetError"
+        },
+        {
             "definition": "int dbCloseConnection(dbConnection connection);",
             "description": [
                 "Функция для закрытия соединения с источником данных."
             ],
-            "id": "dbOpenConnection"
+            "id": "dbCloseConnection"
         },
         {
             "definition": "int dbOpenRecordset(dbConnection connection, string cmdStr, dbRecordset &recordset [, int cursorType]);",

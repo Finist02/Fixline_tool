@@ -658,6 +658,36 @@
             "description": [
             ],
             "id": "DPATTR_ADDR_MODE_LOW_LEVEL_FLAG"
+        },
+        {
+            "definition": "const int DYN_IDISPATCH_VAR",
+            "description": [
+            ],
+            "id": "DYN_IDISPATCH_VAR"
+        },
+        {
+            "definition": "const int DYN_DYN_IDISPATCH_VAR",
+            "description": [
+            ],
+            "id": "DYN_DYN_IDISPATCH_VAR"
+        },
+        {
+            "definition": "const int DYN_DYN_RECHDL_VAR",
+            "description": [
+            ],
+            "id": "DYN_DYN_RECHDL_VAR"
+        },
+        {
+            "definition": "const int DYN_DYN_CONNHDL_VAR",
+            "description": [
+            ],
+            "id": "DYN_DYN_CONNHDL_VAR"
+        },
+        {
+            "definition": "const int DYN_DYN_CMDHDL_VAR",
+            "description": [
+            ],
+            "id": "DYN_DYN_CMDHDL_VAR"
         }
     ]
 }
