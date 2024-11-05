@@ -114,6 +114,34 @@
       "definition": "int v24Close(int handle)",
       "description": [],
       "id": "v24Close"
+    },
+    {
+      "definition": "int httpWriteWebSocket(int idx, <string|blob|anytype> message);",
+      "description": [
+        "The httpWriteWebSocket function in WinCC OA is used to send messages over a WebSocket connection"
+      ],
+      "id": "httpWriteWebSocket"
+    },
+    {
+      "definition": "void mpackEncode(anytype obj, blob &buf);",
+      "description": [
+        "Сериализует объект в формат MessgagePack"
+      ],
+      "id": "mpackEncode"
+    },
+    {
+      "definition": "void mpackEncodeLz4(anytype obj, blob &buf);",
+      "description": [
+        "Сериализует объект в формат MessgagePack"
+      ],
+      "id": "mpackEncodeLz4"
+    },
+    {
+      "definition": "void mpackDecode(anytype obj, blob &buf);",
+      "description": [
+        "Десериализует  объект в формат MessgagePack"
+      ],
+      "id": "mpackDecode"
     }
   ]
 }

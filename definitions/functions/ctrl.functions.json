@@ -1156,6 +1156,27 @@
         "Gets the number of languages currently available."
       ],
       "id": "getNoOfLangs"
+    },
+    {
+      "definition": "int aes256Decrypt(blob src, string key, string|blob &dest);",
+      "description": [
+        "The aes256Decrypt function in WinCC OA allows you to decrypt information that has been encrypted using the AES-256 algorithm."
+      ],
+      "id": "aes256Decrypt"
+    },
+    {
+      "definition": "int aes256Encrypt(string|blob src, string key, blob &dest);",
+      "description": [
+        "The aes256Encrypt function in WinCC OA allows you to encrypt information using the AES-256 algorithm."
+      ],
+      "id": "aes256Encrypt"
+    },
+    {
+      "definition": "bool isMobileDevice();",
+      "description": [
+        "The isMobileDevice() function in WinCC OA is used to determine if the device from which the function is called is a mobile device (specifically Android or iOS)."
+      ],
+      "id": "isMobileDevice"
     }
   ]
 }
