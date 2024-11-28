@@ -1081,6 +1081,13 @@
       "id": "paCfgReadValueList"
     },
     {
+      "definition": "int paCfgReadValue([dyn_]string fileName, string section, string key, <type> &value[, string host]);",
+      "description": [
+        "Функция считывает все значения параметра конфигурации."
+      ],
+      "id": "paCfgReadValue"
+    },
+    {
       "definition": "isSplitModeActive(bool &bAnswer, string System = ;",
       "description": [
         "Возвращает информацию о том, активирован ли в системе разделенный режим."
