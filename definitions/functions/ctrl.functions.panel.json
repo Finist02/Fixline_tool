@@ -332,6 +332,13 @@
                 "Starts a panel reference in a panel after creating a reference via createSymbol(). The function is identical to the function addSymbol() but does not execute the initialize script."
             ],
             "id": "startSymbol"
+        },
+        {
+            "definition": "float getZoomFactor(float &factor, [string moduleName]);",
+            "description": [
+                "The getZoomFactor function in WinCC OA is used to read the zoom factor for a panel."
+            ],
+            "id": "getZoomFactor"
         }
     ]
 }
