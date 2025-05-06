@@ -2,7 +2,7 @@
     "name": "fixline-tool",
     "displayName": "Fixline tool",
     "description": "Fixline tool",
-    "version": "1.1.41",
+    "version": "1.0.48",
     "publisher": "Danil",
     "icon": "images/fixline.png",
     "repository": {
@@ -15,12 +15,12 @@
     "categories": [
         "Other"
     ],
+    "main": "./out/extension.js",
     "activationEvents": [
         "onView:ctrlDpsTree",
         "onLanguage:ctrl",
         "onLanguage:ctrlpp"
     ],
-    "main": "./out/extension.js",
     "contributes": {
         "viewsContainers": {
             "activitybar": [
@@ -139,6 +139,12 @@
             {
                 "command": "extension.OpenProjectPanel",
                 "title": "Open project panel",
+                "icon": "$(preview)",
+                "category": "Fixline"
+            },
+            {
+                "command": "extension.OpenProjectPanelWithDebug",
+                "title": "Open project panel with debug",
                 "icon": "$(preview)",
                 "category": "Fixline"
             },
@@ -327,17 +333,15 @@
         "test": "node ./out/test/runTest.js"
     },
     "devDependencies": {
-        "@types/glob": "^7.2.0",
-        "@types/mocha": "^9.1.1",
-        "@types/node": "^16.18.105",
         "@types/vscode": "^1.71.0",
-        "@typescript-eslint/eslint-plugin": "^5.9.1",
-        "@typescript-eslint/parser": "^3.10.1",
-        "@vscode/test-electron": "^2.4.1",
-        "eslint": "^8.57.0",
-        "glob": "^8.0.3",
-        "mocha": "^10.0.0",
-        "typescript": "^4.7.4"
+        "@types/mocha": "^10.0.7",
+        "@types/node": "20.x",
+        "@typescript-eslint/eslint-plugin": "^8.3.0",
+        "@typescript-eslint/parser": "^8.3.0",
+        "eslint": "^9.9.1",
+        "typescript": "^5.5.4",
+        "@vscode/test-cli": "^0.0.10",
+        "@vscode/test-electron": "^2.4.1"
     },
     "dependencies": {
         "axios": "^1.7.4",
