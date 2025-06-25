@@ -123,6 +123,41 @@
       "id": "httpWriteWebSocket"
     },
     {
+      "definition": "int httpReadWebSocket(int idx, <string|blob|anytype> &message);",
+      "description": [
+        "The function reads web sockets."
+      ],
+      "id": "httpReadWebSocket"
+    },
+    {
+      "definition": "void httpCloseWebSocket(int idx);",
+      "description": [
+        "The function closes web sockets."
+      ],
+      "id": "httpCloseWebSocket"
+    },
+    {
+      "definition": "int httpSetSecondaryAuthSuccess(int idx, <string|bool success);",
+      "description": [
+        "The function is used to check for secondary authentification and implement a login delay."
+      ],
+      "id": "httpSetSecondaryAuthSuccess"
+    },
+    {
+      "definition": "string jwtEncode(string payload, string key [, string algorithm ]);",
+      "description": [
+        "Returns an encoded JSON Web Token (JWT)."
+      ],
+      "id": "jwtEncode"
+    },
+    {
+      "definition": "string jwtDecode(string jwt, string key [, string algorithm] [, bool ignoreSignature = false]);",
+      "description": [
+        "The function decodes a JSON Web Token (JWT)."
+      ],
+      "id": "jwtDecode"
+    },
+    {
       "definition": "void mpackEncode(anytype obj, blob &buf);",
       "description": [
         "Сериализует объект в формат MessgagePack"

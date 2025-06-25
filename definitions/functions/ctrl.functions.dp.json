@@ -150,6 +150,13 @@
       "id": "dpNames"
     },
     {
+      "definition": "bool dpNameCheck(string dpName);",
+      "description": [
+        "This function should not be used anymore and was replaced by the function nameCheck(). Checks, whether the name of a data point contains only the following characters: 0...9, A...Z, _, a...z."
+      ],
+      "id": "dpNameCheck"
+    },
+    {
       "definition": "dyn_string dpTypes([string pattern [, unsigned system]])",
       "description": [
         "Returns all the data point types from the current project."

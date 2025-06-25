@@ -12,6 +12,13 @@
       "id": "myManNum"
     },
     {
+      "definition": "int myManId();",
+      "description": [
+        "Returns the manager ID as a number. The number contains coded the system, replica, type and number."
+      ],
+      "id": "myManId"
+    },
+    {
       "definition": "anytype invokeMethod(string|shape object, string methodName, [...]);",
       "description": [
         "invokeMethod."
@@ -1046,6 +1053,13 @@
       "id": "getShape"
     },
     {
+      "definition": "shape addShape(shape panel, int layer, string shapeType, string shapeName);\nshape addShape(string moduleName, string panelName, int layer, string shapeType, string shapeName);",
+      "description": [
+        "Adds a new shape into a panel."
+      ],
+      "id": "addShape"
+    },
+    {
       "definition": "string myDisplayName();",
       "description": [
         "Возвращает информацию дисплея, используемого пользователем на данный момент."
@@ -1086,6 +1100,13 @@
         "Функция считывает все значения параметра конфигурации."
       ],
       "id": "paCfgReadValue"
+    },
+    {
+      "definition": "<type> paCfgReadValueDflt(string filename, string section, string key, <type> dfltValue[, bool & isDflt [,string host]]);",
+      "description": [
+        "The function returns either the value of the found entry or the default value."
+      ],
+      "id": "paCfgReadValueDflt"
     },
     {
       "definition": "isSplitModeActive(bool &bAnswer, string System = ;",

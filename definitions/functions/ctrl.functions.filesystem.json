@@ -214,6 +214,11 @@
       "id": "getFileSize"
     },
     {
+      "definition": "void getFilesRecursive(dyn_string &files, const string absolutePath, const string relativePath, string pattern = \"*\");",
+      "description": ["Adds filenames to the parameter 'files' from the given directory 'absolutePath' including all subdirectories."],
+      "id": "getFilesRecursive"
+    },
+    {
       "definition": "string makeUnixPath(string path)",
       "description": [],
       "id": "makeUnixPath"
