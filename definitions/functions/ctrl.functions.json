@@ -1205,6 +1205,27 @@
         "The isMobileDevice() function in WinCC OA is used to determine if the device from which the function is called is a mobile device (specifically Android or iOS)."
       ],
       "id": "isMobileDevice"
+    },
+    {
+      "definition": "int RSAGenerateKeyPair(string &publicPEM, string &privatePEM[, int bits = 2048]);",
+      "description": [
+        "The function RSAGenerateKeyPair() generates a public and a private key for the functions RSASealEnvelope() and RSAOpenEnvelope()."
+      ],
+      "id": "RSAGenerateKeyPair"
+    },
+    {
+      "definition": "int RSAOpenEnvelope(string keyAddress, blob encryptedData, blob& outputData)",
+      "description": [
+        "The function RSAOpenEnvelope() decrypts data."
+      ],
+      "id": "RSAOpenEnvelope"
+    },
+    {
+      "definition": "int RSASealEnvelope(string keyAddress, blob inputData, blob& encryptedData)",
+      "description": [
+        "The function RSASealEnvelope() encrypts data."
+      ],
+      "id": "RSASealEnvelope"
     }
   ]
 }
