@@ -1214,18 +1214,25 @@
       "id": "RSAGenerateKeyPair"
     },
     {
-      "definition": "int RSAOpenEnvelope(string keyAddress, blob encryptedData, blob& outputData)",
+      "definition": "int RSAOpenEnvelope(string keyAddress, blob encryptedData, blob& outputData);",
       "description": [
         "The function RSAOpenEnvelope() decrypts data."
       ],
       "id": "RSAOpenEnvelope"
     },
     {
-      "definition": "int RSASealEnvelope(string keyAddress, blob inputData, blob& encryptedData)",
+      "definition": "int RSASealEnvelope(string keyAddress, blob inputData, blob& encryptedData);",
       "description": [
         "The function RSASealEnvelope() encrypts data."
       ],
       "id": "RSASealEnvelope"
+    },
+    {
+      "definition": "int printPanel( string modulName, string panelName, string spec, int options );",
+      "description": [
+        "The function printPanel() prints a panel."
+      ],
+      "id": "printPanel"
     }
   ]
 }

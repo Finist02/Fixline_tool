@@ -486,6 +486,36 @@
             "description": [
             ],
             "id": "NAMETYPE_PATH"
+        },
+        {
+            "definition": "const int PPO_NO_DIALOGS = 0",
+            "description": [
+            ],
+            "id": "PPO_NO_DIALOGS"
+        },
+        {
+            "definition": "const int PPO_ALL_DIALOGS = 1",
+            "description": [
+            ],
+            "id": "PPO_ALL_DIALOGS"
+        },
+        {
+            "definition": "const int PPO_PRINTER_DIALOG = 2",
+            "description": [
+            ],
+            "id": "PPO_PRINTER_DIALOG"
+        },
+        {
+            "definition": "const int PPO_BACKGROUND_DIALOG = 4",
+            "description": [
+            ],
+            "id": "PPO_BACKGROUND_DIALOG"
+        },
+        {
+            "definition": "const int PPO_NO_BORDER = 8",
+            "description": [
+            ],
+            "id": "PPO_NO_BORDER"
         }
     ]
 }
