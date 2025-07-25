@@ -2,7 +2,7 @@
     "name": "fixline-tool",
     "displayName": "Fixline tool",
     "description": "Fixline tool",
-    "version": "1.1.47",
+    "version": "1.0.48",
     "publisher": "Danil",
     "icon": "images/fixline.png",
     "repository": {
@@ -201,6 +201,11 @@
                 "category": "Fixline"
             },
             {
+                "command": "extension.OpenProject",
+                "title": "Open Project",
+                "category": "Fixline"
+            },
+            {
                 "command": "extension.LoadDPL",
                 "title": "Load dpl",
                 "icon": "$(preview)",
@@ -316,6 +321,11 @@
                         "type": "string",
                         "default": "http:///git.fixline.tech/",
                         "description": "GitlabUrl"
+                    },
+                    "FixLineTool.ProgramPath.PvssFolderPath": {
+                        "type": "string",
+                        "default": "C:/ProgramData/Sybcom/Kaskad",
+                        "description": "PvssFolderPath"
                     }
                 }
             }
@@ -333,7 +343,7 @@
         "test": "node ./out/test/runTest.js"
     },
     "devDependencies": {
-        "@types/vscode": "^1.71.0",
+        "@types/vscode": "^1.93.0",
         "@types/mocha": "^10.0.7",
         "@types/node": "20.x",
         "@typescript-eslint/eslint-plugin": "^8.3.0",
