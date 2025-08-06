@@ -331,7 +331,7 @@
         "definitionProvider": "true"
     },
     "scripts": {
-        "vscode:prepublish": "npm run compile && npx javascript-obfuscator ./out --output ./out",
+        "vscode:prepublish": "npm run compile",
         "compile": "tsc -p ./",
         "watch": "tsc -watch -p ./",
         "pretest": "npm run compile && npm run lint",
@@ -339,6 +339,7 @@
         "test": "node ./out/test/runTest.js"
     },
     "devDependencies": {
+        "@types/glob": "^9.0.0",
         "@types/mocha": "^10.0.7",
         "@types/node": "20.x",
         "@types/vscode": "^1.93.0",
@@ -347,6 +348,7 @@
         "@vscode/test-cli": "^0.0.10",
         "@vscode/test-electron": "^2.4.1",
         "eslint": "^9.9.1",
+        "glob": "^11.0.3",
         "typescript": "^5.5.4"
     },
     "dependencies": {
